@@ -74,17 +74,43 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private List<string> _assistantList = new List<string>()
-        {
-            "Tom Chen",
-            "Leo Liu",
-            "",
-        };
+        private List<string> _assistantList;
         public List<string> AssistantList
+        {
+            get 
+            {
+                return _assistantList;
+            }
+            set
+            {
+                _assistantList = value;
+                RaisePropertyChanged(() => AssistantList);
+            }
+        }
+        private List<string> _assistantList2;
+        public List<string> AssistantList2
         {
             get
             {
-                return _assistantList;
+                return _assistantList2;
+            }
+            set
+            {
+                _assistantList2 = value;
+                RaisePropertyChanged(() => AssistantList2);
+            }
+        }
+        private List<string> _assistantList3;
+        public List<string> AssistantList3
+        {
+            get
+            {
+                return _assistantList3;
+            }
+            set
+            {
+                _assistantList3 = value;
+                RaisePropertyChanged(() => AssistantList3);
             }
         }
         private string _seletedAssistant1;
@@ -92,13 +118,14 @@ namespace AccountManager.ViewModels
         {
             get { return _seletedAssistant1; }
             set
-            {
+            {            
                 if (_seletedAssistant1 != value)
                 {
                     _seletedAssistant1 = value;
 
                     RaisePropertyChanged(() => SeletedAssistant1);
                     RaisePropertyChanged(() => CanSelectAssistant2);
+                    AssistantList2 = AssistantList.Select(s => s).Where(s=> s!=SeletedAssistant1).ToList();
                 }
             }
         }
@@ -124,6 +151,7 @@ namespace AccountManager.ViewModels
 
                     RaisePropertyChanged(() => SeletedAssistant2);
                     RaisePropertyChanged(() => CanSelectAssistant3);
+                    AssistantList3 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1&& s != SeletedAssistant2).ToList();
                 }
             }
         }
@@ -336,6 +364,7 @@ namespace AccountManager.ViewModels
             EditStatementCommand = new RelayCommand(ExecuteEditStatementCommand);
             DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand);
             DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand);
+            InsertAllBillCommand = new RelayCommand(ExecuteInsertAllBillCommand);
             Initialize();
         }
         public RelayCommand AddNewBillCommand { get; }
@@ -344,6 +373,8 @@ namespace AccountManager.ViewModels
         public RelayCommand EditStatementCommand { get; }
         public RelayCommand DeleteOneBillCommand { get; }
         public RelayCommand DeleteAllBillCommand { get; }
+        public RelayCommand InsertAllBillCommand { get; }
+
         /// <summary>
         /// 增加訂單
         /// </summary>
@@ -382,7 +413,11 @@ namespace AccountManager.ViewModels
                 UnitPrice = UnitPrice,
                 Count = Count,
                 PaymentType = PaymentType,
-                Designer = SeletedDesigner
+                Designer = SeletedDesigner,
+                Assistant1 = SeletedAssistant1,
+                Assistant2 = SeletedAssistant2,
+                Assistant3 = SeletedAssistant3
+
             }); ;
             BillDisplayList.Clear();
 
@@ -421,6 +456,9 @@ namespace AccountManager.ViewModels
                 BillDisplayList.Add(item);
             }
         }
+        /// <summary>
+        /// 編輯明細
+        /// </summary>
         private void ExecuteEditStatementCommand()
         {
             if (SeletedStatement.Count != 1)
@@ -430,7 +468,6 @@ namespace AccountManager.ViewModels
 
             bill.ForEach(s =>
             {
-
                 if (s.NumberInBill == SeletedStatement[0].NumberInBill)
                 {
                     s.ConsumptionNumber = BillNumber;
@@ -440,6 +477,11 @@ namespace AccountManager.ViewModels
                     s.UnitPrice = UnitPrice;
                     s.Count = Count;
                     s.Designer = SeletedDesigner;
+                    s.PaymentType = PaymentType;
+                    s.Designer = SeletedDesigner;
+                    s.Assistant1 = SeletedAssistant1;
+                    s.Assistant2 = SeletedAssistant2;
+                    s.Assistant3 = SeletedAssistant3;
                 }
             });
 
@@ -449,8 +491,6 @@ namespace AccountManager.ViewModels
             {
                 BillDisplayList.Add(item);
             }
-
-
         }
         private void ExecuteDeleteOneBillCommand()
         {
@@ -465,6 +505,11 @@ namespace AccountManager.ViewModels
             _billListDictionary.Clear();
             RaisePropertyChanged(() => TotalBillCount);
         }
+        private void ExecuteInsertAllBillCommand()
+        {
+
+        }
+
         public ICommand SelectionChangedCommand => _selectionChangedCommand ?? (_selectionChangedCommand = new RelayCommand<IList>(OnChanged));
 
         private void OnChanged(IList dataset)
@@ -482,6 +527,13 @@ namespace AccountManager.ViewModels
             MembershipNumber = "M124423";
             Count = 1;
             CashPay = true;
+            AssistantList = new List<string>(){
+                                        "",
+                                    "Tom Chen",
+                                    "Leo Liu",
+                                    "Peter",
+                                    "Wang Pi",
+                                       };
         }
     }
 }

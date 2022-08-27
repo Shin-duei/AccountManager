@@ -10,7 +10,7 @@
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:view="clr-namespace:AccountManager.Views"
     Title="愛尚‧沙龍"
-    Width="809"
+    Width="900"
     Height="600"
     Background="White"
     mc:Ignorable="d">

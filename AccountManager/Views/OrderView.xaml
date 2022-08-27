@@ -68,7 +68,7 @@
                     Text="髮單單號: " />
                 <TextBox
                     x:Name="textBox1"
-                    Width="90"
+                    Width="100"
                     Height="23"
                     Text="{Binding BillNumber}"
                     TextWrapping="Wrap" />
@@ -80,7 +80,7 @@
                     Text="會員編號: " />
                 <TextBox
                     x:Name="textBox2"
-                    Width="60"
+                    Width="100"
                     Height="23"
                     Text="{Binding MembershipNumber}"
                     TextWrapping="Wrap" />
@@ -92,7 +92,7 @@
                     Text="客戶姓名: " />
                 <TextBox
                     x:Name="textBox3"
-                    Width="60"
+                    Width="100"
                     Height="23"
                     VerticalAlignment="Center"
                     Text="{Binding CustomerName}"
@@ -262,8 +262,7 @@
                     Height="22"
                     VerticalAlignment="Center"
                     IsEnabled="{Binding CanSelectAssistant2}"
-                    ItemsSource="{Binding AssistantList}"
-                    SelectedIndex="0"
+                    ItemsSource="{Binding AssistantList2}"
                     SelectedItem="{Binding SeletedAssistant2}" />
                 <TextBlock
                     x:Name="TextBlockAssistant3"
@@ -277,8 +276,7 @@
                     Height="22"
                     VerticalAlignment="Center"
                     IsEnabled="{Binding CanSelectAssistant3}"
-                    ItemsSource="{Binding AssistantList}"
-                    SelectedIndex="0"
+                    ItemsSource="{Binding AssistantList3}"
                     SelectedItem="{Binding SeletedAssistant3}" />
             </StackPanel>
             <DataGrid
@@ -327,15 +325,15 @@
                         Header="設計師" />
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding SeletedAssistant1}"
+                        Binding="{Binding Assistant1}"
                         Header="助理1" />
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding SeletedAssistant2}"
+                        Binding="{Binding Assistant2}"
                         Header="助理2" />
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding SeletedAssistant3}"
+                        Binding="{Binding Assistant3}"
                         Header="助理3" />
 
                 </DataGrid.Columns>
@@ -439,7 +437,8 @@
                     VerticalAlignment="Center"
                     Content="&#xEC59;"
                     FontFamily="Segoe MDL2 Assets"
-                    ToolTip="關帳" />
+                    ToolTip="關帳" 
+                    Command="{Binding InsertAllBillCommand}"/>
             </StackPanel>
         </Grid>
 
