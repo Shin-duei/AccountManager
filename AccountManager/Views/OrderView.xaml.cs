@@ -29,10 +29,5 @@ namespace AccountManager.Views
             var viewModel = new OrderViewModel() { ViewObject = this };
             DataContext = viewModel;
         }
-
-        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

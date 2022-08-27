@@ -13,7 +13,13 @@
     d:DesignHeight="500"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Background="#FFD8CDCD">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFB0ABD1" Offset="0.007"/>
+                <GradientStop Color="#FF145EDA" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
@@ -109,12 +115,13 @@
                     x:Name="button2"
                     Width="40"
                     Height="30"
-                    Margin="20,0,0,0"
+                    Margin="19,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Command="{Binding AddNewStatementCommand}"
                     Content="&#xECC8;"
-                    FontFamily="Segoe MDL2 Assets" />
+                    FontFamily="Segoe MDL2 Assets"
+                    IsEnabled="{Binding CanExecuteAddNewStatementCommand}" />
                 <Button
                     x:Name="button4"
                     Width="40"
@@ -123,7 +130,8 @@
                     VerticalAlignment="Center"
                     Command="{Binding EditStatementCommand}"
                     Content="&#xEB7E;"
-                    FontFamily="Segoe MDL2 Assets" />
+                    FontFamily="Segoe MDL2 Assets"
+                    IsEnabled="{Binding CanExecuteEditStatementCommand}" />
                 <Button
                     x:Name="button3"
                     Width="40"
@@ -132,7 +140,8 @@
                     VerticalAlignment="Center"
                     Command="{Binding DeleteStatementCommand}"
                     Content="&#xECC9;"
-                    FontFamily="Segoe MDL2 Assets" />
+                    FontFamily="Segoe MDL2 Assets"
+                    IsEnabled="{Binding CanExecuteDeleteStatementCommand}" />
             </StackPanel>
             <StackPanel
                 Grid.Row="2"
@@ -197,7 +206,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="現金"
-                    IsChecked="{Binding CashPay}"/>
+                    IsChecked="{Binding CashPay}" />
                 <RadioButton
                     x:Name="radioButton1"
                     Height="20"
@@ -205,15 +214,15 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="儲值金"
-                    IsChecked="{Binding StoredValue}"/>
+                    IsChecked="{Binding StoredValue}" />
                 <RadioButton
                     x:Name="radioButton2"
                     Height="20"
                     Margin="5,0,0,0"
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="信用卡" 
-                    IsChecked="{Binding CreditCard}"/>
+                    Content="信用卡"
+                    IsChecked="{Binding CreditCard}" />
             </StackPanel>
             <StackPanel
                 Grid.Row="3"
@@ -283,8 +292,11 @@
                 x:Name="dataGrid"
                 Grid.Row="4"
                 Grid.ColumnSpan="2"
+                Margin="0,1,0,0"
                 AutoGenerateColumns="false"
-                ItemsSource="{Binding BillDisplayList}">
+                IsReadOnly="True"
+                ItemsSource="{Binding BillDisplay}"
+                SelectionUnit="FullRow" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
                 <ie:Interaction.Triggers>
                     <ie:EventTrigger EventName="SelectionChanged">
                         <ie:InvokeCommandAction Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=dataGrid}" />
@@ -340,15 +352,18 @@
             </DataGrid>
             <StackPanel
                 Grid.Row="5"
-                Margin="10,0,0,0"
+                Margin="0,1,0,0"
+                Background="White"
                 Orientation="Horizontal">
                 <Button
                     x:Name="buttonFirst"
                     Grid.Row="2"
                     Width="20"
                     Height="30"
+                    Margin="10,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    Command="{Binding FirstBillCommand}"
                     Content="&#xE892;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="首筆" />
@@ -359,9 +374,10 @@
                     Height="30"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    Command="{Binding PreviousBillCommand}"
                     Content="&#xF0B0;"
                     FontFamily="Segoe MDL2 Assets"
-                    ToolTip="前筆" />
+                    ToolTip="前一筆" />
                 <TextBlock
                     x:Name="textBox"
                     Margin="4,0,0,0"
@@ -384,15 +400,17 @@
                     Height="30"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    Command="{Binding NextBillCommand}"
                     Content="&#xF0AF;"
                     FontFamily="Segoe MDL2 Assets"
-                    ToolTip="下筆" />
+                    ToolTip="下一筆" />
                 <Button
                     x:Name="buttonLast"
                     Width="20"
                     Height="30"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    Command="{Binding LastBillCommand}"
                     Content="&#xE893;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="尾筆" />
@@ -415,10 +433,22 @@
             </StackPanel>
             <StackPanel
                 Grid.Row="5"
-                Grid.Column="2"
-                Margin="0,0,10,0"
-                HorizontalAlignment="Right"
+                Grid.Column="1"
+                Margin="0,1,0,0"
+                Background="White"
+                FlowDirection="RightToLeft"
                 Orientation="Horizontal">
+                <Button
+                    x:Name="buttonInsert"
+                    Width="80"
+                    Height="30"
+                    Margin="10,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding InsertAllBillCommand}"
+                    Content="&#xEC59;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="關帳" />
                 <Button
                     x:Name="buttonCancel"
                     Width="80"
@@ -429,16 +459,6 @@
                     Content="&#xE74D;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="刪除全部" />
-                <Button
-                    x:Name="buttonInsert"
-                    Width="80"
-                    Height="30"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Content="&#xEC59;"
-                    FontFamily="Segoe MDL2 Assets"
-                    ToolTip="關帳" 
-                    Command="{Binding InsertAllBillCommand}"/>
             </StackPanel>
         </Grid>
 

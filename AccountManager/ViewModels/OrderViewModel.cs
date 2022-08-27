@@ -1,6 +1,7 @@
 ﻿using AccountManager.Common;
 using AccountManager.Models;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,21 @@ namespace AccountManager.ViewModels
 {
     public class OrderViewModel : ViewModel
     {
-        public ObservableCollection<EssentialModel> BillDisplayList { set; get; }
+        /// <summary>
+        /// 顯示用列表
+        /// </summary>
+        public ObservableCollection<EssentialModel> BillDisplay { set; get; }
+        /// <summary>
+        /// 當前訂單
+        /// </summary>
+        private Tuple<string, List<EssentialModel>> _currentBillDisplay { set; get; }
+        /// <summary>
+        /// 紀錄訂單順序
+        /// </summary>
+        private List<string> _billSequence { set; get; } = new List<string>();
+        /// <summary>
+        /// 所有訂單
+        /// </summary>
         private Dictionary<string, List<EssentialModel>> _billListDictionary = new Dictionary<string, List<EssentialModel>>();
 
         private string _billNumber;
@@ -77,7 +92,7 @@ namespace AccountManager.ViewModels
         private List<string> _assistantList;
         public List<string> AssistantList
         {
-            get 
+            get
             {
                 return _assistantList;
             }
@@ -118,14 +133,14 @@ namespace AccountManager.ViewModels
         {
             get { return _seletedAssistant1; }
             set
-            {            
+            {
                 if (_seletedAssistant1 != value)
                 {
                     _seletedAssistant1 = value;
 
                     RaisePropertyChanged(() => SeletedAssistant1);
                     RaisePropertyChanged(() => CanSelectAssistant2);
-                    AssistantList2 = AssistantList.Select(s => s).Where(s=> s!=SeletedAssistant1).ToList();
+                    AssistantList2 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1).ToList();
                 }
             }
         }
@@ -151,7 +166,7 @@ namespace AccountManager.ViewModels
 
                     RaisePropertyChanged(() => SeletedAssistant2);
                     RaisePropertyChanged(() => CanSelectAssistant3);
-                    AssistantList3 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1&& s != SeletedAssistant2).ToList();
+                    AssistantList3 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1 && s != SeletedAssistant2).ToList();
                 }
             }
         }
@@ -365,6 +380,11 @@ namespace AccountManager.ViewModels
             DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand);
             DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand);
             InsertAllBillCommand = new RelayCommand(ExecuteInsertAllBillCommand);
+
+            PreviousBillCommand = new RelayCommand(ExecutePreviousBillCommand);
+            NextBillCommand = new RelayCommand(ExecuteNextBillCommand);
+            FirstBillCommand = new RelayCommand(ExecuteFirstBillCommand);
+            LastBillCommand = new RelayCommand(ExecuteLastBillCommand);
             Initialize();
         }
         public RelayCommand AddNewBillCommand { get; }
@@ -374,6 +394,14 @@ namespace AccountManager.ViewModels
         public RelayCommand DeleteOneBillCommand { get; }
         public RelayCommand DeleteAllBillCommand { get; }
         public RelayCommand InsertAllBillCommand { get; }
+
+        public RelayCommand PreviousBillCommand { get; }
+        public RelayCommand NextBillCommand { get; }
+
+        public RelayCommand FirstBillCommand { get; }
+
+        public RelayCommand LastBillCommand { get; }
+
 
         /// <summary>
         /// 增加訂單
@@ -386,18 +414,33 @@ namespace AccountManager.ViewModels
             if (_billListDictionary.ContainsKey(BillNumber))//訂單重複 應該要跳提示
                 return;
 
-            _billListDictionary.Add(BillNumber, new List<EssentialModel>());
+            var addedBill = new List<EssentialModel>();
+
+            _billListDictionary.Add(BillNumber, addedBill);
+            _billSequence.Add(BillNumber);
+
+            _currentBillDisplay = new Tuple<string, List<EssentialModel>>(BillNumber, addedBill);
+
+            RefreshDataGrid(addedBill);
             RaisePropertyChanged(() => TotalBillCount);
+            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
+            SelectedBill = TotalBillCount;
+            RaisePropertyChanged(() => SelectedBill);
         }
         /// <summary>
         /// 增加明細
         /// </summary>
         private void ExecuteAddNewStatementCommand()
         {
-            if (string.IsNullOrEmpty(BillNumber))
+            //if (string.IsNullOrEmpty(BillNumber))
+            //    return;
+
+            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
                 return;
 
-            _billListDictionary.TryGetValue(BillNumber, out var bill);
+            var billNumber = _currentBillDisplay.Item1;
+
+            _billListDictionary.TryGetValue(billNumber, out var bill);
 
             if (bill == null)
                 return;
@@ -406,7 +449,7 @@ namespace AccountManager.ViewModels
             bill.Add(new EssentialModel()
             {
                 NumberInBill = numberInBill,
-                ConsumptionNumber = BillNumber,
+                ConsumptionNumber = billNumber,
                 ConsumptionItem = SeletedOrderItem,
                 CustomerName = CustomerName,
                 MembershipNumber = MembershipNumber,
@@ -418,10 +461,19 @@ namespace AccountManager.ViewModels
                 Assistant2 = SeletedAssistant2,
                 Assistant3 = SeletedAssistant3
 
-            }); ;
-            BillDisplayList.Clear();
+            });
 
-            bill.ForEach(s => BillDisplayList.Add(s));
+            RefreshDataGrid(bill);
+        }
+        public bool CanExecuteAddNewStatementCommand
+        {
+            get
+            {
+                if (_currentBillDisplay == null)
+                    return false;
+                else
+                    return true;
+            }
         }
 
         /// <summary>
@@ -429,10 +481,7 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteDeleteStatementCommand()
         {
-            if (string.IsNullOrEmpty(BillNumber))
-                return;
-
-            if (SeletedStatement.Count == 0)
+            if (SeletedStatement == null || SeletedStatement.Count == 0)
                 return;
 
             _billListDictionary.TryGetValue(BillNumber, out var bill);
@@ -445,7 +494,6 @@ namespace AccountManager.ViewModels
                         bill.RemoveAt(k);
                 }
             }
-            BillDisplayList.Clear();
 
             var billCount = bill.Count;
             int i = 0;
@@ -453,7 +501,17 @@ namespace AccountManager.ViewModels
             {
                 item.NumberInBill = i;
                 i++;
-                BillDisplayList.Add(item);
+            }
+            RefreshDataGrid(bill);
+        }
+        public bool CanExecuteDeleteStatementCommand
+        {
+            get
+            {
+                if (SeletedStatement == null || SeletedStatement.Count == 0)
+                    return false;
+                else
+                    return true;
             }
         }
         /// <summary>
@@ -461,7 +519,7 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteEditStatementCommand()
         {
-            if (SeletedStatement.Count != 1)
+            if (SeletedStatement == null || SeletedStatement.Count != 1)
                 return;
 
             _billListDictionary.TryGetValue(BillNumber, out var bill);
@@ -485,29 +543,174 @@ namespace AccountManager.ViewModels
                 }
             });
 
-            BillDisplayList.Clear();
+            RefreshDataGrid(bill);
+        }
 
-            foreach (var item in bill)
+        public bool CanExecuteEditStatementCommand
+        {
+            get
             {
-                BillDisplayList.Add(item);
+                if (SeletedStatement == null || SeletedStatement.Count != 1)
+                    return false;
+                else
+                    return true;
             }
         }
-        private void ExecuteDeleteOneBillCommand()
+        /// <summary>
+        /// 刪除單筆訂單
+        /// </summary>
+        private void ExecuteDeleteOneBillCommand_()
         {
-            if (_billListDictionary.Count <= 0)
+            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
                 return;
 
-            _billListDictionary.Remove(BillNumber);
+            var billNumber = _currentBillDisplay.Item1;
+
+            _billListDictionary.Remove(billNumber);
+            //顯示前一筆訂單資料如果沒有就清空(還未完成)
+            var previousBillIndex = _billSequence.IndexOf(billNumber) - 1;
+            _billSequence.Remove(billNumber);
+
+            List<EssentialModel> previousBill = null;
+            if (previousBillIndex >= 0)
+            {
+                var previousBillNumber = _billSequence[previousBillIndex];
+                _billListDictionary.TryGetValue(previousBillNumber, out previousBill);
+
+                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(previousBillNumber, previousBill);
+                SelectedBill = (uint)previousBillIndex + 1;
+            }
+            else
+                _currentBillDisplay = null;
+
+
+            RefreshDataGrid(previousBill);
+
+            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
             RaisePropertyChanged(() => TotalBillCount);
         }
+        /// <summary>
+        /// 刪除單筆訂單
+        /// </summary>
+        private void ExecuteDeleteOneBillCommand()
+        {
+            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+                return;
+
+            List<EssentialModel> previousBill = null;
+            var currentBillNumber = _currentBillDisplay.Item1;
+
+            _billListDictionary.Remove(currentBillNumber);
+
+            var currentBillIndex = _billSequence.IndexOf(currentBillNumber);
+            _billSequence.Remove(currentBillNumber);
+
+            if (currentBillIndex == 0 && _billSequence.Count == 0)//刪除第一筆後完全沒訂單
+            {
+                _currentBillDisplay = null;
+                SelectedBill = 0;
+            }
+            else if (currentBillIndex >= 0 && _billSequence.Count != currentBillIndex)//刪除當前訂單 顯示後一筆訂單
+            {
+                var nextBillNumber = _billSequence[currentBillIndex];
+                _billListDictionary.TryGetValue(nextBillNumber, out previousBill);
+                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(nextBillNumber, previousBill);
+                SelectedBill = (uint)currentBillIndex + 1;
+            }
+            else if (currentBillIndex == _billSequence.Count)//刪除當前訂單(末筆) 因為後面沒訂單 所以顯示前一筆訂單
+            {
+                var previousBillNumber = _billSequence[currentBillIndex - 1];
+                _billListDictionary.TryGetValue(previousBillNumber, out previousBill);
+                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(previousBillNumber, previousBill);
+                SelectedBill = (uint)currentBillIndex;
+            }
+
+            RefreshDataGrid(previousBill);
+            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
+            RaisePropertyChanged(() => TotalBillCount);
+        }
+        /// <summary>
+        /// 刪除全部訂單
+        /// </summary>
         private void ExecuteDeleteAllBillCommand()
         {
             _billListDictionary.Clear();
+            _currentBillDisplay = null;
+            _billSequence.Clear();
+            BillDisplay.Clear();
             RaisePropertyChanged(() => TotalBillCount);
         }
+        /// <summary>
+        /// 入賬(寫到資料庫)
+        /// </summary>
         private void ExecuteInsertAllBillCommand()
         {
 
+        }
+        /// <summary>
+        /// 翻頁(0最前 1前 2後 3最後)
+        /// </summary>
+        /// <param name=""></param>
+        private void turnBill(int flag)
+        {
+            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+                return;
+
+            var currentBillNumber = _currentBillDisplay.Item1;
+
+            var currentIndex = _billSequence.IndexOf(currentBillNumber);
+
+            if (currentIndex != -1)
+            {
+                int targetIndex = 0;
+
+                if (flag == 0)
+                    targetIndex = 0;
+                else if (flag == 1)
+                    targetIndex = currentIndex - 1;
+                else if (flag == 2)
+                    targetIndex = currentIndex + 1;
+                else if (flag == 3)
+                    targetIndex = _billSequence.Count - 1;
+
+                if (targetIndex >= 0 && targetIndex < _billSequence.Count)
+                {
+                    var targetBillNumber = _billSequence[targetIndex];
+                    _billListDictionary.TryGetValue(targetBillNumber, out var previousBill);
+                    _currentBillDisplay = new Tuple<string, List<EssentialModel>>(targetBillNumber, previousBill);
+                    RefreshDataGrid(previousBill);
+                    SelectedBill = (uint)targetIndex + 1;
+                }
+            }
+        }
+        /// <summary>
+        /// 第一筆
+        /// </summary>
+        private void ExecuteFirstBillCommand()
+        {
+            turnBill(0);
+        }
+        /// <summary>
+        /// 前一筆
+        /// </summary>
+        private void ExecutePreviousBillCommand()
+        {
+            turnBill(1);
+        }
+        /// <summary>
+        /// 下一筆
+        /// </summary>
+        private void ExecuteNextBillCommand()
+        {
+            turnBill(2);
+        }
+
+        /// <summary>
+        /// 最後一筆
+        /// </summary>
+        private void ExecuteLastBillCommand()
+        {
+            turnBill(3);
         }
 
         public ICommand SelectionChangedCommand => _selectionChangedCommand ?? (_selectionChangedCommand = new RelayCommand<IList>(OnChanged));
@@ -515,13 +718,15 @@ namespace AccountManager.ViewModels
         private void OnChanged(IList dataset)
         {
             SeletedStatement = dataset.OfType<EssentialModel>().ToList();
+            RaisePropertyChanged(() => CanExecuteEditStatementCommand);
+            RaisePropertyChanged(() => CanExecuteDeleteStatementCommand);
         }
 
         private ICommand _selectionChangedCommand;
 
         private void Initialize()
         {
-            BillDisplayList = new ObservableCollection<EssentialModel>();
+            BillDisplay = new ObservableCollection<EssentialModel>();
             BillNumber = "202208260001";
             CustomerName = "陳XX";
             MembershipNumber = "M124423";
@@ -534,6 +739,16 @@ namespace AccountManager.ViewModels
                                     "Peter",
                                     "Wang Pi",
                                        };
+        }
+        /// <summary>
+        /// 刷新顯示列表
+        /// </summary>
+        private void RefreshDataGrid(List<EssentialModel> bill)
+        {
+            BillDisplay.Clear();
+
+            if (bill != null)
+                bill.ForEach(statement => BillDisplay.Add(statement));
         }
     }
 }
