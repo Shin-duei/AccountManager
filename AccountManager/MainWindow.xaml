@@ -1,0 +1,115 @@
+﻿<metro:MetroWindow
+    x:Class="AccountManager.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+    xmlns:local="clr-namespace:AccountManager"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:view="clr-namespace:AccountManager.Views"
+    Title="愛尚‧沙龍"
+    Width="809"
+    Height="600"
+    Background="White"
+    mc:Ignorable="d">
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/CustomControlResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+    <Grid x:Name="mainBaseGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <dragablz:TabablzControl TabStripPlacement="Left">
+            <dragablz:TabablzControl.ItemContainerStyle>
+                <Style BasedOn="{StaticResource MaterialDesignDragableTabItemVerticalStyle}" TargetType="{x:Type dragablz:DragablzItem}">
+                    <Setter Property="Width" Value="50" />
+                    <Setter Property="Height" Value="50" />
+                </Style>
+            </dragablz:TabablzControl.ItemContainerStyle>
+            <dragablz:TabablzControl.InterTabController>
+                <dragablz:InterTabController />
+            </dragablz:TabablzControl.InterTabController>
+            <TabItem ToolTip="消費明細登錄">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="FileDocumentEdit">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+                <Grid>
+                    <view:OrderView />
+                </Grid>
+            </TabItem>
+            <TabItem ToolTip="檢視資料庫">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="Database">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem ToolTip="儲值卡系統">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="CashMultiple">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem ToolTip="薪資計算系統">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="CurrencyUsd">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.7" ScaleY="1.7" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem ToolTip="使用者登入">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="Account">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem ToolTip="系統設定">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="Cog">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+        </dragablz:TabablzControl>
+    </Grid>
+</metro:MetroWindow>

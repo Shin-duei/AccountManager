@@ -1,0 +1,433 @@
+﻿<UserControl
+    x:Class="AccountManager.Views.OrderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:local="clr-namespace:AccountManager.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels"
+    d:DesignHeight="500"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Background="#FFD8CDCD">
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,1"
+                Background="White"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="button1"
+                    Width="60"
+                    Height="30"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddNewBillCommand}"
+                    Content="&#xE82E;"
+                    FontFamily="Segoe MDL2 Assets" />
+                <TextBlock
+                    x:Name="TextBlockOrderDate"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="消費日期: " />
+                <DatePicker
+                    x:Name="OrderDatePicker"
+                    Height="25"
+                    Margin="0,0,0,0"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Language="zh-TW"
+                    SelectedDate="{x:Static sys:DateTime.Now}">
+                    <DatePicker.LayoutTransform>
+                        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                    </DatePicker.LayoutTransform>
+                </DatePicker>
+                <TextBlock
+                    x:Name="TextBlock1"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="髮單單號: " />
+                <TextBox
+                    x:Name="textBox1"
+                    Width="90"
+                    Height="23"
+                    Text="{Binding BillNumber}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="TextBlock2"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="會員編號: " />
+                <TextBox
+                    x:Name="textBox2"
+                    Width="60"
+                    Height="23"
+                    Text="{Binding MembershipNumber}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="TextBlock3"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="客戶姓名: " />
+                <TextBox
+                    x:Name="textBox3"
+                    Width="60"
+                    Height="23"
+                    VerticalAlignment="Center"
+                    Text="{Binding CustomerName}"
+                    TextWrapping="Wrap" />
+
+            </StackPanel>
+            <StackPanel
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,0"
+                Background="White"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="button2"
+                    Width="40"
+                    Height="30"
+                    Margin="20,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddNewStatementCommand}"
+                    Content="&#xECC8;"
+                    FontFamily="Segoe MDL2 Assets" />
+                <Button
+                    x:Name="button4"
+                    Width="40"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding EditStatementCommand}"
+                    Content="&#xEB7E;"
+                    FontFamily="Segoe MDL2 Assets" />
+                <Button
+                    x:Name="button3"
+                    Width="40"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding DeleteStatementCommand}"
+                    Content="&#xECC9;"
+                    FontFamily="Segoe MDL2 Assets" />
+            </StackPanel>
+            <StackPanel
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,0"
+                Background="White"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="TextBlockItem"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="項目: " />
+                <ComboBox
+                    x:Name="textBoxItem"
+                    Width="123"
+                    Height="23"
+                    Margin="0,6"
+                    VerticalContentAlignment="Center"
+                    ItemsSource="{Binding OrderItemList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SeletedOrderItem}" />
+                <TextBlock
+                    x:Name="TextBlockItemCount"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="數量: " />
+                <TextBox
+                    x:Name="textBoxItemCount"
+                    Width="114"
+                    Height="23"
+                    Margin="0,6"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Text="{Binding Count}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="TextBlockItemCost"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="單價: " />
+                <TextBox
+                    x:Name="textBoxItemCost"
+                    Width="117"
+                    Height="23"
+                    Margin="0,6"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Text="{Binding UnitPrice}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="TextBlock5"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="付款方式: " />
+                <RadioButton
+                    x:Name="radioButton"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="現金"
+                    IsChecked="true" />
+                <RadioButton
+                    x:Name="radioButton1"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="儲值金" />
+                <RadioButton
+                    x:Name="radioButton2"
+                    Height="20"
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="信用卡" />
+
+            </StackPanel>
+            <StackPanel
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,0"
+                Background="White"
+                Orientation="Horizontal">
+                <TextBlock
+                    x:Name="TextBlock4"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="設計師: " />
+                <ComboBox
+                    x:Name="textBoxDesigner"
+                    Width="108"
+                    Height="22"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding DesignerList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SeletedDesigner}" />
+                <TextBlock
+                    x:Name="TextBlockAssistant1"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="助理1: " />
+                <ComboBox
+                    x:Name="textBoxAssistant1"
+                    Width="108"
+                    Height="22"
+                    Margin="0,6,0,7"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding AssistantList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SeletedAssistant1}" />
+                <TextBlock
+                    x:Name="TextBlockAssistant2"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="助理2: " />
+                <ComboBox
+                    x:Name="textBoxAssistant2"
+                    Width="108"
+                    Height="22"
+                    VerticalAlignment="Center"
+                    IsEnabled="{Binding CanSelectAssistant2}"
+                    ItemsSource="{Binding AssistantList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SeletedAssistant2}" />
+                <TextBlock
+                    x:Name="TextBlockAssistant3"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="助理3: " />
+                <ComboBox
+                    x:Name="textBoxAssistant3"
+                    Width="108"
+                    Height="22"
+                    VerticalAlignment="Center"
+                    IsEnabled="{Binding CanSelectAssistant3}"
+                    ItemsSource="{Binding AssistantList}"
+                    SelectedIndex="0"
+                    SelectedItem="{Binding SeletedAssistant3}" />
+            </StackPanel>
+            <DataGrid
+                x:Name="dataGrid"
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                AutoGenerateColumns="false"
+                ItemsSource="{Binding BillDisplayList}">
+                <ie:Interaction.Triggers>
+                    <ie:EventTrigger EventName="SelectionChanged">
+                        <ie:InvokeCommandAction Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=dataGrid}" />
+                    </ie:EventTrigger>
+                </ie:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding ConsumptionNumber}"
+                        Header="消費單號" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding MembershipNumber}"
+                        Header="會員編號" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding CustomerName}"
+                        Header="顧客姓名" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding ConsumptionItem}"
+                        Header="消費項目" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Designer}"
+                        Header="設計師" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Count}"
+                        Header="數量" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding UnitPrice}"
+                        Header="單價" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel
+                Grid.Row="5"
+                Margin="10,0,0,0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="buttonFirst"
+                    Grid.Row="2"
+                    Width="20"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="&#xE892;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="首筆" />
+                <Button
+                    x:Name="buttonPrevious"
+                    Grid.Row="2"
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="&#xF0B0;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="前筆" />
+                <TextBox
+                    x:Name="textBox"
+                    Width="25"
+                    Height="30"
+                    Margin="4,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Right"
+                    VerticalContentAlignment="Center"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Text="{Binding SelectedBill}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="label"
+                    Margin="0,0,4,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{Binding TotalBillCount, StringFormat=/{0}}" />
+                <Button
+                    x:Name="buttonNext"
+                    Grid.Row="2"
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="&#xF0AF;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="下筆" />
+                <Button
+                    x:Name="buttonLast"
+                    Width="20"
+                    Height="30"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="&#xE893;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="尾筆" />
+                <Button
+                    x:Name="button"
+                    Width="53"
+                    Height="30"
+                    Margin="4,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Command="{Binding DeleteOneBillCommand}"
+                    ToolTip="刪除單筆">
+                    <materialDesign:PackIcon Background="Transparent" Kind="FileRemoveOutline">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+
+                </Button>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="5"
+                Grid.Column="2"
+                Margin="0,0,10,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="buttonCancel"
+                    Width="80"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Command="{Binding DeleteAllBillCommand}"
+                    Content="&#xE74D;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="刪除全部" />
+                <Button
+                    x:Name="buttonInsert"
+                    Width="80"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Content="&#xEC59;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="關帳" />
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
