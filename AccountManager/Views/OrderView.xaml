@@ -197,22 +197,23 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="現金"
-                    IsChecked="true" />
+                    IsChecked="{Binding CashPay}"/>
                 <RadioButton
                     x:Name="radioButton1"
                     Height="20"
                     Margin="5,0,0,0"
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="儲值金" />
+                    Content="儲值金"
+                    IsChecked="{Binding StoredValue}"/>
                 <RadioButton
                     x:Name="radioButton2"
                     Height="20"
                     Margin="5,0,0,0"
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="信用卡" />
-
+                    Content="信用卡" 
+                    IsChecked="{Binding CreditCard}"/>
             </StackPanel>
             <StackPanel
                 Grid.Row="3"
@@ -310,16 +311,33 @@
                         Header="消費項目" />
                     <DataGridTextColumn
                         Width="Auto"
-                        Binding="{Binding Designer}"
-                        Header="設計師" />
-                    <DataGridTextColumn
-                        Width="Auto"
                         Binding="{Binding Count}"
                         Header="數量" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding UnitPrice}"
                         Header="單價" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding PaymentType}"
+                        Header="付款方式" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Designer}"
+                        Header="設計師" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding SeletedAssistant1}"
+                        Header="助理1" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding SeletedAssistant2}"
+                        Header="助理2" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding SeletedAssistant3}"
+                        Header="助理3" />
+
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel
@@ -346,16 +364,11 @@
                     Content="&#xF0B0;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="前筆" />
-                <TextBox
+                <TextBlock
                     x:Name="textBox"
-                    Width="25"
-                    Height="30"
                     Margin="4,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    HorizontalContentAlignment="Right"
-                    VerticalContentAlignment="Center"
-                    FontSize="18"
                     FontWeight="Bold"
                     Text="{Binding SelectedBill}"
                     TextWrapping="Wrap" />
@@ -364,6 +377,7 @@
                     Margin="0,0,4,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    FontSize="16"
                     Text="{Binding TotalBillCount, StringFormat=/{0}}" />
                 <Button
                     x:Name="buttonNext"

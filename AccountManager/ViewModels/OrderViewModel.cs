@@ -43,6 +43,7 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+
         public uint TotalBillCount
         {
             get => (uint)_billListDictionary.Count;
@@ -206,6 +207,82 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private bool _cashPay;
+        public bool CashPay
+        {
+            get { return _cashPay; }
+            set
+            {
+                if (_cashPay != value)
+                {
+                    _cashPay = value;
+
+                    RaisePropertyChanged(() => CashPay);
+
+                    PaymentType = ChangePaymentType();
+                    RaisePropertyChanged(() => PaymentType);
+                }
+            }
+        }
+        private bool _storedValue;
+        public bool StoredValue
+        {
+            get { return _storedValue; }
+            set
+            {
+                if (_storedValue != value)
+                {
+                    _storedValue = value;
+
+                    RaisePropertyChanged(() => StoredValue);
+
+                    PaymentType = ChangePaymentType();
+
+                    RaisePropertyChanged(() => PaymentType);
+                }
+            }
+        }
+        private bool _creditCard;
+        public bool CreditCard
+        {
+            get { return _creditCard; }
+            set
+            {
+                if (_creditCard != value)
+                {
+                    _creditCard = value;
+
+                    RaisePropertyChanged(() => CreditCard);
+
+                    PaymentType = ChangePaymentType();
+                    RaisePropertyChanged(() => PaymentType);
+                }
+            }
+        }
+        private string _paymentType = "";
+        public string PaymentType
+        {
+            get { return _paymentType; }
+            set
+            {
+                if (_paymentType != value)
+                {
+                    _paymentType = value;
+                    RaisePropertyChanged(() => PaymentType);
+                }
+            }
+        }
+        private string ChangePaymentType()
+        {
+            if (CashPay)
+                return "現金";
+            else if (StoredValue)
+                return "儲值金";
+            else if (CreditCard)
+                return "信用卡";
+            else
+                return "";
+        }
         private List<string> _orderItemList = new List<string>()
         {
             "洗髮",
@@ -259,8 +336,7 @@ namespace AccountManager.ViewModels
             EditStatementCommand = new RelayCommand(ExecuteEditStatementCommand);
             DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand);
             DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand);
-            BillDisplayList = new ObservableCollection<EssentialModel>();
-            BillNumber = "202208260001";
+            Initialize();
         }
         public RelayCommand AddNewBillCommand { get; }
         public RelayCommand AddNewStatementCommand { get; }
@@ -305,12 +381,14 @@ namespace AccountManager.ViewModels
                 MembershipNumber = MembershipNumber,
                 UnitPrice = UnitPrice,
                 Count = Count,
+                PaymentType = PaymentType,
                 Designer = SeletedDesigner
-            });
+            }); ;
             BillDisplayList.Clear();
 
             bill.ForEach(s => BillDisplayList.Add(s));
         }
+
         /// <summary>
         /// 刪除明細
         /// </summary>
@@ -395,5 +473,15 @@ namespace AccountManager.ViewModels
         }
 
         private ICommand _selectionChangedCommand;
+
+        private void Initialize()
+        {
+            BillDisplayList = new ObservableCollection<EssentialModel>();
+            BillNumber = "202208260001";
+            CustomerName = "陳XX";
+            MembershipNumber = "M124423";
+            Count = 1;
+            CashPay = true;
+        }
     }
 }
