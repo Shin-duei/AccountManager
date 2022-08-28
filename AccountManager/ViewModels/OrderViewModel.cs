@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -17,6 +18,10 @@ namespace AccountManager.ViewModels
         /// 顯示用列表
         /// </summary>
         public ObservableCollection<EssentialModel> BillDisplay { set; get; }
+        /// <summary>
+        /// 訂單基礎資料
+        /// </summary>
+        private Dictionary<string, BillBaseModel> _billBaseDictionary { set; get; } = new Dictionary<string, BillBaseModel>();
         /// <summary>
         /// 當前訂單
         /// </summary>
@@ -30,6 +35,39 @@ namespace AccountManager.ViewModels
         /// </summary>
         private Dictionary<string, List<EssentialModel>> _billListDictionary = new Dictionary<string, List<EssentialModel>>();
 
+        public string _currentBillNumber;
+        public string CurrentBillNumber
+        {
+            get
+            {
+                if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+                    return "";
+
+                return _currentBillDisplay.Item1;
+            }
+        }
+        public Visibility CanDisplayCurrentBillNumber
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(CurrentBillNumber))
+                    return Visibility.Hidden;
+                else
+                    return Visibility.Visible;     
+            }
+        }
+        public int DynamicRowHeight
+        {
+            get
+            {
+                if (CanDisplayCurrentBillNumber== Visibility.Hidden)
+                    return 0;
+                else
+                    return 35;
+            }
+        }
+
+
         private string _billNumber;
         public string BillNumber
         {
@@ -40,7 +78,7 @@ namespace AccountManager.ViewModels
                 {
                     _billNumber = value;
 
-                    RaisePropertyChanged(() => BillNumber                                   );
+                    RaisePropertyChanged(() => BillNumber);
                 }
             }
         }
@@ -96,17 +134,15 @@ namespace AccountManager.ViewModels
         {
             get => (uint)_billListDictionary.Count;
         }
-        private List<string> _designerList = new List<string>()
-        {
-            "Amy Chen",
-            "Cart Lin",
-        };
+        private List<string> _designerList;
         public List<string> DesignerList
         {
-            get
+            set
             {
-                return _designerList;
+                _designerList = value;
+                RaisePropertyChanged(() => DesignerList);
             }
+            get { return _designerList; }
         }
         private string _seletedDesigner;
         public string SeletedDesigner
@@ -453,41 +489,55 @@ namespace AccountManager.ViewModels
             _billSequence.Add(BillNumber);
 
             _currentBillDisplay = new Tuple<string, List<EssentialModel>>(BillNumber, addedBill);
+            _billBaseDictionary.Add(BillNumber, new BillBaseModel()
+            {
+
+                ConsumptionNumber = BillNumber,
+                ConsumptionDate = Int32.Parse(ConsumptionDate.ToString("yyyyMMdd")),
+                IsAssignDesigner = IsAssignDesigner,
+                CustomerName = CustomerName,
+                MembershipNumber = MembershipNumber,
+            });
+
 
             RefreshDataGrid(addedBill);
             RaisePropertyChanged(() => TotalBillCount);
             RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
             SelectedBill = TotalBillCount;
             RaisePropertyChanged(() => SelectedBill);
+            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
+            RaisePropertyChanged(() => CurrentBillNumber);
+            RaisePropertyChanged(() => DynamicRowHeight);
         }
         /// <summary>
         /// 增加明細
         /// </summary>
         private void ExecuteAddNewStatementCommand()
         {
-            //if (string.IsNullOrEmpty(BillNumber))
-            //    return;
-
             if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
                 return;
 
             var billNumber = _currentBillDisplay.Item1;
 
             _billListDictionary.TryGetValue(billNumber, out var bill);
+            _billBaseDictionary.TryGetValue(billNumber, out var billBase);
 
             if (bill == null)
+                return;
+
+            if (billBase == null)
                 return;
 
             var numberInBill = bill.Count;
             bill.Add(new EssentialModel()
             {
-                NumberInBill = numberInBill,
-                ConsumptionNumber = billNumber,
-                ConsumptionDate= Int32.Parse(ConsumptionDate.ToString("yyyyMMdd")),
-                IsAssignDesigner =IsAssignDesigner,
-                CustomerName = CustomerName,
-                MembershipNumber = MembershipNumber,
+                ConsumptionNumber = billBase.ConsumptionNumber,
+                ConsumptionDate = billBase.ConsumptionDate,
+                IsAssignDesigner = billBase.IsAssignDesigner,
+                CustomerName = billBase.CustomerName,
+                MembershipNumber = billBase.MembershipNumber,
 
+                NumberInBill = numberInBill,
                 ConsumptionItem = SeletedOrderItem,
                 UnitPrice = UnitPrice,
                 Count = Count,
@@ -517,10 +567,13 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteDeleteStatementCommand()
         {
+            //TODO 要從當前的來編輯 而不是直接用 BillNumber
             if (SeletedStatement == null || SeletedStatement.Count == 0)
                 return;
 
-            _billListDictionary.TryGetValue(BillNumber, out var bill);
+            var billNumber = _currentBillDisplay.Item1;
+
+            _billListDictionary.TryGetValue(billNumber, out var bill);
 
             foreach (var statement in SeletedStatement)
             {
@@ -555,19 +608,27 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteEditStatementCommand()
         {
+            //TODO 要從當前的來編輯 而不是直接用 BillNumber
             if (SeletedStatement == null || SeletedStatement.Count != 1)
                 return;
 
-            _billListDictionary.TryGetValue(BillNumber, out var bill);
+            var billNumber = _currentBillDisplay.Item1;
+            _billBaseDictionary.TryGetValue(billNumber, out var billBase);
+            _billListDictionary.TryGetValue(billNumber, out var bill);
+
+            if (billBase == null || bill == null)
+                return;
 
             bill.ForEach(s =>
             {
                 if (s.NumberInBill == SeletedStatement[0].NumberInBill)
                 {
-                    s.ConsumptionNumber = BillNumber;
+                    s.ConsumptionNumber = billBase.ConsumptionNumber;
+                    s.ConsumptionDate = billBase.ConsumptionDate;
+                    s.IsAssignDesigner = billBase.IsAssignDesigner;
+                    s.CustomerName = billBase.CustomerName;
+                    s.MembershipNumber = billBase.MembershipNumber;
                     s.ConsumptionItem = SeletedOrderItem;
-                    s.CustomerName = CustomerName;
-                    s.MembershipNumber = MembershipNumber;
                     s.UnitPrice = UnitPrice;
                     s.Count = Count;
                     s.Designer = SeletedDesigner;
@@ -595,39 +656,6 @@ namespace AccountManager.ViewModels
         /// <summary>
         /// 刪除單筆訂單
         /// </summary>
-        private void ExecuteDeleteOneBillCommand_()
-        {
-            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
-                return;
-
-            var billNumber = _currentBillDisplay.Item1;
-
-            _billListDictionary.Remove(billNumber);
-            //顯示前一筆訂單資料如果沒有就清空(還未完成)
-            var previousBillIndex = _billSequence.IndexOf(billNumber) - 1;
-            _billSequence.Remove(billNumber);
-
-            List<EssentialModel> previousBill = null;
-            if (previousBillIndex >= 0)
-            {
-                var previousBillNumber = _billSequence[previousBillIndex];
-                _billListDictionary.TryGetValue(previousBillNumber, out previousBill);
-
-                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(previousBillNumber, previousBill);
-                SelectedBill = (uint)previousBillIndex + 1;
-            }
-            else
-                _currentBillDisplay = null;
-
-
-            RefreshDataGrid(previousBill);
-
-            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
-            RaisePropertyChanged(() => TotalBillCount);
-        }
-        /// <summary>
-        /// 刪除單筆訂單
-        /// </summary>
         private void ExecuteDeleteOneBillCommand()
         {
             if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
@@ -637,6 +665,7 @@ namespace AccountManager.ViewModels
             var currentBillNumber = _currentBillDisplay.Item1;
 
             _billListDictionary.Remove(currentBillNumber);
+            _billBaseDictionary.Remove(currentBillNumber);
 
             var currentBillIndex = _billSequence.IndexOf(currentBillNumber);
             _billSequence.Remove(currentBillNumber);
@@ -664,6 +693,9 @@ namespace AccountManager.ViewModels
             RefreshDataGrid(previousBill);
             RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
             RaisePropertyChanged(() => TotalBillCount);
+            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
+            RaisePropertyChanged(() => CurrentBillNumber);
+            RaisePropertyChanged(() => DynamicRowHeight);
         }
         /// <summary>
         /// 刪除全部訂單
@@ -671,10 +703,14 @@ namespace AccountManager.ViewModels
         private void ExecuteDeleteAllBillCommand()
         {
             _billListDictionary.Clear();
+            _billBaseDictionary.Clear();
             _currentBillDisplay = null;
             _billSequence.Clear();
             BillDisplay.Clear();
             RaisePropertyChanged(() => TotalBillCount);
+            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
+            RaisePropertyChanged(() => CurrentBillNumber);
+            RaisePropertyChanged(() => DynamicRowHeight);
         }
         /// <summary>
         /// 入賬(寫到資料庫)
@@ -718,6 +754,7 @@ namespace AccountManager.ViewModels
                     SelectedBill = (uint)targetIndex + 1;
                 }
             }
+            RaisePropertyChanged(() => CurrentBillNumber);
         }
         /// <summary>
         /// 第一筆
@@ -764,12 +801,17 @@ namespace AccountManager.ViewModels
         {
             BillDisplay = new ObservableCollection<EssentialModel>();
             BillNumber = "202208260001";
-            //ConsumptionDate =Int32.Parse(DateTime.Now.ToString("yyyyMMdd"));
             ConsumptionDate = DateTime.Now;
             CustomerName = "陳XX";
             MembershipNumber = "M124423";
             Count = 1;
             CashPay = true;
+
+            DesignerList = new List<string>(){
+                "",
+                "Amy Chen",
+                "Cart Lin"};
+
             AssistantList = new List<string>(){
                                         "",
                                     "Tom Chen",

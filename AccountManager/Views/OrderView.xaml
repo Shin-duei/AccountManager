@@ -26,6 +26,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="35" />
                 <RowDefinition Height="35" />
+                <RowDefinition Height="{Binding DynamicRowHeight}" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
@@ -305,11 +306,35 @@
                     ItemsSource="{Binding AssistantList3}"
                     SelectedItem="{Binding SeletedAssistant3}" />
             </StackPanel>
-            <DataGrid
-                x:Name="dataGrid"
+            <StackPanel
                 Grid.Row="4"
                 Grid.ColumnSpan="2"
                 Margin="0,1,0,0"
+                Background="#FFF1EFEF"
+                Orientation="Horizontal">
+                <Label
+                    x:Name="label1"
+                    Margin="24,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Content="&#xF58A;"
+                    FontFamily="Segoe MDL2 Assets"
+                    Visibility="{Binding CanDisplayCurrentBillNumber}">
+                    <Label.LayoutTransform>
+                        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                    </Label.LayoutTransform>
+                </Label>
+                <TextBlock
+                    x:Name="textBlock"
+                    VerticalAlignment="Center"
+                    Text="{Binding CurrentBillNumber}"
+                    Visibility="{Binding CanDisplayCurrentBillNumber}" />
+            </StackPanel>
+            <DataGrid
+                x:Name="dataGrid"
+                Grid.Row="5"
+                Grid.ColumnSpan="2"
+                Margin="0,0,0,0"
                 AutoGenerateColumns="false"
                 Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
                 IsReadOnly="True"
@@ -329,7 +354,7 @@
                         Width="Auto"
                         Binding="{Binding ConsumptionDate}"
                         Header="消費日期" />
-                    <DataGridTextColumn
+                    <DataGridCheckBoxColumn
                         Width="Auto"
                         Binding="{Binding IsAssignDesigner}"
                         Header="指定" />
@@ -377,7 +402,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel
-                Grid.Row="5"
+                Grid.Row="6"
                 Margin="0,1,0,0"
                 Background="White"
                 Orientation="Horizontal">
@@ -454,11 +479,10 @@
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
-
                 </Button>
             </StackPanel>
             <StackPanel
-                Grid.Row="5"
+                Grid.Row="6"
                 Grid.Column="1"
                 Margin="0,1,0,0"
                 Background="White"

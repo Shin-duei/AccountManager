@@ -126,6 +126,7 @@
     <Compile Include="Common\IMessageService.cs" />
     <Compile Include="Common\IWindowService.cs" />
     <Compile Include="Common\ViewModel.cs" />
+    <Compile Include="Models\BillBaseModel.cs" />
     <Compile Include="ViewModels\OrderDataGridViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="Views\OrderView.xaml.cs">
