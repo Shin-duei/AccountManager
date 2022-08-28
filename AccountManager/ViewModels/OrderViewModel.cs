@@ -437,7 +437,7 @@ namespace AccountManager.ViewModels
 
         public int TotalCost
         {
-            get { return Cash+StorgedValue + CreditCard; }
+            get { return Cash + StorgedValue + CreditCard; }
         }
         private List<string> _orderItemList;
         public List<string> OrderItemList
@@ -897,13 +897,20 @@ namespace AccountManager.ViewModels
             if (bill != null)
                 bill.ForEach(statement => BillDisplay.Add(statement));
 
-            var cash = BillDisplay.ToList().Select(s => s).Where(s=>s.PaymentType=="現金");
-            var storgedValue = BillDisplay.ToList().Select(s => s).Where(s => s.PaymentType == "儲值金");
-            var creditCard = BillDisplay.ToList().Select(s => s).Where(s => s.PaymentType == "信用卡");
+            Cash = BillDisplay.ToList()
+                              .Where(s => s.PaymentType == "現金")
+                              .Select(s => s.TotalPrice)
+                              .Sum();
+            StorgedValue = BillDisplay.ToList()
+                              .Where(s => s.PaymentType == "儲值金")
+                              .Select(s => s.TotalPrice)
+                              .Sum();
+            CreditCard = BillDisplay.ToList()
+                              .Where(s => s.PaymentType == "信用卡")
+                              .Select(s => s.TotalPrice)
+                              .Sum();
 
-            Cash= cash.Select(s => s.TotalPrice).Sum();
-            StorgedValue=storgedValue.Select(s => s.TotalPrice).Sum();
-            CreditCard=creditCard.Select(s => s.TotalPrice).Sum();
+            RaisePropertyChanged(() => TotalCost);
         }
     }
 }

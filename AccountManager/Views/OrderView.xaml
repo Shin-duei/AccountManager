@@ -78,6 +78,8 @@
                     x:Name="textBox1"
                     Width="100"
                     Height="23"
+                    InputMethod.IsInputMethodEnabled="False"
+                    PreviewTextInput="TextBox_previewTextInput_IncludeAlphabet"
                     Text="{Binding BillNumber}"
                     TextWrapping="Wrap" />
                 <CheckBox
@@ -106,6 +108,8 @@
                     x:Name="textBox2"
                     Width="100"
                     Height="23"
+                    InputMethod.IsInputMethodEnabled="False"
+                    PreviewTextInput="TextBox_previewTextInput_IncludeAlphabet"
                     Text="{Binding MembershipNumber}"
                     TextWrapping="Wrap" />
                 <TextBlock
@@ -199,6 +203,8 @@
                     Margin="0,6"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
+                    InputMethod.IsInputMethodEnabled="False"
+                    PreviewTextInput="TextBox_PreviewTextInput"
                     Text="{Binding Count}"
                     TextWrapping="Wrap" />
                 <TextBlock
@@ -214,6 +220,8 @@
                     Margin="0,6"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
+                    InputMethod.IsInputMethodEnabled="False"
+                    PreviewTextInput="TextBox_PreviewTextInput"
                     Text="{Binding UnitPrice}"
                     TextWrapping="Wrap" />
                 <TextBlock
@@ -337,19 +345,23 @@
                     x:Name="textBlockCash"
                     Margin="100,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Cash, StringFormat=現金:{0}}" />
+                    Text="{Binding Cash, StringFormat=現金:{0:c0}}" />
                 <TextBlock
                     x:Name="textBlockStorge"
+                    Margin="10,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding StorgedValue, StringFormat=+儲值金:{0}}" />
+                    Text="{Binding StorgedValue, StringFormat=+儲值金:{0:c0}}" />
                 <TextBlock
                     x:Name="textBlockCredit"
+                    Margin="10,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding CreditCard, StringFormat=+信用卡:{0}}" />
+                    Text="{Binding CreditCard, StringFormat=+信用卡:{0:c0}}" />
                 <TextBlock
                     x:Name="textBlockTotal"
+                    Margin="10,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding TotalCost, StringFormat==合計金額:{0}}"/>
+                    Text="{Binding TotalCost, StringFormat=\=合計金額:{0:c0}}" />
+
             </StackPanel>
             <DataGrid
                 x:Name="dataGrid"

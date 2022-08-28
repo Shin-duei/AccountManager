@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,5 +30,24 @@ namespace AccountManager.Views
             var viewModel = new OrderViewModel() { ViewObject = this };
             DataContext = viewModel;
         }
+        /// <summary>
+        /// 只能輸入數字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
+        }
+        /// <summary>
+        /// 只能輸入數字和大寫英文
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_previewTextInput_IncludeAlphabet(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = new Regex("[^A-Z0-9]").IsMatch(e.Text);
+        }
+        
     }
 }
