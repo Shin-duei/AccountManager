@@ -79,10 +79,12 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextBlock.Foreground" Value="Black" />
     </Style>
     <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="0,0,0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
     <Style BasedOn="{StaticResource MaterialDesignDarkCheckBox}" TargetType="{x:Type CheckBox}">
         <Setter Property="FlowDirection" Value="RightToLeft" />

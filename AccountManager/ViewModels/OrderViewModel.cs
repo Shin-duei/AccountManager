@@ -53,14 +53,14 @@ namespace AccountManager.ViewModels
                 if (string.IsNullOrEmpty(CurrentBillNumber))
                     return Visibility.Hidden;
                 else
-                    return Visibility.Visible;     
+                    return Visibility.Visible;
             }
         }
         public int DynamicRowHeight
         {
             get
             {
-                if (CanDisplayCurrentBillNumber== Visibility.Hidden)
+                if (CanDisplayCurrentBillNumber == Visibility.Hidden)
                     return 0;
                 else
                     return 35;
@@ -395,18 +395,18 @@ namespace AccountManager.ViewModels
             else
                 return "";
         }
-        private List<string> _orderItemList = new List<string>()
-        {
-            "洗髮",
-            "剪髮",
-            "染髮",
-            "燙髮",
-            "護髮",
-            "頭皮SPA",
-            "產品購買"
-        };
+        private List<string> _orderItemList;
         public List<string> OrderItemList
         {
+            set
+            {
+                if (_orderItemList != value)
+                {
+                    _orderItemList = value;
+
+                    RaisePropertyChanged(() => OrderItemList);
+                }
+            }
             get
             {
                 return _orderItemList;
@@ -508,6 +508,7 @@ namespace AccountManager.ViewModels
             RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
+            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
         }
         /// <summary>
         /// 增加明細
@@ -696,6 +697,17 @@ namespace AccountManager.ViewModels
             RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
+            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
+        }
+        public bool CanExecuteDeleteOneBillCommand
+        {
+            get
+            {
+                if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+                    return false;
+                else
+                    return true;
+            }
         }
         /// <summary>
         /// 刪除全部訂單
@@ -707,10 +719,13 @@ namespace AccountManager.ViewModels
             _currentBillDisplay = null;
             _billSequence.Clear();
             BillDisplay.Clear();
+            SelectedBill = 0;
+            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
             RaisePropertyChanged(() => TotalBillCount);
             RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
+            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
         }
         /// <summary>
         /// 入賬(寫到資料庫)
@@ -808,17 +823,25 @@ namespace AccountManager.ViewModels
             CashPay = true;
 
             DesignerList = new List<string>(){
-                "",
-                "Amy Chen",
-                "Cart Lin"};
+                                                "",
+                                                "Amy Chen",
+                                                "Cart Lin"};
 
             AssistantList = new List<string>(){
                                         "",
                                     "Tom Chen",
                                     "Leo Liu",
                                     "Peter",
-                                    "Wang Pi",
-                                       };
+                                    "Wang Pi",};
+
+            OrderItemList = new List<string>(){
+                                        "洗髮",
+                                        "剪髮",
+                                        "染髮",
+                                        "燙髮",
+                                        "護髮",
+                                        "頭皮SPA",
+                                        "產品購買"};
         }
         /// <summary>
         /// 刷新顯示列表

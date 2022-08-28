@@ -12,13 +12,32 @@ namespace AccountManager.ViewModels
     {
         public OrderDataGridViewModel(EssentialModel essentialModel)
         {
-            ConsumptionNumber=essentialModel.ConsumptionNumber;
+            NumberInBill = essentialModel.NumberInBill;
+            ConsumptionNumber =essentialModel.ConsumptionNumber;
             ConsumptionItem=essentialModel.ConsumptionItem;
             Designer=essentialModel.Designer;
             Count=essentialModel.Count;
             MembershipNumber=essentialModel.MembershipNumber;
             CustomerName= essentialModel.CustomerName;
             UnitPrice=essentialModel.UnitPrice;
+        }
+
+        private int _numberInBill;
+        /// <summary>
+        /// 單中流水編號
+        /// </summary>
+        public int NumberInBill
+        {
+            get { return _numberInBill; }
+            set
+            {
+                if (_numberInBill != value)
+                {
+                    _numberInBill = value;
+
+                    RaisePropertyChanged(() => NumberInBill);
+                }
+            }
         }
 
         private int _consumptionDate;

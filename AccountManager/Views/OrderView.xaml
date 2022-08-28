@@ -48,7 +48,8 @@
                     VerticalAlignment="Center"
                     Command="{Binding AddNewBillCommand}"
                     Content="&#xE82E;"
-                    FontFamily="Segoe MDL2 Assets" />
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="增加訂單" />
                 <TextBlock
                     x:Name="TextBlockOrderDate"
                     Margin="10,0,0,0"
@@ -139,7 +140,8 @@
                     Command="{Binding AddNewStatementCommand}"
                     Content="&#xECC8;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteAddNewStatementCommand}" />
+                    IsEnabled="{Binding CanExecuteAddNewStatementCommand}"
+                    ToolTip="增加消費明細" />
                 <Button
                     x:Name="button4"
                     Width="40"
@@ -149,7 +151,8 @@
                     Command="{Binding EditStatementCommand}"
                     Content="&#xEB7E;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteEditStatementCommand}" />
+                    IsEnabled="{Binding CanExecuteEditStatementCommand}"
+                    ToolTip="編輯消費明細" />
                 <Button
                     x:Name="button3"
                     Width="40"
@@ -159,7 +162,8 @@
                     Command="{Binding DeleteStatementCommand}"
                     Content="&#xECC9;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteDeleteStatementCommand}" />
+                    IsEnabled="{Binding CanExecuteDeleteStatementCommand}"
+                    ToolTip="刪除消費明細" />
             </StackPanel>
             <StackPanel
                 Grid.Row="2"
@@ -329,6 +333,22 @@
                     VerticalAlignment="Center"
                     Text="{Binding CurrentBillNumber}"
                     Visibility="{Binding CanDisplayCurrentBillNumber}" />
+                <TextBlock
+                    x:Name="textBlockCash"
+                    VerticalAlignment="Center"
+                    Text="現金" />
+                <TextBlock
+                    x:Name="textBlockStorge"
+                    VerticalAlignment="Center"
+                    Text="+儲值金" />
+                <TextBlock
+                    x:Name="textBlockCredit"
+                    VerticalAlignment="Center"
+                    Text="+信用卡" />
+                <TextBlock
+                    x:Name="textBlockTotal"
+                    VerticalAlignment="Center"
+                    Text="=合計金額" />
             </StackPanel>
             <DataGrid
                 x:Name="dataGrid"
@@ -346,6 +366,10 @@
                     </ie:EventTrigger>
                 </ie:Interaction.Triggers>
                 <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding NumberInBill}"
+                        Header="編號" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding ConsumptionNumber}"
@@ -417,6 +441,8 @@
                     Command="{Binding FirstBillCommand}"
                     Content="&#xE892;"
                     FontFamily="Segoe MDL2 Assets"
+                    FontSize="12"
+                    FontWeight="Bold"
                     ToolTip="首筆" />
                 <Button
                     x:Name="buttonPrevious"
@@ -428,6 +454,7 @@
                     Command="{Binding PreviousBillCommand}"
                     Content="&#xF0B0;"
                     FontFamily="Segoe MDL2 Assets"
+                    FontSize="12"
                     ToolTip="前一筆" />
                 <TextBlock
                     x:Name="textBox"
@@ -454,6 +481,7 @@
                     Command="{Binding NextBillCommand}"
                     Content="&#xF0AF;"
                     FontFamily="Segoe MDL2 Assets"
+                    FontSize="12"
                     ToolTip="下一筆" />
                 <Button
                     x:Name="buttonLast"
@@ -464,6 +492,8 @@
                     Command="{Binding LastBillCommand}"
                     Content="&#xE893;"
                     FontFamily="Segoe MDL2 Assets"
+                    FontSize="12"
+                    FontWeight="Bold"
                     ToolTip="尾筆" />
                 <Button
                     x:Name="button"
@@ -473,7 +503,8 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Command="{Binding DeleteOneBillCommand}"
-                    ToolTip="刪除單筆">
+                    IsEnabled="{Binding CanExecuteDeleteOneBillCommand}"
+                    ToolTip="刪除單筆訂單">
                     <materialDesign:PackIcon Background="Transparent" Kind="FileRemoveOutline">
                         <materialDesign:PackIcon.LayoutTransform>
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
@@ -508,7 +539,7 @@
                     Command="{Binding DeleteAllBillCommand}"
                     Content="&#xE74D;"
                     FontFamily="Segoe MDL2 Assets"
-                    ToolTip="刪除全部" />
+                    ToolTip="刪除全部訂單" />
             </StackPanel>
         </Grid>
 
