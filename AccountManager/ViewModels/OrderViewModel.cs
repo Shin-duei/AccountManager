@@ -40,7 +40,7 @@ namespace AccountManager.ViewModels
                 {
                     _billNumber = value;
 
-                    RaisePropertyChanged(() => _billNumber);
+                    RaisePropertyChanged(() => BillNumber                                   );
                 }
             }
         }
@@ -58,7 +58,40 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private DateTime _consumptionDate;
+        /// <summary>
+        /// 消費日期
+        /// </summary>
+        public DateTime ConsumptionDate
+        {
+            get { return _consumptionDate; }
+            set
+            {
+                if (_consumptionDate != value)
+                {
+                    _consumptionDate = value;
 
+                    RaisePropertyChanged(() => ConsumptionDate);
+                }
+            }
+        }
+        private bool _isAssignDesigner;
+        /// <summary>
+        /// 指定設計師
+        /// </summary>
+        public bool IsAssignDesigner
+        {
+            get { return _isAssignDesigner; }
+            set
+            {
+                if (_isAssignDesigner != value)
+                {
+                    _isAssignDesigner = value;
+
+                    RaisePropertyChanged(() => IsAssignDesigner);
+                }
+            }
+        }
         public uint TotalBillCount
         {
             get => (uint)_billListDictionary.Count;
@@ -450,9 +483,12 @@ namespace AccountManager.ViewModels
             {
                 NumberInBill = numberInBill,
                 ConsumptionNumber = billNumber,
-                ConsumptionItem = SeletedOrderItem,
+                ConsumptionDate= Int32.Parse(ConsumptionDate.ToString("yyyyMMdd")),
+                IsAssignDesigner =IsAssignDesigner,
                 CustomerName = CustomerName,
                 MembershipNumber = MembershipNumber,
+
+                ConsumptionItem = SeletedOrderItem,
                 UnitPrice = UnitPrice,
                 Count = Count,
                 PaymentType = PaymentType,
@@ -728,6 +764,8 @@ namespace AccountManager.ViewModels
         {
             BillDisplay = new ObservableCollection<EssentialModel>();
             BillNumber = "202208260001";
+            //ConsumptionDate =Int32.Parse(DateTime.Now.ToString("yyyyMMdd"));
+            ConsumptionDate = DateTime.Now;
             CustomerName = "陳XX";
             MembershipNumber = "M124423";
             Count = 1;

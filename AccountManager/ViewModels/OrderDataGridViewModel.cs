@@ -53,6 +53,26 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+
+
+        private bool _isAssignDesigner;
+        /// <summary>
+        /// 指定設計師
+        /// </summary>
+        public bool IsAssignDesigner
+        {
+            get { return _isAssignDesigner; }
+            set
+            {
+                if (_isAssignDesigner != value)
+                {
+                    _isAssignDesigner = value;
+
+                    RaisePropertyChanged(() => IsAssignDesigner);
+                }
+            }
+        }
+
         private string _customerName;
         /// <summary>
         /// 顧客姓名

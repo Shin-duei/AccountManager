@@ -27,6 +27,9 @@ namespace AccountManager.Models
         /// 紅單單號
         /// </summary>
         public string RedBill { set; get; }
+
+        public bool IsAssignDesigner { set; get; }
+      
         /// <summary>
         /// 顧客名稱
         /// </summary>

@@ -80,16 +80,15 @@
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="18" />
     </Style>
-    <Style TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+    <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="0,0,0,0" />
     </Style>
-    <Style x:Key="{x:Type CheckBox}" TargetType="{x:Type CheckBox}">
-        <Setter Property="FontSize" Value="14" />
+    <Style BasedOn="{StaticResource MaterialDesignDarkCheckBox}" TargetType="{x:Type CheckBox}">
+        <Setter Property="FlowDirection" Value="RightToLeft" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Foreground" Value="{DynamicResource HighlightBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0,0,0,0" />
     </Style>
     <Style TargetType="{x:Type RadioButton}">
         <Setter Property="FontSize" Value="14" />
