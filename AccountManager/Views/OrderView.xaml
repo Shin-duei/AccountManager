@@ -228,7 +228,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="現金"
-                    IsChecked="{Binding CashPay}" />
+                    IsChecked="{Binding IsCashPay}" />
                 <RadioButton
                     x:Name="radioButton1"
                     Height="20"
@@ -236,7 +236,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="儲值金"
-                    IsChecked="{Binding StoredValue}" />
+                    IsChecked="{Binding IsStoredValue}" />
                 <RadioButton
                     x:Name="radioButton2"
                     Height="20"
@@ -244,7 +244,7 @@
                     VerticalAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="信用卡"
-                    IsChecked="{Binding CreditCard}" />
+                    IsChecked="{Binding IsCreditCard}" />
             </StackPanel>
             <StackPanel
                 Grid.Row="3"
@@ -335,20 +335,21 @@
                     Visibility="{Binding CanDisplayCurrentBillNumber}" />
                 <TextBlock
                     x:Name="textBlockCash"
+                    Margin="100,0,0,0"
                     VerticalAlignment="Center"
-                    Text="現金" />
+                    Text="{Binding Cash, StringFormat=現金:{0}}" />
                 <TextBlock
                     x:Name="textBlockStorge"
                     VerticalAlignment="Center"
-                    Text="+儲值金" />
+                    Text="{Binding StorgedValue, StringFormat=+儲值金:{0}}" />
                 <TextBlock
                     x:Name="textBlockCredit"
                     VerticalAlignment="Center"
-                    Text="+信用卡" />
+                    Text="{Binding CreditCard, StringFormat=+信用卡:{0}}" />
                 <TextBlock
                     x:Name="textBlockTotal"
                     VerticalAlignment="Center"
-                    Text="=合計金額" />
+                    Text="{Binding TotalCost, StringFormat==合計金額:{0}}"/>
             </StackPanel>
             <DataGrid
                 x:Name="dataGrid"

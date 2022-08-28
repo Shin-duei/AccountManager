@@ -62,9 +62,9 @@ namespace AccountManager.Models
         /// </summary>
         public int Count { set; get; }
         /// <summary>
-        /// 單價
+        /// 總額
         /// </summary>
-        public int TotalPrice { set; get; }
+        public int TotalPrice { get { return UnitPrice * Count; } }
         /// <summary>
         /// 消費別
         /// </summary>

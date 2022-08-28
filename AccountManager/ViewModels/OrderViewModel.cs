@@ -319,34 +319,34 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private bool _cashPay;
-        public bool CashPay
+        private bool _IsCashPay;
+        public bool IsCashPay
         {
-            get { return _cashPay; }
+            get { return _IsCashPay; }
             set
             {
-                if (_cashPay != value)
+                if (_IsCashPay != value)
                 {
-                    _cashPay = value;
+                    _IsCashPay = value;
 
-                    RaisePropertyChanged(() => CashPay);
+                    RaisePropertyChanged(() => IsCashPay);
 
                     PaymentType = ChangePaymentType();
                     RaisePropertyChanged(() => PaymentType);
                 }
             }
         }
-        private bool _storedValue;
-        public bool StoredValue
+        private bool _isStoredValue;
+        public bool IsStoredValue
         {
-            get { return _storedValue; }
+            get { return _isStoredValue; }
             set
             {
-                if (_storedValue != value)
+                if (_isStoredValue != value)
                 {
-                    _storedValue = value;
+                    _isStoredValue = value;
 
-                    RaisePropertyChanged(() => StoredValue);
+                    RaisePropertyChanged(() => IsStoredValue);
 
                     PaymentType = ChangePaymentType();
 
@@ -354,17 +354,17 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private bool _creditCard;
-        public bool CreditCard
+        private bool _isCreditCard;
+        public bool IsCreditCard
         {
-            get { return _creditCard; }
+            get { return _isCreditCard; }
             set
             {
-                if (_creditCard != value)
+                if (_isCreditCard != value)
                 {
-                    _creditCard = value;
+                    _isCreditCard = value;
 
-                    RaisePropertyChanged(() => CreditCard);
+                    RaisePropertyChanged(() => IsCreditCard);
 
                     PaymentType = ChangePaymentType();
                     RaisePropertyChanged(() => PaymentType);
@@ -386,14 +386,58 @@ namespace AccountManager.ViewModels
         }
         private string ChangePaymentType()
         {
-            if (CashPay)
+            if (IsCashPay)
                 return "現金";
-            else if (StoredValue)
+            else if (IsStoredValue)
                 return "儲值金";
-            else if (CreditCard)
+            else if (IsCreditCard)
                 return "信用卡";
             else
                 return "";
+        }
+        private int _cash;
+        public int Cash
+        {
+            get { return _cash; }
+            set
+            {
+                if (_cash != value)
+                {
+                    _cash = value;
+                    RaisePropertyChanged(() => Cash);
+                }
+            }
+        }
+        private int _storgedValue;
+        public int StorgedValue
+        {
+            get { return _storgedValue; }
+            set
+            {
+                if (_storgedValue != value)
+                {
+                    _storgedValue = value;
+                    RaisePropertyChanged(() => StorgedValue);
+                }
+            }
+        }
+        private int _creditCard;
+        public int CreditCard
+        {
+            get { return _creditCard; }
+            set
+            {
+                if (_creditCard != value)
+                {
+                    _creditCard = value;
+                    RaisePropertyChanged(() => CreditCard);
+                }
+            }
+        }
+
+        public int TotalCost
+        {
+            get { return Cash+StorgedValue + CreditCard; }
         }
         private List<string> _orderItemList;
         public List<string> OrderItemList
@@ -820,7 +864,7 @@ namespace AccountManager.ViewModels
             CustomerName = "陳XX";
             MembershipNumber = "M124423";
             Count = 1;
-            CashPay = true;
+            IsCashPay = true;
 
             DesignerList = new List<string>(){
                                                 "",
@@ -852,6 +896,14 @@ namespace AccountManager.ViewModels
 
             if (bill != null)
                 bill.ForEach(statement => BillDisplay.Add(statement));
+
+            var cash = BillDisplay.ToList().Select(s => s).Where(s=>s.PaymentType=="現金");
+            var storgedValue = BillDisplay.ToList().Select(s => s).Where(s => s.PaymentType == "儲值金");
+            var creditCard = BillDisplay.ToList().Select(s => s).Where(s => s.PaymentType == "信用卡");
+
+            Cash= cash.Select(s => s.TotalPrice).Sum();
+            StorgedValue=storgedValue.Select(s => s.TotalPrice).Sum();
+            CreditCard=creditCard.Select(s => s.TotalPrice).Sum();
         }
     }
 }
