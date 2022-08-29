@@ -510,9 +510,7 @@ namespace AccountManager.ViewModels
 
         public RelayCommand PreviousBillCommand { get; }
         public RelayCommand NextBillCommand { get; }
-
         public RelayCommand FirstBillCommand { get; }
-
         public RelayCommand LastBillCommand { get; }
 
 
@@ -553,6 +551,7 @@ namespace AccountManager.ViewModels
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
             RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
+            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
         }
         /// <summary>
         /// 增加明細
@@ -742,6 +741,7 @@ namespace AccountManager.ViewModels
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
             RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
+            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
         }
         public bool CanExecuteDeleteOneBillCommand
         {
@@ -770,6 +770,17 @@ namespace AccountManager.ViewModels
             RaisePropertyChanged(() => CurrentBillNumber);
             RaisePropertyChanged(() => DynamicRowHeight);
             RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
+            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
+        }
+        public bool CanExecuteDeleteAllBillCommand
+        {
+            get
+            {
+                if (_billListDictionary == null ||_billListDictionary.Count==0)
+                    return false;
+                else
+                    return true;
+            }
         }
         /// <summary>
         /// 入賬(寫到資料庫)

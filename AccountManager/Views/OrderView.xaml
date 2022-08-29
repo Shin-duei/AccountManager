@@ -320,7 +320,6 @@
             </StackPanel>
             <StackPanel
                 Grid.Row="4"
-                Grid.ColumnSpan="2"
                 Margin="0,1,0,0"
                 Background="#FFF1EFEF"
                 Orientation="Horizontal">
@@ -331,6 +330,7 @@
                     VerticalAlignment="Center"
                     Content="&#xF58A;"
                     FontFamily="Segoe MDL2 Assets"
+                    ToolTip="消費單號"
                     Visibility="{Binding CanDisplayCurrentBillNumber}">
                     <Label.LayoutTransform>
                         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
@@ -341,9 +341,16 @@
                     VerticalAlignment="Center"
                     Text="{Binding CurrentBillNumber}"
                     Visibility="{Binding CanDisplayCurrentBillNumber}" />
+            </StackPanel>
+            <StackPanel
+                Grid.Row="4"
+                Grid.Column="1"
+                Margin="-100,1,0,0"
+                Background="#FFF1EFEF"
+                Orientation="Horizontal">
                 <TextBlock
                     x:Name="textBlockCash"
-                    Margin="100,0,0,0"
+                    Margin="0,0,0,0"
                     VerticalAlignment="Center"
                     Text="{Binding Cash, StringFormat=現金:{0:c0}}" />
                 <TextBlock
@@ -550,6 +557,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Command="{Binding DeleteAllBillCommand}"
+                    IsEnabled="{Binding CanExecuteDeleteAllBillCommand}"
                     Content="&#xE74D;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="刪除全部訂單" />
