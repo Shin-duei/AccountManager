@@ -22,7 +22,6 @@ namespace AccountManager.Models
         [AutoIncrement]
         public int PrimaryKey { set; get; }
 
-
         /// <summary>
         /// 員工姓名
         /// </summary>
