@@ -28,6 +28,10 @@ namespace AccountManager.Models
         /// 會員編號
         /// </summary>
         public string MembershipNumber { set; get; }
+        /// <summary>
+        /// 備註
+        /// </summary>
+        public string Remark { set; get; }
 
     }
 }

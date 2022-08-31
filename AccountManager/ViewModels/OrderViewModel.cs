@@ -611,7 +611,6 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteDeleteStatementCommand()
         {
-            //TODO 要從當前的來編輯 而不是直接用 BillNumber
             if (SeletedStatement == null || SeletedStatement.Count == 0)
                 return;
 
@@ -652,7 +651,6 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteEditStatementCommand()
         {
-            //TODO 要從當前的來編輯 而不是直接用 BillNumber
             if (SeletedStatement == null || SeletedStatement.Count != 1)
                 return;
 
@@ -787,7 +785,13 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteInsertAllBillCommand()
         {
-
+            //TODO 要給提示說:入賬前確認
+            SQLiteHelper sqliteHelper = new SQLiteHelper();
+            foreach(var bill in _billListDictionary)
+            {      
+                bill.Value.ForEach(s=> sqliteHelper.Add(s));
+            }
+            
         }
         /// <summary>
         /// 翻頁(0最前 1前 2後 3最後)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,12 +9,15 @@ using System.Threading.Tasks;
 
 namespace AccountManager.Models
 {
+    [Table("BillDetails")]//表單名稱
     public class EssentialModel
     {
         /// <summary>
         /// 主鍵
         /// </summary>
         [DataMember(Name = "主鍵")]
+        [PrimaryKey]
+        [AutoIncrement]
         public int PrimaryKey { set; get; }
         /// <summary>
         /// 消費日期
@@ -81,6 +85,10 @@ namespace AccountManager.Models
         /// 助理3
         /// </summary>
         public string Assistant3 { set; get; }
+        /// <summary>
+        /// 備註
+        /// </summary>
+        public string Remark { set; get; }
         /// <summary>
         /// 登錄日期時間
         /// </summary>
