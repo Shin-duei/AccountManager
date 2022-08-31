@@ -5,9 +5,11 @@ using System.Runtime.Serialization;
 
 namespace AccountManager.Models
 {
+
     /// <summary>
     /// 會員資料
     /// </summary>
+    [Table("Customer")]//表單名稱
     public class CustomerModel
     {
         /// <summary>

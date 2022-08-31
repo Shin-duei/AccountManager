@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AccountManager.Models
-{
-    /// <summary>
-    /// 員工資料
-    /// </summary>
-    [Table("Staff")]//表單名稱
-    public class StaffModel
+{    
+    
+     /// <summary>
+     /// 儲值紀錄
+     /// </summary>
+    [Table("StorgeValue")]//表單名稱
+    public class StorgeValueModel
     {
         /// <summary>
         /// 主鍵
@@ -21,27 +22,25 @@ namespace AccountManager.Models
         [PrimaryKey]
         [AutoIncrement]
         public int PrimaryKey { set; get; }
-
-
         /// <summary>
-        /// 員工姓名
+        /// 日期
         /// </summary>
-        public string Name { set; get; }
+        public int Date { set; get; }
         /// <summary>
-        /// 別名
+        /// 出入金額
         /// </summary>
-        public string Alias { set; get; }
+        public int ImportExport { set; get; }
+        /// <summary>
+        /// 會員編號
+        /// </summary>
+        public string CustomerID { set; get; }
         /// <summary>
         /// 員工編號
         /// </summary>
-        public uint ID { set; get; }
+        public int StaffID { set; get; }
         /// <summary>
-        /// 系統登入密碼
+        /// 操作時間
         /// </summary>
-        public string Password { set; get; }
-        /// <summary>
-        /// 職稱
-        /// </summary>
-        public string Position { set; get; }
+        public int WorkDataTime { set; get; }
     }
 }
