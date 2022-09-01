@@ -1,25 +1,21 @@
-﻿using AccountManager.Common;
+﻿
 using AccountManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AccountManager.ViewModels
 {
-    public class OrderDataGridViewModel : ViewModel
+    public class OrderDataGridViewModel : ObservableRecipient
     {
         public OrderDataGridViewModel(EssentialModel essentialModel)
         {
             NumberInBill = essentialModel.NumberInBill;
-            ConsumptionNumber =essentialModel.ConsumptionNumber;
-            ConsumptionItem=essentialModel.ConsumptionItem;
-            Designer=essentialModel.Designer;
-            Count=essentialModel.Count;
-            MembershipNumber=essentialModel.MembershipNumber;
-            CustomerName= essentialModel.CustomerName;
-            UnitPrice=essentialModel.UnitPrice;
+            ConsumptionNumber = essentialModel.ConsumptionNumber;
+            ConsumptionItem = essentialModel.ConsumptionItem;
+            Designer = essentialModel.Designer;
+            Count = essentialModel.Count;
+            MembershipNumber = essentialModel.MembershipNumber;
+            CustomerName = essentialModel.CustomerName;
+            UnitPrice = essentialModel.UnitPrice;
         }
 
         private int _numberInBill;
@@ -34,8 +30,7 @@ namespace AccountManager.ViewModels
                 if (_numberInBill != value)
                 {
                     _numberInBill = value;
-
-                    RaisePropertyChanged(() => NumberInBill);
+                    OnPropertyChanged(nameof(NumberInBill));
                 }
             }
         }
@@ -50,7 +45,7 @@ namespace AccountManager.ViewModels
                 {
                     _consumptionDate = value;
 
-                    RaisePropertyChanged(() => ConsumptionDate);
+                    OnPropertyChanged(nameof(ConsumptionDate));
                 }
             }
         }
@@ -68,7 +63,7 @@ namespace AccountManager.ViewModels
                 {
                     _consumptionNumber = value;
 
-                    RaisePropertyChanged(() => ConsumptionNumber);
+                    OnPropertyChanged(nameof(ConsumptionNumber));
                 }
             }
         }
@@ -87,7 +82,7 @@ namespace AccountManager.ViewModels
                 {
                     _isAssignDesigner = value;
 
-                    RaisePropertyChanged(() => IsAssignDesigner);
+                    OnPropertyChanged(nameof(IsAssignDesigner));
                 }
             }
         }
@@ -105,7 +100,7 @@ namespace AccountManager.ViewModels
                 {
                     _customerName = value;
 
-                    RaisePropertyChanged(() => CustomerName);
+                    OnPropertyChanged(nameof(CustomerName));
                 }
             }
         }
@@ -122,7 +117,7 @@ namespace AccountManager.ViewModels
                 {
                     _membershipNumber = value;
 
-                    RaisePropertyChanged(() => MembershipNumber);
+                    OnPropertyChanged(nameof(MembershipNumber));
                 }
             }
         }
@@ -139,7 +134,7 @@ namespace AccountManager.ViewModels
                 {
                     _consumptionItem = value;
 
-                    RaisePropertyChanged(() => ConsumptionItem);
+                    OnPropertyChanged(nameof(ConsumptionItem));
                 }
             }
         }
@@ -157,7 +152,7 @@ namespace AccountManager.ViewModels
                 {
                     _designer = value;
 
-                    RaisePropertyChanged(() => Designer);
+                    OnPropertyChanged(nameof(Designer));
                 }
             }
         }
@@ -174,7 +169,7 @@ namespace AccountManager.ViewModels
                 {
                     _unitPrice = value;
 
-                    RaisePropertyChanged(() => UnitPrice);
+                    OnPropertyChanged(nameof(UnitPrice));
                 }
             }
         }
@@ -191,7 +186,7 @@ namespace AccountManager.ViewModels
                 {
                     _count = value;
 
-                    RaisePropertyChanged(() => Count);
+                    OnPropertyChanged(nameof(Count));
                 }
             }
         }

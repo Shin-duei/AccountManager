@@ -1,5 +1,5 @@
-﻿using AccountManager.Common;
-using AccountManager.Models;
+﻿using AccountManager.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections;
@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace AccountManager.ViewModels
 {
-    public class OrderViewModel : ViewModel
+    public class OrderViewModel : ObservableRecipient
     {
         /// <summary>
         /// 顯示用列表
@@ -25,15 +25,33 @@ namespace AccountManager.ViewModels
         /// <summary>
         /// 當前訂單
         /// </summary>
-        private Tuple<string, List<EssentialModel>> _currentBillDisplay { set; get; }
+        private Tuple<string, List<EssentialModel>> _currentBillDisplay;
+
+        public Tuple<string, List<EssentialModel>> CurrentBillDisplay
+        {
+            get { return _currentBillDisplay; }
+            set
+            {
+                SetProperty(ref _currentBillDisplay, value);
+                AddNewStatementCommand.NotifyCanExecuteChanged();
+            }
+        }
         /// <summary>
         /// 紀錄訂單順序
         /// </summary>
         private List<string> _billSequence { set; get; } = new List<string>();
+
+        private Dictionary<string, List<EssentialModel>> _billListDictionary = new Dictionary<string, List<EssentialModel>>();
         /// <summary>
         /// 所有訂單
         /// </summary>
-        private Dictionary<string, List<EssentialModel>> _billListDictionary = new Dictionary<string, List<EssentialModel>>();
+        public Dictionary<string, List<EssentialModel>> BillListDictionary
+        {
+            get
+            {
+                return _billListDictionary;
+            }
+        }
 
         public string _currentBillNumber;
         public string CurrentBillNumber
@@ -46,7 +64,7 @@ namespace AccountManager.ViewModels
                 return _currentBillDisplay.Item1;
             }
         }
-        public Visibility CanDisplayCurrentBillNumber
+        public Visibility VisibleDisplayCurrentBillNumber
         {
             get
             {
@@ -60,7 +78,7 @@ namespace AccountManager.ViewModels
         {
             get
             {
-                if (CanDisplayCurrentBillNumber == Visibility.Hidden)
+                if (VisibleDisplayCurrentBillNumber == Visibility.Hidden)
                     return 0;
                 else
                     return 35;
@@ -78,7 +96,7 @@ namespace AccountManager.ViewModels
                 {
                     _billNumber = value;
 
-                    RaisePropertyChanged(() => BillNumber);
+                    OnPropertyChanged(nameof(BillNumber));
                 }
             }
         }
@@ -92,7 +110,7 @@ namespace AccountManager.ViewModels
                 {
                     _selectedBill = value;
 
-                    RaisePropertyChanged(() => SelectedBill);
+                    OnPropertyChanged(nameof(SelectedBill));
                 }
             }
         }
@@ -109,7 +127,7 @@ namespace AccountManager.ViewModels
                 {
                     _consumptionDate = value;
 
-                    RaisePropertyChanged(() => ConsumptionDate);
+                    OnPropertyChanged(nameof(ConsumptionDate));
                 }
             }
         }
@@ -126,13 +144,13 @@ namespace AccountManager.ViewModels
                 {
                     _isAssignDesigner = value;
 
-                    RaisePropertyChanged(() => IsAssignDesigner);
+                    OnPropertyChanged(nameof(IsAssignDesigner));
                 }
             }
         }
         public uint TotalBillCount
         {
-            get => (uint)_billListDictionary.Count;
+            get => (uint)BillListDictionary.Count;
         }
         private List<string> _designerList;
         public List<string> DesignerList
@@ -140,7 +158,7 @@ namespace AccountManager.ViewModels
             set
             {
                 _designerList = value;
-                RaisePropertyChanged(() => DesignerList);
+                OnPropertyChanged(nameof(DesignerList));
             }
             get { return _designerList; }
         }
@@ -154,7 +172,7 @@ namespace AccountManager.ViewModels
                 {
                     _seletedDesigner = value;
 
-                    RaisePropertyChanged(() => SeletedDesigner);
+                    OnPropertyChanged(nameof(SeletedDesigner));
                 }
             }
         }
@@ -168,7 +186,7 @@ namespace AccountManager.ViewModels
             set
             {
                 _assistantList = value;
-                RaisePropertyChanged(() => AssistantList);
+                OnPropertyChanged(nameof(AssistantList));
             }
         }
         private List<string> _assistantList2;
@@ -181,7 +199,7 @@ namespace AccountManager.ViewModels
             set
             {
                 _assistantList2 = value;
-                RaisePropertyChanged(() => AssistantList2);
+                OnPropertyChanged(nameof(AssistantList2));
             }
         }
         private List<string> _assistantList3;
@@ -194,7 +212,7 @@ namespace AccountManager.ViewModels
             set
             {
                 _assistantList3 = value;
-                RaisePropertyChanged(() => AssistantList3);
+                OnPropertyChanged(nameof(AssistantList3));
             }
         }
         private string _seletedAssistant1;
@@ -207,8 +225,8 @@ namespace AccountManager.ViewModels
                 {
                     _seletedAssistant1 = value;
 
-                    RaisePropertyChanged(() => SeletedAssistant1);
-                    RaisePropertyChanged(() => CanSelectAssistant2);
+                    OnPropertyChanged(nameof(SeletedAssistant1));
+                    OnPropertyChanged(nameof(CanSelectAssistant2));
                     AssistantList2 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1).ToList();
                 }
             }
@@ -233,8 +251,8 @@ namespace AccountManager.ViewModels
                 {
                     _seletedAssistant2 = value;
 
-                    RaisePropertyChanged(() => SeletedAssistant2);
-                    RaisePropertyChanged(() => CanSelectAssistant3);
+                    OnPropertyChanged(nameof(SeletedAssistant2));
+                    OnPropertyChanged(nameof(CanSelectAssistant3));
                     AssistantList3 = AssistantList.Select(s => s).Where(s => s != SeletedAssistant1 && s != SeletedAssistant2).ToList();
                 }
             }
@@ -259,7 +277,7 @@ namespace AccountManager.ViewModels
                 {
                     _seletedAssistant3 = value;
 
-                    RaisePropertyChanged(() => SeletedAssistant3);
+                    OnPropertyChanged(nameof(SeletedAssistant3));
                 }
             }
         }
@@ -273,7 +291,7 @@ namespace AccountManager.ViewModels
                 {
                     _customerName = value;
 
-                    RaisePropertyChanged(() => CustomerName);
+                    OnPropertyChanged(nameof(CustomerName));
                 }
             }
         }
@@ -287,7 +305,7 @@ namespace AccountManager.ViewModels
                 {
                     _membershipNumber = value;
 
-                    RaisePropertyChanged(() => MembershipNumber);
+                    OnPropertyChanged(nameof(MembershipNumber));
                 }
             }
         }
@@ -301,7 +319,7 @@ namespace AccountManager.ViewModels
                 {
                     _unitPrice = value;
 
-                    RaisePropertyChanged(() => UnitPrice);
+                    OnPropertyChanged(nameof(UnitPrice));
                 }
             }
         }
@@ -315,7 +333,7 @@ namespace AccountManager.ViewModels
                 {
                     _count = value;
 
-                    RaisePropertyChanged(() => Count);
+                    OnPropertyChanged(nameof(Count));
                 }
             }
         }
@@ -329,10 +347,10 @@ namespace AccountManager.ViewModels
                 {
                     _IsCashPay = value;
 
-                    RaisePropertyChanged(() => IsCashPay);
+                    OnPropertyChanged(nameof(IsCashPay));
 
                     PaymentType = ChangePaymentType();
-                    RaisePropertyChanged(() => PaymentType);
+                    OnPropertyChanged(nameof(PaymentType));
                 }
             }
         }
@@ -346,11 +364,11 @@ namespace AccountManager.ViewModels
                 {
                     _isStoredValue = value;
 
-                    RaisePropertyChanged(() => IsStoredValue);
+                    OnPropertyChanged(nameof(IsStoredValue));
 
                     PaymentType = ChangePaymentType();
 
-                    RaisePropertyChanged(() => PaymentType);
+                    OnPropertyChanged(nameof(PaymentType));
                 }
             }
         }
@@ -364,10 +382,10 @@ namespace AccountManager.ViewModels
                 {
                     _isCreditCard = value;
 
-                    RaisePropertyChanged(() => IsCreditCard);
+                    OnPropertyChanged(nameof(IsCreditCard));
 
                     PaymentType = ChangePaymentType();
-                    RaisePropertyChanged(() => PaymentType);
+                    OnPropertyChanged(nameof(PaymentType));
                 }
             }
         }
@@ -380,7 +398,7 @@ namespace AccountManager.ViewModels
                 if (_paymentType != value)
                 {
                     _paymentType = value;
-                    RaisePropertyChanged(() => PaymentType);
+                    OnPropertyChanged(nameof(PaymentType));
                 }
             }
         }
@@ -404,7 +422,7 @@ namespace AccountManager.ViewModels
                 if (_cash != value)
                 {
                     _cash = value;
-                    RaisePropertyChanged(() => Cash);
+                    OnPropertyChanged(nameof(Cash));
                 }
             }
         }
@@ -417,7 +435,7 @@ namespace AccountManager.ViewModels
                 if (_storgedValue != value)
                 {
                     _storgedValue = value;
-                    RaisePropertyChanged(() => StorgedValue);
+                    OnPropertyChanged(nameof(StorgedValue));
                 }
             }
         }
@@ -430,7 +448,7 @@ namespace AccountManager.ViewModels
                 if (_creditCard != value)
                 {
                     _creditCard = value;
-                    RaisePropertyChanged(() => CreditCard);
+                    OnPropertyChanged(nameof(CreditCard));
                 }
             }
         }
@@ -448,7 +466,7 @@ namespace AccountManager.ViewModels
                 {
                     _orderItemList = value;
 
-                    RaisePropertyChanged(() => OrderItemList);
+                    OnPropertyChanged(nameof(OrderItemList));
                 }
             }
             get
@@ -466,7 +484,7 @@ namespace AccountManager.ViewModels
                 {
                     _seletedOrderItem = value;
 
-                    RaisePropertyChanged(() => SeletedOrderItem);
+                    OnPropertyChanged(nameof(SeletedOrderItem));
                 }
             }
         }
@@ -480,18 +498,18 @@ namespace AccountManager.ViewModels
                 {
                     _seletedStatement = value;
 
-                    RaisePropertyChanged(() => SeletedStatement);
+                    OnPropertyChanged(nameof(SeletedStatement));
                 }
             }
         }
         public OrderViewModel()
         {
             AddNewBillCommand = new RelayCommand(ExecuteAddNewBillCommand);
-            AddNewStatementCommand = new RelayCommand(ExecuteAddNewStatementCommand);
-            DeleteStatementCommand = new RelayCommand(ExecuteDeleteStatementCommand);
-            EditStatementCommand = new RelayCommand(ExecuteEditStatementCommand);
-            DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand);
-            DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand);
+            AddNewStatementCommand = new RelayCommand(ExecuteAddNewStatementCommand, CanExecuteAddNewStatementCommand);
+            EditStatementCommand = new RelayCommand(ExecuteEditStatementCommand, CanExecuteEditStatementCommand);
+            DeleteStatementCommand = new RelayCommand(ExecuteDeleteStatementCommand, CanExecuteDeleteStatementCommand);
+            DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand, CanExecuteDeleteOneBillCommand);
+            DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand, CanExecuteDeleteAllBillCommand);
             InsertAllBillCommand = new RelayCommand(ExecuteInsertAllBillCommand);
 
             PreviousBillCommand = new RelayCommand(ExecutePreviousBillCommand);
@@ -506,7 +524,7 @@ namespace AccountManager.ViewModels
         public RelayCommand EditStatementCommand { get; }
         public RelayCommand DeleteOneBillCommand { get; }
         public RelayCommand DeleteAllBillCommand { get; }
-        public RelayCommand InsertAllBillCommand { get; }
+        public RelayCommand InsertAllBillCommand { get; private set; }
 
         public RelayCommand PreviousBillCommand { get; }
         public RelayCommand NextBillCommand { get; }
@@ -522,15 +540,15 @@ namespace AccountManager.ViewModels
             if (string.IsNullOrWhiteSpace(BillNumber))//沒有訂單號
                 return;
 
-            if (_billListDictionary.ContainsKey(BillNumber))//訂單重複 應該要跳提示
+            if (BillListDictionary.ContainsKey(BillNumber))//訂單重複 應該要跳提示
                 return;
 
             var addedBill = new List<EssentialModel>();
 
-            _billListDictionary.Add(BillNumber, addedBill);
+            BillListDictionary.Add(BillNumber, addedBill);
             _billSequence.Add(BillNumber);
 
-            _currentBillDisplay = new Tuple<string, List<EssentialModel>>(BillNumber, addedBill);
+            CurrentBillDisplay = new Tuple<string, List<EssentialModel>>(BillNumber, addedBill);
             _billBaseDictionary.Add(BillNumber, new BillBaseModel()
             {
 
@@ -541,17 +559,16 @@ namespace AccountManager.ViewModels
                 MembershipNumber = MembershipNumber,
             });
 
-
             RefreshDataGrid(addedBill);
-            RaisePropertyChanged(() => TotalBillCount);
-            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
+            OnPropertyChanged(nameof(TotalBillCount));
+
+            DeleteAllBillCommand.NotifyCanExecuteChanged();
+            DeleteOneBillCommand.NotifyCanExecuteChanged();
             SelectedBill = TotalBillCount;
-            RaisePropertyChanged(() => SelectedBill);
-            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
-            RaisePropertyChanged(() => CurrentBillNumber);
-            RaisePropertyChanged(() => DynamicRowHeight);
-            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
-            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
+
+            OnPropertyChanged(nameof(VisibleDisplayCurrentBillNumber));
+            OnPropertyChanged(nameof(CurrentBillNumber));
+            OnPropertyChanged(nameof(DynamicRowHeight));
         }
         /// <summary>
         /// 增加明細
@@ -595,15 +612,12 @@ namespace AccountManager.ViewModels
 
             RefreshDataGrid(bill);
         }
-        public bool CanExecuteAddNewStatementCommand
+        public bool CanExecuteAddNewStatementCommand()
         {
-            get
-            {
-                if (_currentBillDisplay == null)
-                    return false;
-                else
-                    return true;
-            }
+            if (CurrentBillDisplay == null)
+                return false;
+            else
+                return true;
         }
 
         /// <summary>
@@ -636,15 +650,13 @@ namespace AccountManager.ViewModels
             }
             RefreshDataGrid(bill);
         }
-        public bool CanExecuteDeleteStatementCommand
+        public bool CanExecuteDeleteStatementCommand()
         {
-            get
-            {
-                if (SeletedStatement == null || SeletedStatement.Count == 0)
-                    return false;
-                else
-                    return true;
-            }
+
+            if (SeletedStatement == null || SeletedStatement.Count == 0)
+                return false;
+            else
+                return true;
         }
         /// <summary>
         /// 編輯明細
@@ -681,30 +693,26 @@ namespace AccountManager.ViewModels
                     s.Assistant3 = SeletedAssistant3;
                 }
             });
-
             RefreshDataGrid(bill);
         }
-
-        public bool CanExecuteEditStatementCommand
+        public bool CanExecuteEditStatementCommand()
         {
-            get
-            {
-                if (SeletedStatement == null || SeletedStatement.Count != 1)
-                    return false;
-                else
-                    return true;
-            }
+
+            if (SeletedStatement == null || SeletedStatement.Count != 1)
+                return false;
+            else
+                return true;
         }
         /// <summary>
         /// 刪除單筆訂單
         /// </summary>
         private void ExecuteDeleteOneBillCommand()
         {
-            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+            if (CurrentBillDisplay == null || CurrentBillDisplay.Item1 == null)
                 return;
 
             List<EssentialModel> previousBill = null;
-            var currentBillNumber = _currentBillDisplay.Item1;
+            var currentBillNumber = CurrentBillDisplay.Item1;
 
             _billListDictionary.Remove(currentBillNumber);
             _billBaseDictionary.Remove(currentBillNumber);
@@ -714,71 +722,72 @@ namespace AccountManager.ViewModels
 
             if (currentBillIndex == 0 && _billSequence.Count == 0)//刪除第一筆後完全沒訂單
             {
-                _currentBillDisplay = null;
+                CurrentBillDisplay = null;
                 SelectedBill = 0;
             }
             else if (currentBillIndex >= 0 && _billSequence.Count != currentBillIndex)//刪除當前訂單 顯示後一筆訂單
             {
                 var nextBillNumber = _billSequence[currentBillIndex];
                 _billListDictionary.TryGetValue(nextBillNumber, out previousBill);
-                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(nextBillNumber, previousBill);
+                CurrentBillDisplay = new Tuple<string, List<EssentialModel>>(nextBillNumber, previousBill);
                 SelectedBill = (uint)currentBillIndex + 1;
             }
             else if (currentBillIndex == _billSequence.Count)//刪除當前訂單(末筆) 因為後面沒訂單 所以顯示前一筆訂單
             {
                 var previousBillNumber = _billSequence[currentBillIndex - 1];
                 _billListDictionary.TryGetValue(previousBillNumber, out previousBill);
-                _currentBillDisplay = new Tuple<string, List<EssentialModel>>(previousBillNumber, previousBill);
+                CurrentBillDisplay = new Tuple<string, List<EssentialModel>>(previousBillNumber, previousBill);
                 SelectedBill = (uint)currentBillIndex;
             }
 
             RefreshDataGrid(previousBill);
-            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
-            RaisePropertyChanged(() => TotalBillCount);
-            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
-            RaisePropertyChanged(() => CurrentBillNumber);
-            RaisePropertyChanged(() => DynamicRowHeight);
-            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
-            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
+            OnPropertyChanged(nameof(TotalBillCount));
+            OnPropertyChanged(nameof(VisibleDisplayCurrentBillNumber));
+            OnPropertyChanged(nameof(CurrentBillNumber));
+            OnPropertyChanged(nameof(DynamicRowHeight));
+
+            DeleteAllBillCommand.NotifyCanExecuteChanged();
+            AddNewStatementCommand.NotifyCanExecuteChanged();
+            DeleteOneBillCommand.NotifyCanExecuteChanged();
+
         }
-        public bool CanExecuteDeleteOneBillCommand
+        public bool CanExecuteDeleteOneBillCommand()
         {
-            get
-            {
-                if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
-                    return false;
-                else
-                    return true;
-            }
+
+            if (_currentBillDisplay == null || _currentBillDisplay.Item1 == null)
+                return false;
+            else
+                return true;
         }
         /// <summary>
         /// 刪除全部訂單
         /// </summary>
         private void ExecuteDeleteAllBillCommand()
         {
-            _billListDictionary.Clear();
+            BillListDictionary.Clear();
             _billBaseDictionary.Clear();
             _currentBillDisplay = null;
             _billSequence.Clear();
             BillDisplay.Clear();
             SelectedBill = 0;
-            RaisePropertyChanged(() => CanExecuteAddNewStatementCommand);
-            RaisePropertyChanged(() => TotalBillCount);
-            RaisePropertyChanged(() => CanDisplayCurrentBillNumber);
-            RaisePropertyChanged(() => CurrentBillNumber);
-            RaisePropertyChanged(() => DynamicRowHeight);
-            RaisePropertyChanged(() => CanExecuteDeleteOneBillCommand);
-            RaisePropertyChanged(() => CanExecuteDeleteAllBillCommand);
+
+            OnPropertyChanged(nameof(TotalBillCount));
+            OnPropertyChanged(nameof(VisibleDisplayCurrentBillNumber));
+            OnPropertyChanged(nameof(CurrentBillNumber));
+            OnPropertyChanged(nameof(DynamicRowHeight));
+
+            DeleteAllBillCommand.NotifyCanExecuteChanged();
+            DeleteOneBillCommand.NotifyCanExecuteChanged();
+            AddNewStatementCommand.NotifyCanExecuteChanged();
         }
-        public bool CanExecuteDeleteAllBillCommand
+        public bool CanExecuteDeleteAllBillCommand()
         {
-            get
-            {
-                if (_billListDictionary == null ||_billListDictionary.Count==0)
-                    return false;
-                else
-                    return true;
-            }
+
+            if (BillListDictionary == null || BillListDictionary.Count == 0)
+                return false;
+            else
+                return true;
+
         }
         /// <summary>
         /// 入賬(寫到資料庫)
@@ -787,11 +796,22 @@ namespace AccountManager.ViewModels
         {
             //TODO 要給提示說:入賬前確認
             SQLiteHelper sqliteHelper = new SQLiteHelper();
-            foreach(var bill in _billListDictionary)
-            {      
-                bill.Value.ForEach(s=> sqliteHelper.Add(s));
+
+            foreach (var bill in _billListDictionary)
+            {
+                bill.Value.ForEach(s => sqliteHelper.Add(s));
             }
-            
+
+        }
+        public bool CanExecuteInsertAllBillCommand
+        {
+            get
+            {
+                if (_billListDictionary == null || _billListDictionary.Count == 0)
+                    return false;
+                else
+                    return true;
+            }
         }
         /// <summary>
         /// 翻頁(0最前 1前 2後 3最後)
@@ -828,7 +848,7 @@ namespace AccountManager.ViewModels
                     SelectedBill = (uint)targetIndex + 1;
                 }
             }
-            RaisePropertyChanged(() => CurrentBillNumber);
+            OnPropertyChanged(nameof(CurrentBillNumber));
         }
         /// <summary>
         /// 第一筆
@@ -865,8 +885,8 @@ namespace AccountManager.ViewModels
         private void OnChanged(IList dataset)
         {
             SeletedStatement = dataset.OfType<EssentialModel>().ToList();
-            RaisePropertyChanged(() => CanExecuteEditStatementCommand);
-            RaisePropertyChanged(() => CanExecuteDeleteStatementCommand);
+            EditStatementCommand.NotifyCanExecuteChanged();
+            DeleteStatementCommand.NotifyCanExecuteChanged();
         }
 
         private ICommand _selectionChangedCommand;
@@ -925,7 +945,7 @@ namespace AccountManager.ViewModels
                               .Select(s => s.TotalPrice)
                               .Sum();
 
-            RaisePropertyChanged(() => TotalCost);
+            OnPropertyChanged(nameof(TotalCost));
         }
     }
 }

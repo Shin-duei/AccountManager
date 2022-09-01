@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:AccountManager.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -144,7 +144,6 @@
                     Command="{Binding AddNewStatementCommand}"
                     Content="&#xECC8;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteAddNewStatementCommand}"
                     ToolTip="增加消費明細" />
                 <Button
                     x:Name="button4"
@@ -155,7 +154,6 @@
                     Command="{Binding EditStatementCommand}"
                     Content="&#xEB7E;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteEditStatementCommand}"
                     ToolTip="編輯消費明細" />
                 <Button
                     x:Name="button3"
@@ -166,7 +164,6 @@
                     Command="{Binding DeleteStatementCommand}"
                     Content="&#xECC9;"
                     FontFamily="Segoe MDL2 Assets"
-                    IsEnabled="{Binding CanExecuteDeleteStatementCommand}"
                     ToolTip="刪除消費明細" />
             </StackPanel>
             <StackPanel
@@ -523,7 +520,6 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Command="{Binding DeleteOneBillCommand}"
-                    IsEnabled="{Binding CanExecuteDeleteOneBillCommand}"
                     ToolTip="刪除單筆訂單">
                     <materialDesign:PackIcon Background="Transparent" Kind="FileRemoveOutline">
                         <materialDesign:PackIcon.LayoutTransform>
@@ -546,6 +542,7 @@
                     Margin="10,0,10,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    Click="ButtonInsert_Click"
                     Command="{Binding InsertAllBillCommand}"
                     Content="&#xEC59;"
                     FontFamily="Segoe MDL2 Assets"
@@ -557,7 +554,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Command="{Binding DeleteAllBillCommand}"
-                    IsEnabled="{Binding CanExecuteDeleteAllBillCommand}"
                     Content="&#xE74D;"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="刪除全部訂單" />

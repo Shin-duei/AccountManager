@@ -23,11 +23,11 @@ namespace AccountManager.Views
     /// </summary>
     public partial class OrderView : UserControl
     {
-        OrderViewModel ViewModel => DataContext as OrderViewModel;
+        //OrderViewModel ViewModel => DataContext as OrderViewModel;
         public OrderView()
         {
             InitializeComponent();
-            var viewModel = new OrderViewModel() { ViewObject = this };
+            var viewModel = new OrderViewModel();
             DataContext = viewModel;
         }
         /// <summary>
@@ -48,6 +48,10 @@ namespace AccountManager.Views
         {
             e.Handled = new Regex("[^A-Z0-9]").IsMatch(e.Text);
         }
-        
+
+        private void ButtonInsert_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("即將完成入賬，是否已確認所有明細?!");
+        }
     }
 }
