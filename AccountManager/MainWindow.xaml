@@ -86,7 +86,7 @@
                     </materialDesign:PackIcon>
                 </TabItem.Header>
             </TabItem>
-            <TabItem ToolTip="使用者登入">
+            <TabItem ToolTip="員工系統">
                 <TabItem.Header>
                     <materialDesign:PackIcon
                         Background="Transparent"
@@ -97,6 +97,9 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>
+                <Grid>
+                    <view:StaffView />
+                </Grid>
             </TabItem>
             <TabItem ToolTip="系統設定">
                 <TabItem.Header>
