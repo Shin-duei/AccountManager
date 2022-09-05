@@ -13,13 +13,6 @@
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/CustomControlResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -381,7 +374,6 @@
                 Margin="0,0,0,0"
                 AutoGenerateColumns="false"
                 Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
-                CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                 IsReadOnly="True"
                 ItemsSource="{Binding BillDisplay}"
                 SelectionUnit="FullRow">

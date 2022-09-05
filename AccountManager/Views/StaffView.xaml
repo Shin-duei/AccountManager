@@ -9,13 +9,6 @@
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/CustomControlResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -140,7 +133,6 @@
                 Grid.Column="1"
                 AutoGenerateColumns="false"
                 IsReadOnly="True"
-                CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
                 ItemsSource="{Binding StaffListDisplay}"
                 SelectionUnit="FullRow">
                 <DataGrid.Columns>

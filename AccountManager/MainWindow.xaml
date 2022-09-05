@@ -47,7 +47,7 @@
                     </materialDesign:PackIcon>
                 </TabItem.Header>
                 <Grid>
-                    <view:OrderView />
+                    <view:OrderView/>
                 </Grid>
             </TabItem>
             <TabItem ToolTip="檢視資料庫">
