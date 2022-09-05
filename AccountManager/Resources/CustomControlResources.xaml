@@ -55,6 +55,7 @@
                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                     <Grid Background="{TemplateBinding Background}">
                         <ContentPresenter VerticalAlignment="Center" />
+                        <ContentPresenter HorizontalAlignment="Center" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -111,4 +112,5 @@
     </Style>
     <Style BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" TargetType="{x:Type dragablz:TabablzControl}" />
     <FontFamily x:Key="sourceHansSansFont">./Fonts/#Source Han Sans TW</FontFamily>
+
 </ResourceDictionary>

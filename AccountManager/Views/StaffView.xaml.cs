@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AccountManager.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,8 @@ namespace AccountManager.Views
         public StaffView()
         {
             InitializeComponent();
+            var viewModel = new StaffViewModel();
+            DataContext = viewModel;
         }
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

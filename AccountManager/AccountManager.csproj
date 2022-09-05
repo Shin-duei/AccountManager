@@ -126,6 +126,8 @@
     <Compile Include="SQLiteResources\SQLiteAsync.cs" />
     <Compile Include="ViewModels\OrderDataGridViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
+    <Compile Include="ViewModels\StaffDataGridViewModel.cs" />
+    <Compile Include="ViewModels\StaffViewModel.cs" />
     <Compile Include="Views\OrderView.xaml.cs">
       <DependentUpon>OrderView.xaml</DependentUpon>
     </Compile>

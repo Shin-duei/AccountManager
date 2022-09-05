@@ -9,6 +9,13 @@
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/CustomControlResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -21,10 +28,7 @@
                 <RowDefinition Height="50" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="35" />
-                <RowDefinition Height="35" />
-                <RowDefinition Height="{Binding DynamicRowHeight}" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -42,6 +46,7 @@
                     Height="30"
                     Margin="10,0,0,0"
                     VerticalAlignment="Center"
+                    Command="{Binding AddNewStaffCommand}"
                     FontFamily="Segoe MDL2 Assets"
                     ToolTip="註冊新員工">
                     <materialDesign:PackIcon Background="Transparent" Kind="AccountAdd">
@@ -60,6 +65,7 @@
                     x:Name="textBox_Code"
                     Width="100"
                     Height="23"
+                    Text="{Binding Name}"
                     TextWrapping="Wrap" />
                 <TextBlock
                     x:Name="textBlock_Code"
@@ -73,6 +79,7 @@
                     Height="23"
                     InputMethod.IsInputMethodEnabled="False"
                     PreviewTextInput="TextBox_PreviewTextInput"
+                    Text="{Binding ID}"
                     TextWrapping="Wrap" />
                 <TextBlock
                     x:Name="textBlock_Position"
@@ -84,6 +91,7 @@
                     x:Name="textBox_Position"
                     Width="100"
                     Height="23"
+                    Text="{Binding Position}"
                     TextWrapping="Wrap" />
                 <TextBlock
                     x:Name="textBlock_Alias"
@@ -95,6 +103,7 @@
                     x:Name="textBox_Alias"
                     Width="100"
                     Height="23"
+                    Text="{Binding Alias}"
                     TextWrapping="Wrap" />
                 <TextBlock
                     x:Name="textBlock_Password"
@@ -113,6 +122,7 @@
                     Name="passwordTxtBox"
                     Width="100"
                     Height="23"
+                    Text="{Binding Password}"
                     Visibility="Collapsed" />
                 <Button
                     x:Name="button"
@@ -124,6 +134,34 @@
                     <materialDesign:PackIcon Background="Transparent" Kind="Eye" />
                 </Button>
             </StackPanel>
+            <DataGrid
+                x:Name="dataGrid"
+                Grid.Row="3"
+                Grid.Column="1"
+                AutoGenerateColumns="false"
+                IsReadOnly="True"
+                CellStyle="{StaticResource Body_Content_DataGrid_Centering}"
+                ItemsSource="{Binding StaffListDisplay}"
+                SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Name}"
+                        Header="姓名" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding ID}"
+                        Header="員工編號" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Position}"
+                        Header="職稱" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Alias}"
+                        Header="別名" />
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </Grid>
 </UserControl>
