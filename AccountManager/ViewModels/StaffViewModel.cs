@@ -2,11 +2,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace AccountManager.ViewModels
 {
@@ -19,6 +21,34 @@ namespace AccountManager.ViewModels
         public ObservableCollection<StaffModel> StaffListDisplay { set; get; } = new ObservableCollection<StaffModel>();
 
         private int _maxId;
+        public int MaxId
+        {
+            get { return _maxId; }
+            set
+            {
+                if (_maxId != value)
+                {
+                    _maxId = value;
+
+                    OnPropertyChanged(nameof(MaxId));
+                }
+            }
+        }
+        private string _tempPassword;
+        public string TempPassword
+        {
+            get { return _tempPassword; }
+            set
+            {
+                if (_tempPassword != value)
+                {
+                    _tempPassword = value;
+
+                    OnPropertyChanged(nameof(TempPassword));
+                }
+            }
+        }
+
         public string _name;
         public string Name
         {
@@ -90,7 +120,7 @@ namespace AccountManager.ViewModels
             }
         }
         public string _passwordConfirm;
-        public string Passwordconfirm
+        public string PasswordConfirm
         {
             get { return _passwordConfirm; }
             set
@@ -99,7 +129,7 @@ namespace AccountManager.ViewModels
                 {
                     _passwordConfirm = value;
 
-                    OnPropertyChanged(nameof(Passwordconfirm));
+                    OnPropertyChanged(nameof(PasswordConfirm));
                 }
             }
         }
@@ -117,7 +147,20 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private bool _isConfirmCancelStaff = false;
+        public bool IsConfirmCancelStaff
+        {
+            get { return _isConfirmCancelStaff; }
+            set
+            {
+                if (_isConfirmCancelStaff != value)
+                {
+                    _isConfirmCancelStaff = value;
 
+                    OnPropertyChanged(nameof(IsConfirmCancelStaff));
+                }
+            }
+        }
         private bool _isValidAddAccount = true;
         public bool IsValidAddAccount
         {
@@ -272,21 +315,51 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private List<StaffModel> _seletedStaff;
+        public List<StaffModel> SeletedStaff
+        {
+            get { return _seletedStaff; }
+            set
+            {
+                if (_seletedStaff != value)
+                {
+                    _seletedStaff = value;
 
+                    OnPropertyChanged(nameof(SeletedStaff));
+                }
+            }
+        }
+        private string _authority;
+        public string Authority
+        {
+            get { return _authority; }
+            set
+            {
+                if (_authority != value)
+                {
+                    _authority = value;
+
+                    OnPropertyChanged(nameof(Authority));
+                }
+            }
+        }
 
         public StaffViewModel()
         {
             AddNewStaffCommand = new RelayCommand(ExecuteAddNewStaffCommand);
+            CancelStaffCommand = new RelayCommand(ExecuteCancelStaffCommand, CanExecuteCancelStaffCommand);
+            EditStaffCommand = new RelayCommand(ExecuteEditStaffCommand);
+
             _sqliteHelper = new SQLiteHelper();
             _sqliteHelper.db.CreateTable<StaffModel>();//表已存在不會重覆創建
             var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff");
 
             if (staffList.Count > 0)
-                _maxId = (staffList.Max(s => Int32.Parse(s.ID)) + 1);
+                MaxId = (staffList.Max(s => Int32.Parse(s.ID)) + 1);
             else
-                _maxId = 1;
+                MaxId = 1;
 
-            ID = _maxId.ToString("000");
+            ID = MaxId.ToString("000");
 
             staffList.ForEach(s =>
             {
@@ -295,6 +368,8 @@ namespace AccountManager.ViewModels
             });
         }
         public RelayCommand AddNewStaffCommand { get; }
+        public RelayCommand CancelStaffCommand { get; }
+        public RelayCommand EditStaffCommand { get; }
 
         private void ExecuteAddNewStaffCommand()
         {
@@ -313,17 +388,76 @@ namespace AccountManager.ViewModels
                 Password = Password,
                 OnBoardDate = OnBoardDate.ToString("yyyyMMdd"),
                 RegisterDateTime = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                Authority = GetAuthority()
+                Authority = Authority=GetAuthority()
             };
             StaffListDisplay.Add(newStaff);
-            _sqliteHelper.Add(newStaff);         
-            ID = (++_maxId).ToString("000");
+            _sqliteHelper.Add(newStaff);
+            ID = (++MaxId).ToString("000");
         }
-        private void ExecuteSearchCommand()
+        /// <summary>
+        /// 執行編輯
+        /// </summary>
+        private void ExecuteEditStaffCommand()
         {
+            if (!IsValidAddAccount)
+                return;
 
+            var targetId = SeletedStaff.First().ID;
+
+            List<StaffModel> _temList = new List<StaffModel>(StaffListDisplay.ToList());
+
+            StaffListDisplay.Clear();
+
+            _temList.ForEach(s =>
+            {
+                if (s.ID == targetId)
+                {
+                    s.Name = Name;
+                    s.Alias = Alias;
+                    s.Position = Position;
+                    s.Password = TempPassword;
+                    s.OnBoardDate = OnBoardDate.ToString("yyyyMMdd");
+                    s.ModifyDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    s.Authority = Authority;
+                    _sqliteHelper.Update(s);
+                }
+                StaffListDisplay.Add(s);
+            });
+
+            RestInputUI();
         }
-        private string GetAuthority()
+        /// <summary>
+        /// 移除離職人員
+        /// </summary>
+        private void ExecuteCancelStaffCommand()
+        {
+            if (!IsConfirmCancelStaff)
+                return;
+
+            var seletedStaff = SeletedStaff.First();
+            seletedStaff.ResignationDate = DateTime.Now.ToString("yyyyMMdd");
+            StaffListDisplay.Remove(StaffListDisplay.Where(s => s.ID == seletedStaff.ID).Single());
+            _sqliteHelper.Update(seletedStaff);
+        }
+        public bool CanExecuteCancelStaffCommand()
+        {
+            if (SeletedStaff == null || SeletedStaff.Count != 1)
+                return false;
+            else
+                return true;
+        }
+        public ICommand SelectionChangedCommand => _selectionChangedCommand ?? (_selectionChangedCommand = new RelayCommand<IList>(OnChanged));
+
+        private void OnChanged(IList dataset)
+        {
+            SeletedStaff = dataset.OfType<StaffModel>().ToList();
+            EditStaffCommand.NotifyCanExecuteChanged();
+            CancelStaffCommand.NotifyCanExecuteChanged();
+        }
+
+        private ICommand _selectionChangedCommand;
+
+        public  string GetAuthority()
         {
             int[] authority = new int[5] { 0, 0, 0, 0, 0 };
             if (IsReadBill)
@@ -355,6 +489,68 @@ namespace AccountManager.ViewModels
             authority.ToList().ForEach(s => result += s);
 
             return result;
+        }
+        public void ReloadAuthority(string authority)
+        {
+            var authorityArrary = authority.ToArray();
+
+            if (authorityArrary[0].ToString() == "1")
+                IsReadBill = true;
+            else if (authorityArrary[0].ToString() == "2")
+                IsEditBill = true;
+            else
+            {
+                IsReadBill = false;
+                IsEditBill = false;
+            }
+
+            if (authorityArrary[1].ToString() == "1")
+                IsReadStatistics = true;
+            else if (authorityArrary[1].ToString() == "2")
+                IsEditStatistics = true;
+            else
+            {
+                IsReadStatistics = false;
+                IsEditStatistics = false;
+            }
+
+            if (authorityArrary[2].ToString() == "1")
+                IsReadStorge = true;
+            else if (authorityArrary[2].ToString() == "2")
+                IsEditStorge = true;
+            else
+            {
+                IsReadStorge = false;
+                IsEditStorge = false;
+            }
+
+            if (authorityArrary[3].ToString() == "1")
+                IsReadSalary = true;
+            else if (authorityArrary[3].ToString() == "2")
+                IsEditSalary = true;
+            else
+            {
+                IsReadSalary = false;
+                IsEditSalary = false;
+            }
+
+            if (authorityArrary[4].ToString() == "1")
+                IsReadStaff = true;
+            else if (authorityArrary[4].ToString() == "2")
+                IsEditStaff = true;
+            else
+            {
+                IsReadStaff = false;
+                IsEditStaff = false;
+            }
+        }
+        private void RestInputUI()
+        {
+            Name = "";
+            ID = MaxId.ToString("000");
+            Position = "";
+            Alias = "";
+            OnBoardDate = DateTime.Now;
         }
     }
 }

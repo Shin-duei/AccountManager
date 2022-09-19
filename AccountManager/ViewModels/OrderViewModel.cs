@@ -698,7 +698,6 @@ namespace AccountManager.ViewModels
         }
         public bool CanExecuteEditStatementCommand()
         {
-
             if (SeletedStatement == null || SeletedStatement.Count != 1)
                 return false;
             else

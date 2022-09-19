@@ -1,4 +1,5 @@
-﻿using AccountManager.ViewModels;
+﻿using AccountManager.Models;
+using AccountManager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,38 +73,8 @@ namespace AccountManager.Views
         /// <param name="e"></param>
         private void button_Add_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(ViewModel.Name))
+            if (!CheckAccountData())
             {
-                ViewModel.IsValidAddAccount = false;
-                MessageBox.Show("請輸入姓名", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (ViewModel.StaffListDisplay.Any(s => s.ID == ViewModel.ID))
-            {
-                ViewModel.IsValidAddAccount = false;
-                MessageBox.Show("員工編號已存在，請給予新編號", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(ViewModel.Position))
-            {
-                ViewModel.IsValidAddAccount = false;
-                MessageBox.Show("請輸入職稱", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(ViewModel.Password))
-            {
-                ViewModel.IsValidAddAccount = false;
-                MessageBox.Show("請輸入密碼", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (passwordBox.Password != passwordBox_confirm.Password)
-            {
-                ViewModel.IsValidAddAccount = false;
-                MessageBox.Show("密碼與再次確認不相符", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
         }
@@ -112,6 +83,115 @@ namespace AccountManager.Views
         {
             PasswordBox passwordBox = sender as PasswordBox;
             ViewModel.Password = passwordBox.Password;
+        }
+        /// <summary>
+        /// 雙擊編輯
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var result = MessageBox.Show("是否要編輯該員工資料?!", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.No)
+            {
+                button_EditStaff.IsEnabled = false;
+                return;
+            }
+            else
+            {
+                button_EditStaff.IsEnabled = true;
+                button_Add.IsEnabled = false;
+                button_Cancel.IsEnabled = false;
+                DataGrid grid = sender as DataGrid;
+
+                if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                {
+                    var rowItem = grid.SelectedItem as StaffModel;
+
+                    ViewModel.Name = rowItem.Name;
+                    ViewModel.ID = rowItem.ID;
+                    ViewModel.Position = rowItem.Position;
+                    ViewModel.Alias = rowItem.Alias;
+                    ViewModel.Password = rowItem.Password;
+                    passwordBox.Password = rowItem.Password;
+                    ViewModel.OnBoardDate = DateTime.ParseExact(rowItem.OnBoardDate, "yyyyMMdd", null);
+                    ViewModel.ReloadAuthority(rowItem.Authority);
+                }
+            }
+        }
+
+        private void button_EditStaff_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CheckAccountData())
+            {
+                ViewModel.IsValidAddAccount = false;
+            }
+            else
+            {
+                ViewModel.IsValidAddAccount = true;
+
+                button_EditStaff.IsEnabled = false;
+                button_Add.IsEnabled = true;
+                button_Cancel.IsEnabled = true;
+                ViewModel.TempPassword = passwordBox.Password;
+                ViewModel.Authority = ViewModel.GetAuthority();
+                passwordBox.Password = "";
+                passwordBox_confirm.Password = "";
+                radioButton_Non.IsChecked = true;
+                radioButton_Non1.IsChecked = true;
+                radioButton_Non2.IsChecked = true;
+                radioButton_Non3.IsChecked = true;
+                radioButton_Non4.IsChecked = true;
+            }
+        }
+        private bool CheckAccountData()
+        {
+            if (string.IsNullOrEmpty(ViewModel.Name))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入姓名", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            //if (ViewModel.StaffListDisplay.Any(s => s.ID == ViewModel.ID))
+            //{
+            //    ViewModel.IsValidAddAccount = false;
+            //    MessageBox.Show("員工編號已存在，請給予新編號", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return false;
+            //}
+
+            if (string.IsNullOrEmpty(ViewModel.Position))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入職稱", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(ViewModel.Password))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入密碼", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (passwordBox.Password != passwordBox_confirm.Password)
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("密碼與再次確認不相符", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            return true;
+        }
+
+        private void button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("是否要移除該員工資料?!", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.No)
+                ViewModel.IsConfirmCancelStaff = false;
+            else
+                ViewModel.IsConfirmCancelStaff = true;
         }
     }
 }
