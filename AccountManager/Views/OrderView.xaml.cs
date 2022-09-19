@@ -48,10 +48,5 @@ namespace AccountManager.Views
         {
             e.Handled = new Regex("[^A-Z0-9]").IsMatch(e.Text);
         }
-
-        private void ButtonInsert_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("即將完成入賬，是否已確認所有明細?!");
-        }
     }
 }

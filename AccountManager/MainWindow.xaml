@@ -11,7 +11,7 @@
     xmlns:view="clr-namespace:AccountManager.Views"
     Title="愛尚‧沙龍"
     Width="1070.667"
-    Height="600"
+    Height="630"
     Background="White"
     mc:Ignorable="d">
     <metro:MetroWindow.Resources>
@@ -47,15 +47,15 @@
                     </materialDesign:PackIcon>
                 </TabItem.Header>
                 <Grid>
-                    <view:OrderView/>
+                    <view:OrderView />
                 </Grid>
             </TabItem>
-            <TabItem ToolTip="檢視資料庫">
+            <TabItem ToolTip="統計資料查詢">
                 <TabItem.Header>
                     <materialDesign:PackIcon
                         Background="Transparent"
                         Foreground="WhiteSmoke"
-                        Kind="Database">
+                        Kind="ChartAreaspline">
                         <materialDesign:PackIcon.LayoutTransform>
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
                         </materialDesign:PackIcon.LayoutTransform>

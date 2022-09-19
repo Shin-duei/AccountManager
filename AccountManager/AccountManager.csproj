@@ -115,6 +115,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\Authority.cs" />
     <Compile Include="Models\BillBaseModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\StaffModel.cs" />

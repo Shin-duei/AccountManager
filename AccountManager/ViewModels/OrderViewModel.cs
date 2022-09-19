@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -794,14 +795,18 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteInsertAllBillCommand()
         {
-            //TODO 要給提示說:入賬前確認
-            SQLiteHelper sqliteHelper = new SQLiteHelper();
+            var result = MessageBox.Show("即將完成入賬，是否已確認所有明細?!", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            foreach (var bill in _billListDictionary)
+            if (result == MessageBoxResult.Yes)
             {
-                bill.Value.ForEach(s => sqliteHelper.Add(s));
-            }
+                SQLiteHelper sqliteHelper = new SQLiteHelper();
+                sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
 
+                foreach (var bill in _billListDictionary)
+                {
+                    bill.Value.ForEach(s => sqliteHelper.Add(s));
+                }
+            }
         }
         public bool CanExecuteInsertAllBillCommand
         {

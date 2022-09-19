@@ -33,7 +33,7 @@ namespace AccountManager.Models
         /// <summary>
         /// 員工編號
         /// </summary>
-        public uint ID { set; get; }
+        public string ID { set; get; }
         /// <summary>
         /// 系統登入密碼
         /// </summary>
@@ -42,5 +42,30 @@ namespace AccountManager.Models
         /// 職稱
         /// </summary>
         public string Position { set; get; }
+        /// <summary>
+        /// 到職日
+        /// </summary>
+        public string OnBoardDate { set; get; }
+        /// <summary>
+        /// 離職日
+        /// </summary>
+        public string ResignationDate { set; get; }
+        /// <summary>
+        /// 登錄日期時間
+        /// </summary>
+        public string RegisterDateTime { set; get; }
+        /// <summary>
+        /// 修改日期
+        /// </summary>
+        public string ModifyDateTime { set; get; }
+        /// <summary>
+        /// 修改人帳號
+        /// </summary>
+        public string ModifyPerson { set; get; }
+
+        /// <summary>
+        /// 權限
+        /// </summary>
+        public string Authority { set; get; }
     }
 }

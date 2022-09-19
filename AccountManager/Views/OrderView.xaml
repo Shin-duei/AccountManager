@@ -9,7 +9,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels"
+    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:OrderViewModel}"
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
@@ -439,7 +439,6 @@
                         Width="Auto"
                         Binding="{Binding Assistant3}"
                         Header="助理3" />
-
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel
@@ -542,7 +541,6 @@
                     Margin="10,0,10,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Click="ButtonInsert_Click"
                     Command="{Binding InsertAllBillCommand}"
                     Content="&#xEC59;"
                     FontFamily="Segoe MDL2 Assets"

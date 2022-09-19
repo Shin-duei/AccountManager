@@ -22,6 +22,13 @@ namespace AccountManager.Views
     /// </summary>
     public partial class StaffView : UserControl
     {
+        public StaffViewModel ViewModel
+        {
+            get
+            {
+                return this.DataContext as StaffViewModel;
+            }
+        }
         public StaffView()
         {
             InitializeComponent();
@@ -32,20 +39,6 @@ namespace AccountManager.Views
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
-        }
-
-        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
-        {
-            passwordTxtBox.Text = passwordBox.Password;
-            passwordBox.Visibility = Visibility.Collapsed;
-            passwordTxtBox.Visibility = Visibility.Visible;
-        }
-
-        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
-        {
-            passwordBox.Password = passwordTxtBox.Text;
-            passwordTxtBox.Visibility = Visibility.Collapsed;
-            passwordBox.Visibility = Visibility.Visible;
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -72,5 +65,53 @@ namespace AccountManager.Views
         }
         private bool IsPasswordShow = false;
 
+        /// <summary>
+        /// 添加員工
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_Add_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ViewModel.Name))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入姓名", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (ViewModel.StaffListDisplay.Any(s => s.ID == ViewModel.ID))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("員工編號已存在，請給予新編號", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(ViewModel.Position))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入職稱", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(ViewModel.Password))
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("請輸入密碼", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (passwordBox.Password != passwordBox_confirm.Password)
+            {
+                ViewModel.IsValidAddAccount = false;
+                MessageBox.Show("密碼與再次確認不相符", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+        }
+
+        private void passwordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            PasswordBox passwordBox = sender as PasswordBox;
+            ViewModel.Password = passwordBox.Password;
+        }
     }
 }

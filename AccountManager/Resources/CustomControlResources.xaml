@@ -59,7 +59,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="TextBlock.TextAlignment"  Value="Center" />
+        <Setter Property="TextBlock.TextAlignment" Value="Center" />
         <Setter Property="TextBlock.Height" Value="40" />
     </Style>
     <Style TargetType="Label">

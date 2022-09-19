@@ -6,7 +6,9 @@
     xmlns:local="clr-namespace:AccountManager.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="500"
+    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:StaffViewModel}"
+    d:DesignHeight="600"
     d:DesignWidth="900"
     mc:Ignorable="d">
     <Grid>
@@ -16,16 +18,14 @@
                 <GradientStop Offset="1" Color="#FF145EDA" />
             </LinearGradientBrush>
         </Grid.Background>
-        <Grid Grid.Column="1">
+        <Grid Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="35" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="600*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="16*" />
             </Grid.ColumnDefinitions>
             <StackPanel
                 Grid.Row="0"
@@ -34,13 +34,13 @@
                 Background="White"
                 Orientation="Horizontal">
                 <Button
-                    x:Name="button1"
+                    x:Name="button_Add"
                     Width="60"
                     Height="30"
                     Margin="10,0,0,0"
                     VerticalAlignment="Center"
+                    Click="button_Add_Click"
                     Command="{Binding AddNewStaffCommand}"
-                    FontFamily="Segoe MDL2 Assets"
                     ToolTip="註冊新員工">
                     <materialDesign:PackIcon Background="Transparent" Kind="AccountAdd">
                         <materialDesign:PackIcon.LayoutTransform>
@@ -48,88 +48,32 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </Button>
-                <TextBlock
-                    x:Name="textBlock"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="姓名:" />
-                <TextBox
-                    x:Name="textBox_Code"
-                    Width="100"
-                    Height="23"
-                    Text="{Binding Name}"
-                    TextWrapping="Wrap" />
-                <TextBlock
-                    x:Name="textBlock_Code"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="員工編號:" />
-                <TextBox
-                    x:Name="textBox"
-                    Width="100"
-                    Height="23"
-                    InputMethod.IsInputMethodEnabled="False"
-                    PreviewTextInput="TextBox_PreviewTextInput"
-                    Text="{Binding ID}"
-                    TextWrapping="Wrap" />
-                <TextBlock
-                    x:Name="textBlock_Position"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="職稱:" />
-                <TextBox
-                    x:Name="textBox_Position"
-                    Width="100"
-                    Height="23"
-                    Text="{Binding Position}"
-                    TextWrapping="Wrap" />
-                <TextBlock
-                    x:Name="textBlock_Alias"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="別名:" />
-                <TextBox
-                    x:Name="textBox_Alias"
-                    Width="100"
-                    Height="23"
-                    Text="{Binding Alias}"
-                    TextWrapping="Wrap" />
-                <TextBlock
-                    x:Name="textBlock_Password"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="密碼:" />
-                <PasswordBox
-                    x:Name="passwordBox"
-                    Width="100"
-                    Height="23"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    HorizontalContentAlignment="Center" />
-                <TextBox
-                    Name="passwordTxtBox"
-                    Width="100"
-                    Height="23"
-                    Text="{Binding Password}"
-                    Visibility="Collapsed" />
                 <Button
-                    x:Name="button"
-                    Width="20"
-                    Height="23"
-                    Margin="0,13,0,0"
-                    VerticalAlignment="Top"
-                    Click="button_Click">
-                    <materialDesign:PackIcon Background="Transparent" Kind="Eye" />
+                    x:Name="button2"
+                    Width="60"
+                    Height="30"
+                    Margin="10,0,0,0">
+                    <materialDesign:PackIcon Background="Transparent" Kind="AccountEdit">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </Button>
+                <Button
+                    x:Name="button3"
+                    Width="60"
+                    Height="30"
+                    Margin="10,0,0,0">
+                    <materialDesign:PackIcon Background="Transparent" Kind="AccountCancel">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
                 </Button>
             </StackPanel>
             <DataGrid
                 x:Name="dataGrid"
-                Grid.Row="3"
+                Grid.Row="1"
                 Grid.Column="1"
                 AutoGenerateColumns="false"
                 IsReadOnly="True"
@@ -154,6 +98,390 @@
                         Header="別名" />
                 </DataGrid.Columns>
             </DataGrid>
+            <Grid
+                Grid.Row="1"
+                MinWidth="320"
+                MinHeight="450"
+                Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="310" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Background="White">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="31*" />
+                        <ColumnDefinition Width="77*" />
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Background="#FF9C9999" />
+                    <TextBlock
+                        x:Name="textBlock_essential"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="基本資料設置"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock"
+                        Grid.Row="1"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="姓名:" />
+                    <TextBox
+                        x:Name="textBox_Code"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding Name}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Code"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="員工編號:" />
+                    <TextBlock
+                        x:Name="textBlock_Position"
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="職稱:" />
+                    <TextBlock
+                        x:Name="textBlock_Alias"
+                        Grid.Row="4"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="別名:" />
+                    <TextBlock
+                        x:Name="textBlock_Password"
+                        Grid.Row="5"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="密碼:" />
+                    <TextBox
+                        x:Name="textBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        InputMethod.IsInputMethodEnabled="False"
+                        IsEnabled="False"
+                        PreviewTextInput="TextBox_PreviewTextInput"
+                        Text="{Binding ID}"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="textBox_Position"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding Position}"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="textBox_Alias"
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding Alias}"
+                        TextWrapping="Wrap" />
+                    <PasswordBox
+                        x:Name="passwordBox"
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        PasswordChanged="passwordBox_PasswordChanged" />
+                    <TextBox
+                        Name="passwordTxtBox"
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{Binding Password}"
+                        Visibility="Collapsed" />
+                    <Button
+                        x:Name="button"
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Width="20"
+                        Height="20"
+                        Margin="110,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Click="button_Click">
+                        <materialDesign:PackIcon Background="Transparent" Kind="Eye" />
+                    </Button>
+                    <TextBlock
+                        x:Name="textBlock_PasswordConfirm"
+                        Grid.Row="6"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="密碼確認:" />
+                    <PasswordBox
+                        x:Name="passwordBox_confirm"
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Width="100"
+                        Height="23"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center" />
+                    <TextBlock
+                        x:Name="textBlock_DatePicker"
+                        Grid.Row="7"
+                        Grid.Column="0"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Text="到職日期:" />
+                    <DatePicker
+                        x:Name="DatePicker"
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Height="24"
+                        Margin="0,8,102,8"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Language="zh-TW"
+                        SelectedDate="{Binding OnBoardDate}">
+                        <DatePicker.LayoutTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                        </DatePicker.LayoutTransform>
+                    </DatePicker>
+                </Grid>
+                <Grid Grid.Row="1" Background="White">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="31*" />
+                        <ColumnDefinition Width="77*" />
+                    </Grid.ColumnDefinitions>
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Background="#FFB8CDE0" />
+                    <TextBlock
+                        x:Name="textBlock1"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="操作權限設置"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Bill"
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="消費明細登入"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Search"
+                        Grid.Row="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="統計資料查詢"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Storge"
+                        Grid.Row="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="儲值卡系統"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Salary"
+                        Grid.Row="4"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="薪資計算系統"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Staff"
+                        Grid.Row="5"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="員工系統"
+                        TextWrapping="Wrap" />
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadBill}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditBill}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non1"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read1"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadStatistics}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit1"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditStatistics}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non2"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read2"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadStorge}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit2"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditStorge}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non3"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read3"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadSalary}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit3"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditSalary}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non4"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read4"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadStaff}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit4"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditStaff}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

@@ -14,6 +14,7 @@ namespace AccountManager
         public static void Main()
         {
             SQLiteHelper sqliteHelper = new SQLiteHelper();
+            var list = sqliteHelper.Query<EssentialModel>("select * from BillDetails");
             //var list = sqliteHelper.Query<EssentialModel>("select * from Stock");
             //sqliteHelper.Add(new Valuation() { Price = 100, StockId = 1, Time = DateTime.Now });
             //var list2 = sqliteHelper.Query<Valuation>("select *  from Valuation");

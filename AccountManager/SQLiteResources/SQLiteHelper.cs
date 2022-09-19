@@ -16,8 +16,6 @@ namespace AccountManager
         public SQLiteHelper()
         {
             db = new SQLiteConnection(connstr);
-
-            db.CreateTable<EssentialModel>();//表已存在不會重覆創建
         }
 
         public int Add<T>(T model)

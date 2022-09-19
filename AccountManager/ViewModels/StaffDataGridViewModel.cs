@@ -51,11 +51,11 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private uint _id;
+        private string _id;
         /// <summary>
         /// 員工編號
         /// </summary>
-        public uint ID
+        public string ID
         {
             get { return ID; }
             set
