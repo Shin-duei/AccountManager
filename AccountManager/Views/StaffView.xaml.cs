@@ -143,6 +143,8 @@ namespace AccountManager.Views
                 radioButton_Non2.IsChecked = true;
                 radioButton_Non3.IsChecked = true;
                 radioButton_Non4.IsChecked = true;
+                radioButton_Non5.IsChecked = true;
+                radioButton_Non6.IsChecked = true;
             }
         }
         private bool CheckAccountData()

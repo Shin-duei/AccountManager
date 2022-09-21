@@ -50,17 +50,18 @@
                     <view:OrderView />
                 </Grid>
             </TabItem>
-            <TabItem ToolTip="統計資料查詢">
+            <TabItem ToolTip="當日收支系統">
                 <TabItem.Header>
                     <materialDesign:PackIcon
                         Background="Transparent"
                         Foreground="WhiteSmoke"
-                        Kind="ChartAreaspline">
+                        Kind="CoinsPlusOutline">
                         <materialDesign:PackIcon.LayoutTransform>
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>
+                <Grid />
             </TabItem>
             <TabItem ToolTip="儲值卡系統">
                 <TabItem.Header>
@@ -82,6 +83,18 @@
                         Kind="CurrencyUsd">
                         <materialDesign:PackIcon.LayoutTransform>
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.7" ScaleY="1.7" />
+                        </materialDesign:PackIcon.LayoutTransform>
+                    </materialDesign:PackIcon>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem ToolTip="統計資料查詢">
+                <TabItem.Header>
+                    <materialDesign:PackIcon
+                        Background="Transparent"
+                        Foreground="WhiteSmoke"
+                        Kind="ChartAreaspline">
+                        <materialDesign:PackIcon.LayoutTransform>
+                            <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>

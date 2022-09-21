@@ -1,13 +1,12 @@
 ﻿using AccountManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace AccountManager.ViewModels
@@ -203,6 +202,34 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private bool _isReadIncomeExpenditure;
+        public bool IsReadIncomeExpenditure
+        {
+            get { return _isReadIncomeExpenditure; }
+            set
+            {
+                if (_isReadIncomeExpenditure != value)
+                {
+                    _isReadIncomeExpenditure = value;
+
+                    OnPropertyChanged(nameof(IsReadIncomeExpenditure));
+                }
+            }
+        }
+        private bool _isEditIncomeExpenditure;
+        public bool IsEditIncomeExpenditure
+        {
+            get { return _isEditIncomeExpenditure; }
+            set
+            {
+                if (_isEditIncomeExpenditure != value)
+                {
+                    _isEditIncomeExpenditure = value;
+
+                    OnPropertyChanged(nameof(IsEditIncomeExpenditure));
+                }
+            }
+        }
         private bool _isReadStatistics;
         public bool IsReadStatistics
         {
@@ -315,6 +342,34 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private bool _isReadSetting;
+        public bool IsReadSetting
+        {
+            get { return _isReadSetting; }
+            set
+            {
+                if (_isReadSetting != value)
+                {
+                    _isReadSetting = value;
+
+                    OnPropertyChanged(nameof(IsReadSetting));
+                }
+            }
+        }
+        private bool _isEditSetting;
+        public bool IsEditSetting
+        {
+            get { return _isEditSetting; }
+            set
+            {
+                if (_isEditSetting != value)
+                {
+                    _isEditSetting = value;
+
+                    OnPropertyChanged(nameof(IsEditSetting));
+                }
+            }
+        }
         private List<StaffModel> _seletedStaff;
         public List<StaffModel> SeletedStaff
         {
@@ -388,7 +443,7 @@ namespace AccountManager.ViewModels
                 Password = Password,
                 OnBoardDate = OnBoardDate.ToString("yyyyMMdd"),
                 RegisterDateTime = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                Authority = Authority=GetAuthority()
+                Authority = Authority=GetAuthority(),
             };
             StaffListDisplay.Add(newStaff);
             _sqliteHelper.Add(newStaff);
@@ -459,44 +514,55 @@ namespace AccountManager.ViewModels
 
         public  string GetAuthority()
         {
-            int[] authority = new int[5] { 0, 0, 0, 0, 0 };
-            if (IsReadBill)
-                authority[0] = 1;
-            else if (IsEditBill)
-                authority[0] = 2;
+            var authority = new InternalSystemModel();
 
-            if (IsReadStatistics)
-                authority[1] = 1;
-            else if (IsEditStatistics)
-                authority[1] = 2;
+            if (IsReadBill)
+                authority.OrderSystem = Enums.Authority.Read;
+            else if (IsEditBill)
+                authority.OrderSystem = Enums.Authority.Edit;
+
+            if (IsReadIncomeExpenditure)
+                authority.IncomeExpenditureSystem = Enums.Authority.Read;
+            else if (IsEditIncomeExpenditure)
+                authority.IncomeExpenditureSystem = Enums.Authority.Edit;
 
             if (IsReadStorge)
-                authority[2] = 1;
+                authority.StorgeValueSystem = Enums.Authority.Read;
             else if (IsEditStorge)
-                authority[2] = 2;
+                authority.StorgeValueSystem = Enums.Authority.Edit;
 
             if (IsReadSalary)
-                authority[3] = 1;
+                authority.SalarySystem = Enums.Authority.Read;
             else if (IsEditSalary)
-                authority[3] = 2;
+                authority.SalarySystem = Enums.Authority.Edit;
+
+            if (IsReadStatistics)
+                authority.StatisticsSystem = Enums.Authority.Read;
+            else if (IsEditStatistics)
+                authority.StatisticsSystem = Enums.Authority.Edit;
 
             if (IsReadStaff)
-                authority[4] = 1;
+                authority.StaffSystem = Enums.Authority.Read;
             else if (IsEditStaff)
-                authority[4] = 2;
+                authority.StaffSystem = Enums.Authority.Edit;
 
-            string result = "";
-            authority.ToList().ForEach(s => result += s);
+            if (IsReadSetting)
+                authority.SettingSystem = Enums.Authority.Read;
+            else if (IsEditSetting)
+                authority.SettingSystem = Enums.Authority.Edit;
 
-            return result;
+
+
+            return JsonConvert.SerializeObject(authority);
         }
-        public void ReloadAuthority(string authority)
+        public void ReloadAuthority(string authorityString)
         {
-            var authorityArrary = authority.ToArray();
+           
+            var authority = JsonConvert.DeserializeObject<InternalSystemModel>(authorityString);
 
-            if (authorityArrary[0].ToString() == "1")
+            if (authority.OrderSystem== Enums.Authority.Read)
                 IsReadBill = true;
-            else if (authorityArrary[0].ToString() == "2")
+            else if (authority.OrderSystem == Enums.Authority.Edit)
                 IsEditBill = true;
             else
             {
@@ -504,19 +570,19 @@ namespace AccountManager.ViewModels
                 IsEditBill = false;
             }
 
-            if (authorityArrary[1].ToString() == "1")
-                IsReadStatistics = true;
-            else if (authorityArrary[1].ToString() == "2")
-                IsEditStatistics = true;
+            if (authority.IncomeExpenditureSystem == Enums.Authority.Read)
+                IsReadIncomeExpenditure = true;
+            else if (authority.IncomeExpenditureSystem == Enums.Authority.Edit)
+                IsEditIncomeExpenditure = true;
             else
             {
-                IsReadStatistics = false;
-                IsEditStatistics = false;
+                IsReadIncomeExpenditure = false;
+                IsEditIncomeExpenditure = false;
             }
 
-            if (authorityArrary[2].ToString() == "1")
+            if (authority.StorgeValueSystem== Enums.Authority.Read)
                 IsReadStorge = true;
-            else if (authorityArrary[2].ToString() == "2")
+            else if (authority.StorgeValueSystem == Enums.Authority.Edit)
                 IsEditStorge = true;
             else
             {
@@ -524,9 +590,9 @@ namespace AccountManager.ViewModels
                 IsEditStorge = false;
             }
 
-            if (authorityArrary[3].ToString() == "1")
+            if (authority.SalarySystem == Enums.Authority.Read)
                 IsReadSalary = true;
-            else if (authorityArrary[3].ToString() == "2")
+            else if (authority.SalarySystem == Enums.Authority.Edit)
                 IsEditSalary = true;
             else
             {
@@ -534,14 +600,34 @@ namespace AccountManager.ViewModels
                 IsEditSalary = false;
             }
 
-            if (authorityArrary[4].ToString() == "1")
+            if (authority.StatisticsSystem == Enums.Authority.Read)
+                IsReadStatistics = true;
+            else if (authority.StatisticsSystem == Enums.Authority.Edit)
+                IsEditStatistics = true;
+            else
+            {
+                IsReadStatistics = false;
+                IsEditStatistics = false;
+            }
+
+            if (authority.StaffSystem == Enums.Authority.Read)
                 IsReadStaff = true;
-            else if (authorityArrary[4].ToString() == "2")
+            else if (authority.StaffSystem == Enums.Authority.Edit)
                 IsEditStaff = true;
             else
             {
                 IsReadStaff = false;
                 IsEditStaff = false;
+            }
+
+            if (authority.SettingSystem == Enums.Authority.Read)
+                IsReadSetting = true;
+            else if (authority.SettingSystem == Enums.Authority.Edit)
+                IsEditSetting = true;
+            else
+            {
+                IsReadSetting = false;
+                IsEditSetting = false;
             }
         }
         private void RestInputUI()

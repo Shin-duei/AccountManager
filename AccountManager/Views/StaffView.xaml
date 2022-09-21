@@ -67,8 +67,9 @@
                     Width="60"
                     Height="30"
                     Margin="10,0,0,0"
+                    Click="button_EditStaff_Click"
                     Command="{Binding EditStaffCommand}"
-                    IsEnabled="false" Click="button_EditStaff_Click">
+                    IsEnabled="false">
                     <materialDesign:PackIcon Background="Transparent" Kind="AccountEdit">
                         <materialDesign:PackIcon.LayoutTransform>
                             <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
@@ -305,11 +306,13 @@
                 <Grid Grid.Row="1" Background="White">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="31*" />
@@ -334,35 +337,49 @@
                         Grid.Row="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Text="消費明細登入"
+                        Text="消費明細登錄"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_IncomeExpenditure"
+                        Grid.Row="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="收入支出登錄"
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="textBlock_Search"
-                        Grid.Row="2"
+                        Grid.Row="3"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="統計資料查詢"
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="textBlock_Storge"
-                        Grid.Row="3"
+                        Grid.Row="4"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="儲值卡系統"
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="textBlock_Salary"
-                        Grid.Row="4"
+                        Grid.Row="5"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="薪資計算系統"
                         TextWrapping="Wrap" />
                     <TextBlock
                         x:Name="textBlock_Staff"
-                        Grid.Row="5"
+                        Grid.Row="6"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Text="員工系統"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="textBlock_Setting"
+                        Grid.Row="7"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="系統設定"
                         TextWrapping="Wrap" />
                     <StackPanel
                         Grid.Row="1"
@@ -412,7 +429,7 @@
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽"
-                            IsChecked="{Binding IsReadStatistics}" />
+                            IsChecked="{Binding IsReadIncomeExpenditure}" />
                         <RadioButton
                             x:Name="radioButton_ReadEdit1"
                             Grid.Row="1"
@@ -420,7 +437,7 @@
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽且編輯"
-                            IsChecked="{Binding IsEditStatistics}" />
+                            IsChecked="{Binding IsEditIncomeExpenditure}" />
                     </StackPanel>
                     <StackPanel
                         Grid.Row="3"
@@ -437,13 +454,13 @@
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽"
-                            IsChecked="{Binding IsReadStorge}" />
+                            IsChecked="{Binding IsReadStatistics}" />
                         <RadioButton
                             x:Name="radioButton_ReadEdit2"
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽且編輯"
-                            IsChecked="{Binding IsEditStorge}" />
+                            IsChecked="{Binding IsEditStatistics}" />
                     </StackPanel>
                     <StackPanel
                         Grid.Row="4"
@@ -460,13 +477,13 @@
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽"
-                            IsChecked="{Binding IsReadSalary}" />
+                            IsChecked="{Binding IsReadStorge}" />
                         <RadioButton
                             x:Name="radioButton_ReadEdit3"
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽且編輯"
-                            IsChecked="{Binding IsEditSalary}" />
+                            IsChecked="{Binding IsEditStorge}" />
                     </StackPanel>
                     <StackPanel
                         Grid.Row="5"
@@ -483,13 +500,59 @@
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽"
-                            IsChecked="{Binding IsReadStaff}" />
+                            IsChecked="{Binding IsReadSalary}" />
                         <RadioButton
                             x:Name="radioButton_ReadEdit4"
                             Margin="10,0,0,0"
                             VerticalAlignment="Center"
                             Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditSalary}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non5"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read5"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadStaff}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit5"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
                             IsChecked="{Binding IsEditStaff}" />
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <RadioButton
+                            x:Name="radioButton_Non6"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="無"
+                            IsChecked="True" />
+                        <RadioButton
+                            x:Name="radioButton_Read6"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽"
+                            IsChecked="{Binding IsReadSetting}" />
+                        <RadioButton
+                            x:Name="radioButton_ReadEdit6"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="可瀏覽且編輯"
+                            IsChecked="{Binding IsEditSetting}" />
                     </StackPanel>
                 </Grid>
             </Grid>
