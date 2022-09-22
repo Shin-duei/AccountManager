@@ -512,7 +512,7 @@ namespace AccountManager.ViewModels
             DeleteStatementCommand = new RelayCommand(ExecuteDeleteStatementCommand, CanExecuteDeleteStatementCommand);
             DeleteOneBillCommand = new RelayCommand(ExecuteDeleteOneBillCommand, CanExecuteDeleteOneBillCommand);
             DeleteAllBillCommand = new RelayCommand(ExecuteDeleteAllBillCommand, CanExecuteDeleteAllBillCommand);
-            InsertAllBillCommand = new RelayCommand(ExecuteInsertAllBillCommand);
+            InsertAllBillCommand = new RelayCommand(ExecuteInsertAllBillCommand, CanExecuteInsertAllBillCommand);
 
             PreviousBillCommand = new RelayCommand(ExecutePreviousBillCommand);
             NextBillCommand = new RelayCommand(ExecuteNextBillCommand);
@@ -568,6 +568,7 @@ namespace AccountManager.ViewModels
             RefreshDataGrid(addedBill);
             OnPropertyChanged(nameof(TotalBillCount));
 
+            InsertAllBillCommand.NotifyCanExecuteChanged();
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
             SelectedBill = TotalBillCount;
@@ -751,6 +752,7 @@ namespace AccountManager.ViewModels
             OnPropertyChanged(nameof(CurrentBillNumber));
             OnPropertyChanged(nameof(DynamicRowHeight));
 
+            InsertAllBillCommand.NotifyCanExecuteChanged();
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             AddNewStatementCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
@@ -781,6 +783,7 @@ namespace AccountManager.ViewModels
             OnPropertyChanged(nameof(CurrentBillNumber));
             OnPropertyChanged(nameof(DynamicRowHeight));
 
+            InsertAllBillCommand.NotifyCanExecuteChanged();
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
             AddNewStatementCommand.NotifyCanExecuteChanged();
@@ -809,21 +812,19 @@ namespace AccountManager.ViewModels
                     {
                         s.LoginDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
                         _sqliteHelper.Add(s);
-                        });
+                    });
                 }
             }
             MessageBox.Show("完成入賬!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
             ExecuteDeleteAllBillCommand();//清空當前訂單資料
         }
-        public bool CanExecuteInsertAllBillCommand
+        public bool CanExecuteInsertAllBillCommand()
         {
-            get
-            {
-                if (_billListDictionary == null || _billListDictionary.Count == 0)
-                    return false;
-                else
-                    return true;
-            }
+
+            if (BillListDictionary == null || BillListDictionary.Count == 0)
+                return false;
+            else
+                return true;
         }
         /// <summary>
         /// 翻頁(0最前 1前 2後 3最後)
@@ -967,13 +968,13 @@ namespace AccountManager.ViewModels
         {
             var ExistedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionNumber='{ConsumptionNumber}'");
 
-            if(ExistedBills!=null&& ExistedBills.Count() != 0)
+            if (ExistedBills != null && ExistedBills.Count() != 0)
             {
                 var result = MessageBox.Show("訂單編號已存在，是否要從資料庫清除後重新提交訂單", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    ExistedBills.ForEach(s=>_sqliteHelper.Delete<EssentialModel>(s));
+                    ExistedBills.ForEach(s => _sqliteHelper.Delete<EssentialModel>(s));
                 }
             }
         }
