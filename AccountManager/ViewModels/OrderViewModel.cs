@@ -37,6 +37,7 @@ namespace AccountManager.ViewModels
                 AddNewStatementCommand.NotifyCanExecuteChanged();
             }
         }
+        private SQLiteHelper _sqliteHelper;
         /// <summary>
         /// 紀錄訂單順序
         /// </summary>
@@ -518,6 +519,8 @@ namespace AccountManager.ViewModels
             FirstBillCommand = new RelayCommand(ExecuteFirstBillCommand);
             LastBillCommand = new RelayCommand(ExecuteLastBillCommand);
             Initialize();
+            _sqliteHelper = new SQLiteHelper();
+            _sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
         }
         public RelayCommand AddNewBillCommand { get; }
         public RelayCommand AddNewStatementCommand { get; }
@@ -538,6 +541,8 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteAddNewBillCommand()
         {
+            IsBillExistedInDB(BillNumber);
+
             if (string.IsNullOrWhiteSpace(BillNumber))//沒有訂單號
                 return;
 
@@ -798,14 +803,17 @@ namespace AccountManager.ViewModels
 
             if (result == MessageBoxResult.Yes)
             {
-                SQLiteHelper sqliteHelper = new SQLiteHelper();
-                sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
-
                 foreach (var bill in _billListDictionary)
                 {
-                    bill.Value.ForEach(s => sqliteHelper.Add(s));
+                    bill.Value.ForEach(s =>
+                    {
+                        s.LoginDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        _sqliteHelper.Add(s);
+                        });
                 }
             }
+            MessageBox.Show("完成入賬!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            ExecuteDeleteAllBillCommand();//清空當前訂單資料
         }
         public bool CanExecuteInsertAllBillCommand
         {
@@ -950,6 +958,24 @@ namespace AccountManager.ViewModels
                               .Sum();
 
             OnPropertyChanged(nameof(TotalCost));
+        }
+        /// <summary>
+        /// 判斷資料庫中訂單
+        /// </summary>
+        /// <param name="ConsumptionNumber"></param>
+        private void IsBillExistedInDB(string ConsumptionNumber)
+        {
+            var ExistedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionNumber='{ConsumptionNumber}'");
+
+            if(ExistedBills!=null&& ExistedBills.Count() != 0)
+            {
+                var result = MessageBox.Show("訂單編號已存在，是否要從資料庫清除後重新提交訂單", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    ExistedBills.ForEach(s=>_sqliteHelper.Delete<EssentialModel>(s));
+                }
+            }
         }
     }
 }

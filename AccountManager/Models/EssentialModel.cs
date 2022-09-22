@@ -92,7 +92,7 @@ namespace AccountManager.Models
         /// <summary>
         /// 登錄日期時間
         /// </summary>
-        public int LoginDateTime { set; get; }
+        public string LoginDateTime { set; get; }
         /// <summary>
         /// 登錄者帳號
         /// </summary>

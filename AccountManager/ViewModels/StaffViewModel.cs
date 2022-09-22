@@ -512,7 +512,7 @@ namespace AccountManager.ViewModels
 
         private ICommand _selectionChangedCommand;
 
-        public  string GetAuthority()
+        public string GetAuthority()
         {
             var authority = new InternalSystemModel();
 
