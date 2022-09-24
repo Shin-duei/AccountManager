@@ -77,6 +77,8 @@ namespace AccountManager.Views
             {
                 return;
             }
+            passwordBox.Password = "";
+            passwordBox_confirm.Password = "";
         }
 
         private void passwordBox_PasswordChanged(object sender, RoutedEventArgs e)

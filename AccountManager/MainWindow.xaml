@@ -10,7 +10,7 @@
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:view="clr-namespace:AccountManager.Views"
     Title="愛尚‧沙龍"
-    Width="1070.667"
+    Width="1150"
     Height="630"
     Background="White"
     mc:Ignorable="d">
@@ -86,6 +86,9 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>
+                <Grid>
+                    <view:SalaryView />
+                </Grid>
             </TabItem>
             <TabItem ToolTip="統計資料查詢">
                 <TabItem.Header>

@@ -133,10 +133,15 @@
     <Compile Include="SQLiteResources\SQLiteAsync.cs" />
     <Compile Include="ViewModels\OrderDataGridViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
+    <Compile Include="ViewModels\SalaryDataGridViewModel.cs" />
+    <Compile Include="ViewModels\SalaryViewModel.cs" />
     <Compile Include="ViewModels\StaffDataGridViewModel.cs" />
     <Compile Include="ViewModels\StaffViewModel.cs" />
     <Compile Include="Views\OrderView.xaml.cs">
       <DependentUpon>OrderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SalaryView.xaml.cs">
+      <DependentUpon>SalaryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StaffView.xaml.cs">
       <DependentUpon>StaffView.xaml</DependentUpon>
@@ -158,6 +163,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OrderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SalaryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

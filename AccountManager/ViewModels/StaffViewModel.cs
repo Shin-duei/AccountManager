@@ -1,4 +1,5 @@
-﻿using AccountManager.Models;
+﻿using AccountManager.Enums;
+using AccountManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
@@ -398,6 +399,23 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private List<string> _positionList;
+        public List<string> PositionList
+        {
+            set
+            {
+                if (_positionList != value)
+                {
+                    _positionList = value;
+
+                    OnPropertyChanged(nameof(PositionList));
+                }
+            }
+            get
+            {
+                return _positionList;
+            }
+        }
 
         public StaffViewModel()
         {
@@ -405,6 +423,8 @@ namespace AccountManager.ViewModels
             CancelStaffCommand = new RelayCommand(ExecuteCancelStaffCommand, CanExecuteCancelStaffCommand);
             EditStaffCommand = new RelayCommand(ExecuteEditStaffCommand);
 
+            PositionList = new List<string>() {"設計師","助理" };
+    
             _sqliteHelper = new SQLiteHelper();
             _sqliteHelper.db.CreateTable<StaffModel>();//表已存在不會重覆創建
             var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff");
@@ -448,6 +468,8 @@ namespace AccountManager.ViewModels
             StaffListDisplay.Add(newStaff);
             _sqliteHelper.Add(newStaff);
             ID = (++MaxId).ToString("000");
+
+            RestInputUI();
         }
         /// <summary>
         /// 執行編輯

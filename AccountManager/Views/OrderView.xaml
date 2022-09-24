@@ -9,7 +9,8 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:OrderViewModel}"
+    xmlns:viewmodels="clr-namespace:AccountManager.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:OrderViewModel}"
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
@@ -264,10 +265,11 @@
                     VerticalAlignment="Center"
                     Text="設計師: " />
                 <ComboBox
-                    x:Name="textBoxDesigner"
+                    x:Name="ComboBoxDesigner"
                     Width="108"
                     Height="22"
                     VerticalAlignment="Center"
+                    DropDownOpened="ComboBoxDesigner_DropDownOpened"
                     ItemsSource="{Binding DesignerList}"
                     SelectedIndex="0"
                     SelectedItem="{Binding SeletedDesigner}" />
@@ -278,11 +280,12 @@
                     VerticalAlignment="Center"
                     Text="助理1: " />
                 <ComboBox
-                    x:Name="textBoxAssistant1"
+                    x:Name="ComboBoxAssistant1"
                     Width="108"
                     Height="22"
                     Margin="0,6,0,7"
                     VerticalAlignment="Center"
+                    DropDownOpened="ComboBoxAssistant1_DropDownOpened"
                     ItemsSource="{Binding AssistantList}"
                     SelectedIndex="0"
                     SelectedItem="{Binding SeletedAssistant1}" />
@@ -314,6 +317,21 @@
                     IsEnabled="{Binding CanSelectAssistant3}"
                     ItemsSource="{Binding AssistantList3}"
                     SelectedItem="{Binding SeletedAssistant3}" />
+                <TextBlock
+                    x:Name="TextBlockRemark"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="備註: " />
+                <TextBox
+                    x:Name="textBoxRemark"
+                    Width="117"
+                    Height="23"
+                    Margin="0,6"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Text="{Binding Remark}"
+                    TextWrapping="Wrap" />
             </StackPanel>
             <StackPanel
                 Grid.Row="4"
@@ -376,6 +394,9 @@
                 Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
                 IsReadOnly="True"
                 ItemsSource="{Binding BillDisplay}"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectionUnit="FullRow">
                 <ie:Interaction.Triggers>
                     <ie:EventTrigger EventName="SelectionChanged">
@@ -439,6 +460,10 @@
                         Width="Auto"
                         Binding="{Binding Assistant3}"
                         Header="助理3" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Remark}"
+                        Header="備註" />
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel

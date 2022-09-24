@@ -1,4 +1,5 @@
-﻿using AccountManager.ViewModels;
+﻿using AccountManager.Models;
+using AccountManager.ViewModels;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,13 @@ namespace AccountManager.Views
     /// </summary>
     public partial class OrderView : UserControl
     {
-        //OrderViewModel ViewModel => DataContext as OrderViewModel;
+        public OrderViewModel ViewModel
+        {
+            get
+            {
+                return this.DataContext as OrderViewModel;
+            }
+        }
         public OrderView()
         {
             InitializeComponent();
@@ -47,6 +54,51 @@ namespace AccountManager.Views
         private void TextBox_previewTextInput_IncludeAlphabet(object sender, TextCompositionEventArgs e)
         {
             e.Handled = new Regex("[^A-Z0-9]").IsMatch(e.Text);
+        }
+        /// <summary>
+        /// 更新下拉表單
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxDesigner_DropDownOpened(object sender, EventArgs e)
+        {
+            var staffList = ViewModel._sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");
+
+            if (staffList != null && staffList.Count != 0)
+            {
+                var staffGroup = staffList.GroupBy(s => s.Position).ToList();
+
+                var designer = staffGroup.FirstOrDefault(s => s.Key == "設計師");
+                if (designer != null)
+                {
+                    ViewModel.DesignerList = new List<string>();
+                    designer.ToList().ForEach(s => ViewModel.DesignerList.Add(s.ID));
+                }
+
+                ComboBoxDesigner.Items.Refresh();
+            }
+        }
+        /// <summary>
+        /// 更新下拉表單
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComboBoxAssistant1_DropDownOpened(object sender, EventArgs e)
+        {
+            var staffList = ViewModel._sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");
+
+            if (staffList != null && staffList.Count != 0)
+            {
+                var staffGroup = staffList.GroupBy(s => s.Position).ToList();
+
+                var assistant = staffGroup.FirstOrDefault(s => s.Key == "助理");
+                if (assistant != null)
+                {
+                    ViewModel.AssistantList = new List<string>();
+                    assistant.ToList().ForEach(s => ViewModel.AssistantList.Add(s.ID));
+                }
+                ComboBoxAssistant1.Items.Refresh();
+            }
         }
     }
 }

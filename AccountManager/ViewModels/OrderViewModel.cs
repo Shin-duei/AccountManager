@@ -37,7 +37,7 @@ namespace AccountManager.ViewModels
                 AddNewStatementCommand.NotifyCanExecuteChanged();
             }
         }
-        private SQLiteHelper _sqliteHelper;
+        public  SQLiteHelper _sqliteHelper;
         /// <summary>
         /// 紀錄訂單順序
         /// </summary>
@@ -283,6 +283,20 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private string _remark;
+        public string Remark
+        {
+            get { return _remark; }
+            set
+            {
+                if (_remark != value)
+                {
+                    _remark = value;
+
+                    OnPropertyChanged(nameof(Remark));
+                }
+            }
+        }
         private string _customerName;
         public string CustomerName
         {
@@ -506,6 +520,9 @@ namespace AccountManager.ViewModels
         }
         public OrderViewModel()
         {
+            _sqliteHelper = new SQLiteHelper();
+            _sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
+
             AddNewBillCommand = new RelayCommand(ExecuteAddNewBillCommand);
             AddNewStatementCommand = new RelayCommand(ExecuteAddNewStatementCommand, CanExecuteAddNewStatementCommand);
             EditStatementCommand = new RelayCommand(ExecuteEditStatementCommand, CanExecuteEditStatementCommand);
@@ -519,8 +536,6 @@ namespace AccountManager.ViewModels
             FirstBillCommand = new RelayCommand(ExecuteFirstBillCommand);
             LastBillCommand = new RelayCommand(ExecuteLastBillCommand);
             Initialize();
-            _sqliteHelper = new SQLiteHelper();
-            _sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
         }
         public RelayCommand AddNewBillCommand { get; }
         public RelayCommand AddNewStatementCommand { get; }
@@ -613,9 +628,10 @@ namespace AccountManager.ViewModels
                 Designer = SeletedDesigner,
                 Assistant1 = SeletedAssistant1,
                 Assistant2 = SeletedAssistant2,
-                Assistant3 = SeletedAssistant3
+                Assistant3 = SeletedAssistant3,
+                Remark = Remark
 
-            });
+        });
 
             RefreshDataGrid(bill);
         }
@@ -698,6 +714,7 @@ namespace AccountManager.ViewModels
                     s.Assistant1 = SeletedAssistant1;
                     s.Assistant2 = SeletedAssistant2;
                     s.Assistant3 = SeletedAssistant3;
+                    s.Remark = Remark;
                 }
             });
             RefreshDataGrid(bill);
@@ -907,25 +924,35 @@ namespace AccountManager.ViewModels
         private void Initialize()
         {
             BillDisplay = new ObservableCollection<EssentialModel>();
-            BillNumber = "202208260001";
+            BillNumber = DateTime.Now.ToString("yyyyMMdd");
             ConsumptionDate = DateTime.Now;
             CustomerName = "陳XX";
             MembershipNumber = "M124423";
             Count = 1;
             IsCashPay = true;
 
-            DesignerList = new List<string>(){
-                                                "",
-                                                "Amy Chen",
-                                                "Cart Lin"};
 
-            AssistantList = new List<string>(){
-                                        "",
-                                    "Tom Chen",
-                                    "Leo Liu",
-                                    "Peter",
-                                    "Wang Pi",};
+            var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");
+            
+            if(staffList!=null&& staffList.Count != 0)
+            {
+                var staffGroup=staffList.GroupBy(s => s.Position).ToList();
 
+                var designer = staffGroup.FirstOrDefault(s => s.Key == "設計師");
+                if (designer != null)
+                {
+                    DesignerList = new List<string>();
+                    designer.ToList().ForEach(s => DesignerList.Add(s.ID));
+                }
+
+                var assistant = staffGroup.FirstOrDefault(s => s.Key == "助理");
+                if (assistant != null)
+                {
+                    AssistantList = new List<string>();
+                    assistant.ToList().ForEach(s => AssistantList.Add(s.ID));
+                }
+            }
+            
             OrderItemList = new List<string>(){
                                         "洗髮",
                                         "剪髮",

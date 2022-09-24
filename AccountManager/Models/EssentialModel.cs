@@ -54,7 +54,7 @@ namespace AccountManager.Models
         /// </summary>
         public string ConsumptionItem { set; get; }
         /// <summary>
-        /// 設計師
+        /// 設計師ID
         /// </summary>
         public string Designer { set; get; }
         /// <summary>
