@@ -22,8 +22,8 @@
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="300" />
-            <RowDefinition Height="150*" />
+            <RowDefinition Height="500*" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="320*" />
@@ -94,7 +94,8 @@
             ScrollViewer.CanContentScroll="True"
             ScrollViewer.HorizontalScrollBarVisibility="Auto"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SelectionUnit="FullRow">
+            SelectionUnit="FullRow"
+            TargetUpdated="dataGrid_TargetUpdated">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="Auto"
@@ -146,7 +147,7 @@
                     Header="頭皮SPA" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding TotalSale}"
+                    Binding="{Binding TotalSale, StringFormat=c0}"
                     Header="總業績" />
                 <DataGridTemplateColumn Width="Auto" Header="業績分潤比例">
                     <DataGridTemplateColumn.CellTemplate>
@@ -162,15 +163,15 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding PercentCompleteSale}"
+                    Binding="{Binding PercentCompleteSale, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     Header="%" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding SaleProfit}"
+                    Binding="{Binding SaleProfit, StringFormat=c0}"
                     Header="業績分潤" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding Product}"
+                    Binding="{Binding Product, StringFormat=c0}"
                     Header="產品" />
                 <DataGridTemplateColumn Width="Auto" Header="產品分潤比例">
                     <DataGridTemplateColumn.CellTemplate>
@@ -190,15 +191,15 @@
                     Header="%" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding ProductProfit}"
+                    Binding="{Binding ProductProfit, StringFormat=c0}"
                     Header="產品分潤" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding Storge}"
+                    Binding="{Binding Storge, StringFormat=c0}"
                     Header="儲值" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding FinalSalary}"
+                    Binding="{Binding FinalSalary, StringFormat=c0}"
                     Header="薪資">
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -216,13 +217,64 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <GridSplitter
+        <!--<GridSplitter
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Height="5"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
-            Background="Black" />
+            Background="Black" />-->
+        <Grid Grid.Row="2" Background="White">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    x:Name="textBlock_Sale"
+                    Margin="20,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="業績總額:"
+                    TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="textBox_Sale"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding TotalSale, StringFormat=c0}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="textBlock_Product"
+                    Margin="110,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="產品銷售總額:"
+                    TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="textBox_Product"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding TotalProduct, StringFormat=c00}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    x:Name="textBlock_Salary"
+                    Margin="110,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="薪資支出總額:"
+                    TextWrapping="Wrap" />
+                <TextBox
+                    x:Name="textBox_Salary"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding TotalSalary, StringFormat=c00}"
+                    TextWrapping="Wrap" />
+
+            </StackPanel>
+            <Button
+                x:Name="button1"
+                Width="80"
+                Height="30"
+                Margin="0,0,10,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Content="&#xEC59;"
+                FontFamily="Segoe MDL2 Assets"
+                ToolTip="登錄為支出項目" />
+        </Grid>
     </Grid>
 </UserControl>

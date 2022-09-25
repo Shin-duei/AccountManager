@@ -53,8 +53,56 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private int _totalSale;
+        /// <summary>
+        /// 業績總額
+        /// </summary>
+        public int TotalSale
+        {
+            get { return _totalSale; }
+            set
+            {
+                if (_totalSale != value)
+                {
+                    _totalSale = value;
+                    OnPropertyChanged(nameof(TotalSale));
+                }
+            }
+        }
+        private int _totalProduct;
+        /// <summary>
+        /// 產品銷售總額
+        /// </summary>
+        public int TotalProduct
+        {
+            get { return _totalProduct; }
+            set
+            {
+                if (_totalProduct != value)
+                {
+                    _totalProduct = value;
+                    OnPropertyChanged(nameof(TotalProduct));
+                }
+            }
+        }
+        private int _totalSalary;
+        /// <summary>
+        /// 薪資支出總額
+        /// </summary>
+        public int TotalSalary
+        {
+            get { return _totalSalary; }
+            set
+            {
+                if (_totalSalary != value)
+                {
+                    _totalSalary = value;
+                    OnPropertyChanged(nameof(TotalSalary));
+                }
+            }
+        }
 
-        
+
         public SalaryViewModel()
         {
             SearchCommand = new RelayCommand(ExecuteSearchCommand);
@@ -159,6 +207,10 @@ namespace AccountManager.ViewModels
                 dataGridRow.PercentCompleteProduct = 10;
                 PerformanceList.Add(dataGridRow);
             }
+
+            TotalSale = PerformanceList.Sum(s => s.TotalSale);
+            TotalProduct = PerformanceList.Sum(s => s.Product);
+            TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
         }
     }
 }

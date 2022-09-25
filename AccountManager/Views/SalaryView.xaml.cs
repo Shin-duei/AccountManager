@@ -20,7 +20,7 @@ namespace AccountManager.Views
     /// SalaryView.xaml 的互動邏輯
     /// </summary>
     public partial class SalaryView : UserControl
-    {       
+    {
 
         public SalaryViewModel ViewModel
         {
@@ -34,7 +34,13 @@ namespace AccountManager.Views
             var viewModel = new SalaryViewModel();
             DataContext = viewModel;
             InitializeComponent();
+  
         }
 
-}
+
+        private void dataGrid_TargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            ViewModel.TotalSalary = (int)ViewModel.PerformanceList.Sum(s => s.FinalSalary);
+        }
+    }
 }
