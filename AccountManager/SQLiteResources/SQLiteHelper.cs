@@ -11,7 +11,7 @@ namespace AccountManager
 {
     public class SQLiteHelper
     {
-        public string connstr = Path.Combine(Environment.CurrentDirectory, "User.db");//沒有資料庫會創建資料庫
+        public string connstr = Path.Combine(Environment.CurrentDirectory, "Final_OK.db");//沒有資料庫會創建資料庫
         public SQLiteConnection db;
         public SQLiteHelper()
         {

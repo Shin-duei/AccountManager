@@ -294,21 +294,31 @@ namespace AccountManager.ViewModels
         /// </summary>
         public double SaleProfit
         {
-            get { return Math.Round( TotalSale* PercentCompleteSale*0.01); }
+            get {          
+                var  result=TotalSale* PercentCompleteSale*0.01;
+                if (result % 0.5 == 0)
+                    result += 0.1;
+                return Math.Round(result); }
         }
         /// <summary>
         /// 產品分潤
         /// </summary>
         public double ProductProfit
         {
-            get { return Math.Round(Product * PercentCompleteProduct * 0.01); }
+            get
+            {
+                var result = Product * PercentCompleteProduct * 0.01;
+                if (result % 0.5 == 0)
+                    result += 0.1;
+                return Math.Round(result);
+            }
         }
         /// <summary>
         /// 薪資
         /// </summary>
         public double FinalSalary
         {
-            get { return Math.Round(SaleProfit + ProductProfit); }
+            get { return SaleProfit + ProductProfit; }
         }
     }
 }
