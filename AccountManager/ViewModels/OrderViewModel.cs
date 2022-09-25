@@ -522,6 +522,7 @@ namespace AccountManager.ViewModels
         {
             _sqliteHelper = new SQLiteHelper();
             _sqliteHelper.db.CreateTable<EssentialModel>();//表已存在不會重覆創建
+            _sqliteHelper.db.CreateTable<StaffModel>();//表已存在不會重覆創建
 
             AddNewBillCommand = new RelayCommand(ExecuteAddNewBillCommand);
             AddNewStatementCommand = new RelayCommand(ExecuteAddNewStatementCommand, CanExecuteAddNewStatementCommand);
@@ -831,9 +832,9 @@ namespace AccountManager.ViewModels
                         _sqliteHelper.Add(s);
                     });
                 }
+                MessageBox.Show("完成入賬!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                ExecuteDeleteAllBillCommand();//清空當前訂單資料
             }
-            MessageBox.Show("完成入賬!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            ExecuteDeleteAllBillCommand();//清空當前訂單資料
         }
         public bool CanExecuteInsertAllBillCommand()
         {
@@ -930,7 +931,7 @@ namespace AccountManager.ViewModels
             MembershipNumber = "M124423";
             Count = 1;
             IsCashPay = true;
-
+            AssistantList = new List<string>();
 
             var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");
             
@@ -948,7 +949,6 @@ namespace AccountManager.ViewModels
                 var assistant = staffGroup.FirstOrDefault(s => s.Key == "助理");
                 if (assistant != null)
                 {
-                    AssistantList = new List<string>();
                     assistant.ToList().ForEach(s => AssistantList.Add(s.ID));
                 }
             }
