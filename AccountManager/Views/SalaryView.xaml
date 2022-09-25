@@ -187,7 +187,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding PercentCompleteProduct}"
+                    Binding="{Binding PercentCompleteProduct, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     Header="%" />
                 <DataGridTextColumn
                     Width="Auto"
