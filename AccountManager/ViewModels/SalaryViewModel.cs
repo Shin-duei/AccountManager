@@ -12,7 +12,7 @@ namespace AccountManager.ViewModels
 {
     public class SalaryViewModel : ObservableRecipient
     {
-        private SQLiteHelper _sqliteHelper;
+        public  SQLiteHelper _sqliteHelper;
 
         /// <summary>
         /// 顯示用列表

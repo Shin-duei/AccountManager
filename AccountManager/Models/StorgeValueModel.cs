@@ -31,16 +31,20 @@ namespace AccountManager.Models
         /// </summary>
         public int ImportExport { set; get; }
         /// <summary>
+        /// 會員姓名
+        /// </summary>
+        public string CustomerName { set; get; }
+        /// <summary>
         /// 會員編號
         /// </summary>
         public string CustomerID { set; get; }
         /// <summary>
         /// 員工編號
         /// </summary>
-        public int StaffID { set; get; }
+        public string StaffID { set; get; }
         /// <summary>
         /// 操作時間
         /// </summary>
-        public int WorkDataTime { set; get; }
+        public string WorkDataTime { set; get; }
     }
 }

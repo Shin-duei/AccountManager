@@ -137,6 +137,7 @@
     <Compile Include="ViewModels\SalaryViewModel.cs" />
     <Compile Include="ViewModels\StaffDataGridViewModel.cs" />
     <Compile Include="ViewModels\StaffViewModel.cs" />
+    <Compile Include="ViewModels\StorgeViewModel.cs" />
     <Compile Include="Views\OrderView.xaml.cs">
       <DependentUpon>OrderView.xaml</DependentUpon>
     </Compile>
@@ -145,6 +146,9 @@
     </Compile>
     <Compile Include="Views\StaffView.xaml.cs">
       <DependentUpon>StaffView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StorgeValueView.xaml.cs">
+      <DependentUpon>StorgeValueView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -171,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StaffView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StorgeValueView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

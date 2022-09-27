@@ -74,6 +74,9 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>
+                <Grid>
+                    <view:StorgeValueView />
+                </Grid>
             </TabItem>
             <TabItem ToolTip="薪資計算系統">
                 <TabItem.Header>
