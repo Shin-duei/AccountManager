@@ -3,7 +3,9 @@ using AccountManager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace AccountManager.Views
 {
@@ -43,6 +45,15 @@ namespace AccountManager.Views
                 staffList.ForEach(s=>ViewModel.StaffList.Add(s.ID));
                 ComboBox_Staff.Items.Refresh();
             }
+        }
+        /// <summary>
+        /// 只能輸入數字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = new Regex("[^0-9]+").IsMatch(e.Text);
         }
     }
 }

@@ -28,6 +28,8 @@ namespace AccountManager.ViewModels
         /// </summary>
         private Tuple<string, List<EssentialModel>> _currentBillDisplay;
 
+        private int _todayBill = 1;//自動訂單流水號
+
         public Tuple<string, List<EssentialModel>> CurrentBillDisplay
         {
             get { return _currentBillDisplay; }
@@ -37,7 +39,7 @@ namespace AccountManager.ViewModels
                 AddNewStatementCommand.NotifyCanExecuteChanged();
             }
         }
-        public  SQLiteHelper _sqliteHelper;
+        public SQLiteHelper _sqliteHelper;
         /// <summary>
         /// 紀錄訂單順序
         /// </summary>
@@ -128,7 +130,7 @@ namespace AccountManager.ViewModels
                 if (_consumptionDate != value)
                 {
                     _consumptionDate = value;
-
+                    BillNumber = SearchBillNumberInCurrentListAndDB(ConsumptionDate);
                     OnPropertyChanged(nameof(ConsumptionDate));
                 }
             }
@@ -588,6 +590,7 @@ namespace AccountManager.ViewModels
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
             SelectedBill = TotalBillCount;
+            BillNumber = SearchBillNumberInCurrentListAndDB(ConsumptionDate);
 
             OnPropertyChanged(nameof(VisibleDisplayCurrentBillNumber));
             OnPropertyChanged(nameof(CurrentBillNumber));
@@ -632,7 +635,7 @@ namespace AccountManager.ViewModels
                 Assistant3 = SeletedAssistant3,
                 Remark = Remark
 
-        });
+            });
 
             RefreshDataGrid(bill);
         }
@@ -774,7 +777,7 @@ namespace AccountManager.ViewModels
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             AddNewStatementCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
-
+            BillNumber = SearchBillNumberInCurrentListAndDB(ConsumptionDate);
         }
         public bool CanExecuteDeleteOneBillCommand()
         {
@@ -805,6 +808,7 @@ namespace AccountManager.ViewModels
             DeleteAllBillCommand.NotifyCanExecuteChanged();
             DeleteOneBillCommand.NotifyCanExecuteChanged();
             AddNewStatementCommand.NotifyCanExecuteChanged();
+            BillNumber = SearchBillNumberInCurrentListAndDB(ConsumptionDate);
         }
         public bool CanExecuteDeleteAllBillCommand()
         {
@@ -925,19 +929,17 @@ namespace AccountManager.ViewModels
         private void Initialize()
         {
             BillDisplay = new ObservableCollection<EssentialModel>();
-            BillNumber = DateTime.Now.ToString("yyyyMMdd");
             ConsumptionDate = DateTime.Now;
-            CustomerName = "陳XX";
-            MembershipNumber = "M124423";
+            BillNumber = ConsumptionDate.ToString("yyyyMMdd") + string.Format("{0:000}", _todayBill);
             Count = 1;
             IsCashPay = true;
             AssistantList = new List<string>();
 
-            var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");
-            
-            if(staffList!=null&& staffList.Count != 0)
+            var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");//在職員工
+
+            if (staffList != null && staffList.Count != 0)
             {
-                var staffGroup=staffList.GroupBy(s => s.Position).ToList();
+                var staffGroup = staffList.GroupBy(s => s.Position).ToList();
 
                 var designer = staffGroup.FirstOrDefault(s => s.Key == "設計師");
                 if (designer != null)
@@ -952,7 +954,7 @@ namespace AccountManager.ViewModels
                     assistant.ToList().ForEach(s => AssistantList.Add(s.ID));
                 }
             }
-            
+
             OrderItemList = new List<string>(){
                                         "洗髮",
                                         "剪髮",
@@ -993,17 +995,45 @@ namespace AccountManager.ViewModels
         /// <param name="ConsumptionNumber"></param>
         private void IsBillExistedInDB(string ConsumptionNumber)
         {
-            var ExistedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionNumber='{ConsumptionNumber}'");
+            var existedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionNumber='{ConsumptionNumber}'");
 
-            if (ExistedBills != null && ExistedBills.Count() != 0)
+            if (existedBills != null && existedBills.Count() != 0)
             {
                 var result = MessageBox.Show("訂單編號已存在，是否要從資料庫清除後重新提交訂單", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    ExistedBills.ForEach(s => _sqliteHelper.Delete<EssentialModel>(s));
+                    existedBills.ForEach(s => _sqliteHelper.Delete<EssentialModel>(s));
                 }
             }
+        }
+        private string SearchBillNumberInCurrentListAndDB(DateTime dateTime)
+        {
+            int consumptionDate = Int32.Parse(dateTime.ToString("yyyyMMdd"));
+
+            var existedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionDate='{consumptionDate}'");
+            var existedBillNumber = BillListDictionary.Keys.Select(s => s).Where(s => s.Substring(0, 8) == dateTime.ToString("yyyyMMdd"));
+            string maxBillNumberInDB = "0";
+            string maxBillNumberInList = "0";
+            try
+            {
+                if (existedBills != null && existedBills.Count() != 0)
+                    maxBillNumberInDB = existedBills.Select(s => s.ConsumptionNumber.Substring(8)).Max();
+
+                if (existedBillNumber != null && existedBillNumber.Count() != 0)
+                    maxBillNumberInList = existedBillNumber.Select(s => s.Substring(8)).Max();
+
+                if (Int32.Parse(maxBillNumberInDB) <= Int32.Parse(maxBillNumberInList))
+                    return dateTime.ToString("yyyyMMdd") + string.Format("{0:000}", Int32.Parse(maxBillNumberInList) + 1);
+                else if (Int32.Parse(maxBillNumberInDB) > Int32.Parse(maxBillNumberInList))
+                    return dateTime.ToString("yyyyMMdd") + string.Format("{0:000}", Int32.Parse(maxBillNumberInDB) + 1);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Int32.Parse(dateTime.ToString("yyyyMMdd")) + string.Format("{0:000}", 1);
+
         }
     }
 }

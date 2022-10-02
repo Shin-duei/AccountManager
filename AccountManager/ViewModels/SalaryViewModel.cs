@@ -12,7 +12,7 @@ namespace AccountManager.ViewModels
 {
     public class SalaryViewModel : ObservableRecipient
     {
-        public  SQLiteHelper _sqliteHelper;
+        public SQLiteHelper _sqliteHelper;
 
         /// <summary>
         /// 顯示用列表
@@ -122,6 +122,8 @@ namespace AccountManager.ViewModels
 
             var allStatement = _sqliteHelper.Query<EssentialModel>($"select * from BillDetails WHERE ConsumptionDate BETWEEN '{initialDate}' AND '{finalDate}'");//消費明細
 
+            var allStorgeHistory = _sqliteHelper.Query<StorgeValueModel>($"select * from StorgeValue WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//儲值金
+
             var allBill = allStatement.GroupBy(s => s.ConsumptionNumber).ToList();//按照訂單編號分類
 
             Dictionary<StaffModel, List<List<EssentialModel>>> everyStaffBill = new Dictionary<StaffModel, List<List<EssentialModel>>>();//每個員工的訂單
@@ -151,9 +153,16 @@ namespace AccountManager.ViewModels
                 int totalSPA = 0;
                 int totalUnassign = 0;
                 int totalAssign = 0;
-
-                int totalStorge = 0;
                 int totalProductIncome = 0;
+                int totalStorge = 0;
+
+                if (allStorgeHistory != null && allStorgeHistory.Count > 0)//顯示經手的儲值金
+                {
+                   var totalStaffStorge = allStorgeHistory.Where(s => s.StaffID == staff.Key.ID).Select(s => s.ImportExport);
+
+                    if (totalStaffStorge != null)
+                        totalStorge= totalStaffStorge.Sum();
+                }
 
                 foreach (var bill in staff.Value)
                 {
@@ -198,13 +207,14 @@ namespace AccountManager.ViewModels
                 dataGridRow.Dye = totalDye;
                 dataGridRow.Perm = totalPerm;
                 dataGridRow.Protect = totalProtect;
-                dataGridRow.SPA=totalSPA;
+                dataGridRow.SPA = totalSPA;
                 dataGridRow.Product = totalProductIncome;
                 dataGridRow.Storge = 0;
                 dataGridRow.Unassign = totalUnassign;
                 dataGridRow.Assign = totalAssign;
                 dataGridRow.PercentCompleteSale = 50;
                 dataGridRow.PercentCompleteProduct = 10;
+                dataGridRow.Storge=totalStorge;
                 PerformanceList.Add(dataGridRow);
             }
 

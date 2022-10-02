@@ -50,7 +50,7 @@
             </DatePicker>
             <TextBlock
                 x:Name="textBlock_Name"
-                Margin="40,0,0,0"
+                Margin="20,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="會員姓名:"
@@ -64,7 +64,7 @@
 
             <TextBlock
                 x:Name="textBlock_Id"
-                Margin="40,0,0,0"
+                Margin="20,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="會員編號:"
@@ -77,7 +77,7 @@
                 TextWrapping="Wrap" />
             <TextBlock
                 x:Name="textBlock_Value"
-                Margin="40,0,0,0"
+                Margin="20,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="儲值金額:"
@@ -86,11 +86,13 @@
                 x:Name="textBox_Value"
                 Width="80"
                 VerticalAlignment="Center"
+                InputMethod.IsInputMethodEnabled="False"
+                PreviewTextInput="TextBox_PreviewTextInput"
                 Text="{Binding Value}"
                 TextWrapping="Wrap" />
             <TextBlock
                 x:Name="textBlock_Staff"
-                Margin="40,0,0,0"
+                Margin="20,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="經手人編號:"
@@ -99,19 +101,32 @@
                 x:Name="ComboBox_Staff"
                 Width="80"
                 VerticalAlignment="Center"
-                 DropDownOpened="ComboBoxDesigner_DropDownOpened"
-                    ItemsSource="{Binding StaffList}"
-                    SelectedIndex="0"
-                    SelectedItem="{Binding Handler}" />
+                DropDownOpened="ComboBoxDesigner_DropDownOpened"
+                ItemsSource="{Binding StaffList}"
+                SelectedIndex="0"
+                SelectedItem="{Binding Handler}" />
             <Button
                 x:Name="button"
                 Width="60"
                 Height="30"
-                Margin="40,0,0,0"
+                Margin="20,0,0,0"
                 VerticalAlignment="Center"
-                                    Command="{Binding InsertCommand}"
+                Command="{Binding InsertCommand}"
                 ToolTip="記錄儲值">
                 <materialDesign:PackIcon Background="Transparent" Kind="AccountCash">
+                    <materialDesign:PackIcon.LayoutTransform>
+                        <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+                    </materialDesign:PackIcon.LayoutTransform>
+                </materialDesign:PackIcon>
+            </Button>
+            <Button
+                x:Name="button_Cancel"
+                Width="60"
+                Height="30"
+                Margin="20,0,0,0"
+                Command="{Binding DeleteCommand}"
+                ToolTip="刪除">
+                <materialDesign:PackIcon Background="Transparent" Kind="FileRemoveOutline">
                     <materialDesign:PackIcon.LayoutTransform>
                         <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
                     </materialDesign:PackIcon.LayoutTransform>
@@ -147,7 +162,7 @@
                 </DatePicker>
                 <TextBlock
                     x:Name="textBlock_Final"
-                    Margin="40,0,0,0"
+                    Margin="20,0,0,0"
                     VerticalAlignment="Center"
                     Text="結束日期:"
                     TextWrapping="Wrap" />
@@ -169,7 +184,7 @@
                     Height="30"
                     Margin="20,0,0,0"
                     VerticalAlignment="Center"
-
+                    Command="{Binding SearchCommand}"
                     ToolTip="搜尋">
                     <materialDesign:PackIcon
                         Width="21"
@@ -181,6 +196,7 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </Button>
+
             </StackPanel>
             <DataGrid
                 x:Name="dataGrid"
@@ -193,6 +209,11 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectionUnit="FullRow">
+                <ie:Interaction.Triggers>
+                    <ie:EventTrigger EventName="SelectionChanged">
+                        <ie:InvokeCommandAction Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=dataGrid}" />
+                    </ie:EventTrigger>
+                </ie:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="Auto"
