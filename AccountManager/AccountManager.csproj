@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>AccountManager.App</StartupObject>
+    <StartupObject>AccountManager.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -131,10 +131,13 @@
     <Compile Include="SQLiteResources\SQLiteHelper.cs" />
     <Compile Include="SQLiteResources\SQLite.cs" />
     <Compile Include="SQLiteResources\SQLiteAsync.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrderDataGridViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\SalaryDataGridViewModel.cs" />
     <Compile Include="ViewModels\SalaryViewModel.cs" />
+    <Compile Include="ViewModels\SettingViewModel.cs" />
+    <Compile Include="ViewModels\SignInViewModel.cs" />
     <Compile Include="ViewModels\StaffDataGridViewModel.cs" />
     <Compile Include="ViewModels\StaffViewModel.cs" />
     <Compile Include="ViewModels\StorgeViewModel.cs" />
@@ -143,6 +146,12 @@
     </Compile>
     <Compile Include="Views\SalaryView.xaml.cs">
       <DependentUpon>SalaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingView.xaml.cs">
+      <DependentUpon>SettingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SignInView.xaml.cs">
+      <DependentUpon>SignInView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\StaffView.xaml.cs">
       <DependentUpon>StaffView.xaml</DependentUpon>
@@ -171,6 +180,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SalaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SignInView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

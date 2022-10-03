@@ -1,0 +1,105 @@
+﻿<metro:MetroWindow
+    x:Class="AccountManager.Views.SignInView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:AccountManager.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    Title="登入"
+    Width="276.667"
+    Height="168.667"
+    Background="#FFCFA9A9"
+    mc:Ignorable="d">
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/CustomControlResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Offset="1" Color="#FF535AD8" />
+                <GradientStop Offset="0.008" Color="#FFA66FDC" />
+                <GradientStop Offset="0.205" Color="#FFA66FDC" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <TextBlock
+            x:Name="TextBlock_Title"
+            Width="131"
+            Height="23"
+            Margin="72,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontFamily="Microsoft JhengHei"
+            FontSize="18"
+            FontWeight="Bold"
+            Text="愛尚‧沙龍"
+            TextAlignment="Center"
+            TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="textBlock_ID"
+            Margin="45,50,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text="帳號:"
+            TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="textBlock_Password"
+            Margin="45,75,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text="密碼:"
+            TextWrapping="Wrap" />
+        <TextBox
+            x:Name="textBox_ID"
+            Width="150"
+            Height="25"
+            Margin="79,46,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text="{Binding ID}"
+            TextWrapping="Wrap" />
+        <TextBox
+            Name="passwordTxtBox"
+            Width="150"
+            Height="25"
+            Margin="79,71,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text="{Binding Password}"
+            Visibility="Collapsed" />
+        <PasswordBox
+            x:Name="passwordBox"
+            Width="150"
+            Height="25"
+            Margin="79,71,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            PasswordChanged="passwordBox_PasswordChanged" />
+        <Button
+            x:Name="button"
+            Width="182"
+            Height="25"
+            Margin="47,101,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Click="button_Click_1"
+            Content="登入"
+            FontSize="12" />
+        <Button
+            x:Name="button_PW"
+            Width="20"
+            Height="20"
+            Margin="234,75,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Click="button_Click">
+            <materialDesign:PackIcon Background="Transparent" Kind="Eye" />
+        </Button>
+    </Grid>
+</metro:MetroWindow>
