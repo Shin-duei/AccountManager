@@ -131,6 +131,7 @@
     <Compile Include="SQLiteResources\SQLiteHelper.cs" />
     <Compile Include="SQLiteResources\SQLite.cs" />
     <Compile Include="SQLiteResources\SQLiteAsync.cs" />
+    <Compile Include="ViewModels\IncomeExpenditureViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\OrderDataGridViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
@@ -141,6 +142,9 @@
     <Compile Include="ViewModels\StaffDataGridViewModel.cs" />
     <Compile Include="ViewModels\StaffViewModel.cs" />
     <Compile Include="ViewModels\StorgeViewModel.cs" />
+    <Compile Include="Views\IncomeExpenditureView.xaml.cs">
+      <DependentUpon>IncomeExpenditureView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OrderView.xaml.cs">
       <DependentUpon>OrderView.xaml</DependentUpon>
     </Compile>
@@ -172,6 +176,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\CustomControlResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IncomeExpenditureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,5 @@
-﻿using AccountManager.Models;
+﻿using AccountManager.Enums;
+using AccountManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace AccountManager.ViewModels
 {
@@ -106,11 +108,14 @@ namespace AccountManager.ViewModels
         public SalaryViewModel()
         {
             SearchCommand = new RelayCommand(ExecuteSearchCommand);
+            InsertToDBCommand = new RelayCommand(ExecuteInsertToDBCommand);
             _sqliteHelper = new SQLiteHelper();
             InitialDate = DateTime.Now.AddDays(-DateTime.Now.Day + 1);
             FinalDate = DateTime.Now.AddMonths(1).AddDays(-DateTime.Now.AddMonths(1).Day);
         }
         public RelayCommand SearchCommand { get; }
+
+        public RelayCommand InsertToDBCommand { get; }
 
         private void ExecuteSearchCommand()
         {
@@ -158,10 +163,10 @@ namespace AccountManager.ViewModels
 
                 if (allStorgeHistory != null && allStorgeHistory.Count > 0)//顯示經手的儲值金
                 {
-                   var totalStaffStorge = allStorgeHistory.Where(s => s.StaffID == staff.Key.ID).Select(s => s.ImportExport);
+                    var totalStaffStorge = allStorgeHistory.Where(s => s.StaffID == staff.Key.ID).Select(s => s.ImportExport);
 
                     if (totalStaffStorge != null)
-                        totalStorge= totalStaffStorge.Sum();
+                        totalStorge = totalStaffStorge.Sum();
                 }
 
                 foreach (var bill in staff.Value)
@@ -214,13 +219,33 @@ namespace AccountManager.ViewModels
                 dataGridRow.Assign = totalAssign;
                 dataGridRow.PercentCompleteSale = 50;
                 dataGridRow.PercentCompleteProduct = 10;
-                dataGridRow.Storge=totalStorge;
+                dataGridRow.Storge = totalStorge;
                 PerformanceList.Add(dataGridRow);
             }
 
             TotalSale = PerformanceList.Sum(s => s.TotalSale);
             TotalProduct = PerformanceList.Sum(s => s.Product);
             TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
+        }
+
+        private void ExecuteInsertToDBCommand()
+        {
+            var result = MessageBox.Show("是否將薪資支出登錄到收支列表?", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                IncomeExpenditureModel item = new IncomeExpenditureModel()
+                {
+                    Item= $"{InitialDate.ToString("MM")}月薪資",
+                    Cost = TotalSalary,
+                    Date = DateTime.Now.ToString("yyyyMMdd"),
+                    ItemType = IncomeExpenditure.Expenditure,
+                    LoginDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+                _sqliteHelper.db.CreateTable<IncomeExpenditureModel>();//表已存在不會重覆創建
+                _sqliteHelper.Add(item);
+                MessageBox.Show("完成入賬!", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }

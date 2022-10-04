@@ -263,7 +263,6 @@
                     VerticalAlignment="Center"
                     Text="{Binding TotalSalary, StringFormat=c00}"
                     TextWrapping="Wrap" />
-
             </StackPanel>
             <Button
                 x:Name="button1"
@@ -274,6 +273,7 @@
                 VerticalAlignment="Center"
                 Content="&#xEC59;"
                 FontFamily="Segoe MDL2 Assets"
+                Command="{Binding InsertToDBCommand}"
                 ToolTip="登錄為支出項目" />
         </Grid>
     </Grid>

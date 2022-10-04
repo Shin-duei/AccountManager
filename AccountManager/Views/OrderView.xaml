@@ -41,16 +41,7 @@
                 Margin="0,0,0,1"
                 Background="White"
                 Orientation="Horizontal">
-                <Button
-                    x:Name="button1"
-                    Width="60"
-                    Height="30"
-                    Margin="10,0,0,0"
-                    VerticalAlignment="Center"
-                    Command="{Binding AddNewBillCommand}"
-                    Content="&#xE82E;"
-                    FontFamily="Segoe MDL2 Assets"
-                    ToolTip="增加訂單" />
+
                 <TextBlock
                     x:Name="TextBlockOrderDate"
                     Margin="10,0,0,0"
@@ -126,7 +117,16 @@
                     VerticalAlignment="Center"
                     Text="{Binding CustomerName}"
                     TextWrapping="Wrap" />
-
+                <Button
+                    x:Name="button1"
+                    Width="60"
+                    Height="30"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding AddNewBillCommand}"
+                    Content="&#xE82E;"
+                    FontFamily="Segoe MDL2 Assets"
+                    ToolTip="增加訂單" />
 
             </StackPanel>
             <StackPanel

@@ -49,6 +49,9 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
+    <Style x:Key="ColumnHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+    </Style>
     <Style TargetType="DataGridCell">
         <Setter Property="Template">
             <Setter.Value>

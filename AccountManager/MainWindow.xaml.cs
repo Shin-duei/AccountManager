@@ -22,18 +22,18 @@ namespace AccountManager
             var mainWindowViewModel = new MainWindowViewModel();
             DataContext = mainWindowViewModel;
 
-            var signInView = new SignInView();
-            bool checkValidity=(bool)signInView.ShowDialog();
+            //var signInView = new SignInView();
+            //bool checkValidity=(bool)signInView.ShowDialog();
 
-            if (checkValidity)
-            {
-                ViewModel.ID = signInView.textBox_ID.Text;
-                SettingView.ViewModel.ID = ViewModel.ID;
-            }
-            else
-            {
-                System.Environment.Exit(0);
-            }
+            //if (checkValidity)
+            //{
+            //    ViewModel.ID = signInView.textBox_ID.Text;
+            //    SettingView.ViewModel.ID = ViewModel.ID;
+            //}
+            //else
+            //{
+            //    System.Environment.Exit(0);
+            //}
         }
     }
 }

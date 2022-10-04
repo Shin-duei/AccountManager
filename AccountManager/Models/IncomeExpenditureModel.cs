@@ -12,7 +12,7 @@ namespace AccountManager.Models
     /// <summary>
     /// 員工資料
     /// </summary>
-    [Table("Income Expenditure")]//表單名稱
+    [Table("IncomeExpenditure")]//表單名稱
     public class IncomeExpenditureModel
     {
         /// <summary>
@@ -25,7 +25,7 @@ namespace AccountManager.Models
         /// <summary>
         /// 登入日期
         /// </summary>
-        public string Data { set; get; }
+        public string Date{ set; get; }
         /// <summary>
         /// 收入或支出
         /// </summary>
@@ -41,7 +41,7 @@ namespace AccountManager.Models
         /// <summary>
         /// 登錄日期時間
         /// </summary>
-        public int LoginDateTime { set; get; }
+        public string LoginDateTime { set; get; }
         /// <summary>
         /// 登錄者帳號
         /// </summary>

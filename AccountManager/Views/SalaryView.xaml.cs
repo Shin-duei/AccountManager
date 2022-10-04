@@ -31,10 +31,10 @@ namespace AccountManager.Views
         }
         public SalaryView()
         {
+
+            InitializeComponent();
             var viewModel = new SalaryViewModel();
             DataContext = viewModel;
-            InitializeComponent();
-  
         }
 
 
