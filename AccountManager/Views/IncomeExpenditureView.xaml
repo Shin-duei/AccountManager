@@ -145,6 +145,18 @@
                         <ie:InvokeCommandAction Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=dataGrid}" />
                     </ie:EventTrigger>
                 </ie:Interaction.Triggers>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ItemType}" Value="Expenditure">
+                                <Setter Property="Background" Value="PaleVioletRed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ItemType}" Value="Income">
+                                <Setter Property="Background" Value="Gold" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="Auto"

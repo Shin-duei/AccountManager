@@ -80,7 +80,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
-            PasswordChanged="passwordBox_PasswordChanged" />
+            PasswordChanged="passwordBox_PasswordChanged" KeyDown="OnKeyDownHandler"/>
         <Button
             x:Name="button"
             Width="182"

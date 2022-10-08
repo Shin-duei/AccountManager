@@ -70,14 +70,7 @@ namespace AccountManager.Views
 
         private void button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (!CheckIdentity())
-            {
-                MessageBox.Show("帳號或密碼錯誤!", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            this.DialogResult = true;
-            this.Close();
+            SignIn();
         }
         private bool CheckIdentity()
         {
@@ -102,6 +95,21 @@ namespace AccountManager.Views
                 return false;
             }
             return false;
+        }
+        private void OnKeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                SignIn();
+        }
+        private void SignIn()
+        {
+            if (!CheckIdentity())
+            {
+                MessageBox.Show("帳號或密碼錯誤!", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            this.DialogResult = true;
+            this.Close();
         }
     }
 }

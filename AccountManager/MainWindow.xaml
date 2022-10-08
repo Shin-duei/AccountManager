@@ -15,6 +15,7 @@
     Height="630"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
     Background="White"
+    Icon="Logo.ico"
     mc:Ignorable="d">
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
@@ -108,6 +109,9 @@
                         </materialDesign:PackIcon.LayoutTransform>
                     </materialDesign:PackIcon>
                 </TabItem.Header>
+                <Grid>
+                    <view:StatisticsView />
+                </Grid>
             </TabItem>
             <TabItem ToolTip="員工系統">
                 <TabItem.Header>
