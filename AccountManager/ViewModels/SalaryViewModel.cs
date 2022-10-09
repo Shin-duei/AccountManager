@@ -155,6 +155,7 @@ namespace AccountManager.ViewModels
                 int totalDye = 0;
                 int totalPerm = 0;
                 int totalProtect = 0;
+                int totalExtension = 0; 
                 int totalSPA = 0;
                 int totalUnassign = 0;
                 int totalAssign = 0;
@@ -194,6 +195,8 @@ namespace AccountManager.ViewModels
                                 totalPerm++;
                             else if (statement.ConsumptionItem == "護髮")
                                 totalProtect++;
+                            else if (statement.ConsumptionItem == "接髮")
+                                totalExtension++;
                             else if (statement.ConsumptionItem == "頭皮SPA")
                                 totalSPA++;
 
@@ -212,6 +215,7 @@ namespace AccountManager.ViewModels
                 dataGridRow.Dye = totalDye;
                 dataGridRow.Perm = totalPerm;
                 dataGridRow.Protect = totalProtect;
+                dataGridRow.Extension = totalExtension;
                 dataGridRow.SPA = totalSPA;
                 dataGridRow.Product = totalProductIncome;
                 dataGridRow.Storge = 0;

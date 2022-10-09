@@ -961,6 +961,7 @@ namespace AccountManager.ViewModels
                                         "染髮",
                                         "燙髮",
                                         "護髮",
+                                        "接髮",
                                         "頭皮SPA",
                                         "產品購買"};
         }

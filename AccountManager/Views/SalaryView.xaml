@@ -124,23 +124,27 @@
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Wash}"
-                    Header="洗" />
+                    Header="洗髮" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Cut}"
-                    Header="剪" />
+                    Header="剪髮" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Dye}"
-                    Header="染" />
+                    Header="染髮" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Perm}"
-                    Header="燙" />
+                    Header="燙髮" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding Protect}"
-                    Header="護" />
+                    Header="護髮" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Extension}"
+                    Header="接髮" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding SPA}"
@@ -271,9 +275,9 @@
                 Margin="0,0,10,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
+                Command="{Binding InsertToDBCommand}"
                 Content="&#xEC59;"
                 FontFamily="Segoe MDL2 Assets"
-                Command="{Binding InsertToDBCommand}"
                 ToolTip="登錄為支出項目" />
         </Grid>
     </Grid>

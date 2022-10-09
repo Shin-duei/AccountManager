@@ -186,6 +186,22 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private int _extension;
+        /// <summary>
+        /// 接髮
+        /// </summary>
+        public int Extension
+        {
+            get { return _extension; }
+            set
+            {
+                if (_extension != value)
+                {
+                    _extension = value;
+                    OnPropertyChanged(nameof(Extension));
+                }
+            }
+        }
         private int _product;
         /// <summary>
         /// 產品
