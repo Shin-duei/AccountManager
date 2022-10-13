@@ -34,5 +34,10 @@ namespace AccountManager.Views
             var viewModel = new StatisticsViewModel();
             DataContext = viewModel;
         }
+
+        private void button_Search_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
     }
 }

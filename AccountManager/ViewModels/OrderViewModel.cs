@@ -615,6 +615,12 @@ namespace AccountManager.ViewModels
             if (billBase == null)
                 return;
 
+            if (string.IsNullOrEmpty(SeletedDesigner))
+            {
+                MessageBox.Show("設計師欄位不能空白", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var numberInBill = bill.Count;
             bill.Add(new EssentialModel()
             {
@@ -636,7 +642,7 @@ namespace AccountManager.ViewModels
                 Remark = Remark
 
             });
-
+            Remark = "";
             RefreshDataGrid(bill);
         }
         public bool CanExecuteAddNewStatementCommand()

@@ -165,7 +165,8 @@ namespace AccountManager.ViewModels
             _sqliteHelper = new SQLiteHelper();
             InitialDate = DateTime.Now.AddDays(-DateTime.Now.Day + 1);
             FinalDate = DateTime.Now.AddMonths(1).AddDays(-DateTime.Now.AddMonths(1).Day);
-            ChartInitialize();
+            Mapper = Mappers.Xy<DateValue>().X(s => s.Date.ToOADate()).Y(s => s.Value);
+            Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
         }
         public RelayCommand SearchCommand { get; }
 
@@ -211,26 +212,39 @@ namespace AccountManager.ViewModels
                 incomeExpenditureList.ForEach(s => IncomeExpenditureList.Add(s));
 
             UpdateValue();
+            ChartInitialize(incomeExpenditureList, allStatement);
         }
-        public void ChartInitialize()
+
+        public void ChartInitialize(List<IncomeExpenditureModel> incomeExpenditureList, List<EssentialModel> allStatement)
         {
-            List<DateValue> incomeChartValues = new List<DateValue>();
-
-            Mapper = Mappers.Xy<DateValue>().X(s=>s.Date.ToOADate()).Y(s => s.Value);
-            Formatter = value =>DateTime.FromOADate(value).ToString("yyyy/MM/dd");
-            incomeChartValues.Add(new DateValue {  Date = InitialDate, Value =109 });
-            incomeChartValues.Add(new DateValue { Date = FinalDate, Value = 30 });
-            IncomeChartValues = incomeChartValues.AsChartValues();
+            //Mapper = Mappers.Xy<DateValue>().X(s => s.Date.ToOADate()).Y(s => s.Value);
+            //Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
+            var incomeExpenditureGroupByDate = incomeExpenditureList.GroupBy(s => s.Date).ToList();
+            //List<DateValue> incomeChartValues = new List<DateValue>();
             
-            List<DateValue> totalChartValues = new List<DateValue>();
-            totalChartValues.Add(new DateValue { Date = InitialDate, Value = 109 });
-            totalChartValues.Add(new DateValue { Date = FinalDate, Value = 30 });
-            TotalChartValues = totalChartValues.AsChartValues();
-
+            IncomeChartValues.Clear();
+            ExpenditureChartValues.Clear();
+            ProductChartValues.Clear();
+            BusinessChartValues.Clear();
+            TotalChartValues.Clear();
+            foreach (var item in incomeExpenditureGroupByDate)
+            {
+                var totalExpenditureDay = item.ToList().Where(s => s.ItemType == IncomeExpenditure.Expenditure).Sum(s => s.Cost);
+                var totalIncomeDay = item.ToList().Where(s => s.ItemType == IncomeExpenditure.Income).Sum(s => s.Cost);
+                var date = DateTime.ParseExact(item.First().Date, "yyyyMMdd", null);
+                ExpenditureChartValues.Add(new DateValue { Date = date, Value = totalExpenditureDay });
+                IncomeChartValues.Add(new DateValue { Date = date, Value = totalExpenditureDay });
+                ProductChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
+                TotalChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
+                //BusinessChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
+            }
         }
         public object Mapper { get; set; }
-        public ChartValues<DateValue> IncomeChartValues { get; set; }
-        public ChartValues<DateValue> TotalChartValues { get; set; }
+        public ChartValues<DateValue> IncomeChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> ExpenditureChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> ProductChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> BusinessChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> TotalChartValues { get; set; } = new ChartValues<DateValue>();
         public ObservableCollection<string> Labels { get; set; } = new ObservableCollection<string>();
         public Func<double, string> Formatter { set; get; }
 
@@ -246,9 +260,38 @@ namespace AccountManager.ViewModels
             Total = TotalIncome - TotalExpenditure + Business + Product;
         }
     }
-    public class DateValue
+    public class DateValue : ObservableRecipient
     {
-        public double Value { get; set; }
-        public DateTime Date { get; set; }
+
+        private double _value;
+        public double Value
+        {
+            get { return _value; }
+            set
+            {
+                if (_value != value)
+                {
+                    _value = value;
+                    OnPropertyChanged(nameof(Value));
+                }
+            }
+
+        }
+        private DateTime _date;
+        public DateTime Date
+        {
+            get { return _date; }
+            set
+            {
+                if (_date != value)
+                {
+                    _date = value;
+                    OnPropertyChanged(nameof(Date));
+                }
+            }
+
+        }
+        //public double Value { get; set; }
+        //public DateTime Date { get; set; }
     }
 }
