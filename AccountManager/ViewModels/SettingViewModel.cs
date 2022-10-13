@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveCharts;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,13 @@ namespace AccountManager.ViewModels
         }
         public SettingViewModel()
         {
-           
+            SeriesCollection = new SeriesCollection()
+            {
+                new LineSeries{ Values=new ChartValues<double>{3,5,7,4 } },
+                new ColumnSeries{ Values=new ChartValues<double>{5,6,2,7 } }
+            };
         }
+
+        public SeriesCollection SeriesCollection { set; get; }
     }
 }

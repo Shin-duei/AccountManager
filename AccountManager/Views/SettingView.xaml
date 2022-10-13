@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:AccountManager.Views"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewmodels="clr-namespace:AccountManager.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:SettingViewModel}"
@@ -17,6 +18,15 @@
                 <GradientStop Offset="1" Color="#FF145EDA" />
             </LinearGradientBrush>
         </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="250" />
+            <RowDefinition Height="400*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="16*" />
+        </Grid.ColumnDefinitions>
         <TextBlock
             x:Name="textBlock_ID"
             Margin="37,27,0,0"
@@ -39,7 +49,11 @@
             Margin="37,68,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
+            Click="button_Click"
             Content="&#xEC25;"
-            FontFamily="Segoe MDL2 Assets" Click="button_Click" />
+            FontFamily="Segoe MDL2 Assets" />
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <lvc:CartesianChart Series="{Binding SeriesCollection}" />
+        </Grid>
     </Grid>
 </UserControl>
