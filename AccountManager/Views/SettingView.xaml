@@ -52,8 +52,6 @@
             Click="button_Click"
             Content="&#xEC25;"
             FontFamily="Segoe MDL2 Assets" />
-        <Grid Grid.Row="1" Grid.ColumnSpan="2">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}" />
-        </Grid>
+
     </Grid>
 </UserControl>

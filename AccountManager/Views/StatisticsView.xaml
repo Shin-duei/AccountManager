@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ie="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:AccountManager.Views"
+    xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -22,6 +23,7 @@
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
@@ -131,25 +133,31 @@
                     Header="備註" />
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel
+        <Grid
             Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Background="White">
+            <lvc:CartesianChart x:Name="chart" Margin="20">
+                <lvc:CartesianChart.Series>
+                    <lvc:ColumnSeries
+                        Title="收入"
+                        Configuration="{Binding Mapper}"
+                        Values="{Binding IncomeChartValues}" />
+                    <lvc:ColumnSeries
+                        Title="淨利"
+                        Configuration="{Binding Mapper}"
+                        Values="{Binding TotalChartValues}" />
+                </lvc:CartesianChart.Series>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis LabelFormatter="{Binding Formatter}" />
+                </lvc:CartesianChart.AxisX>
+            </lvc:CartesianChart>
+        </Grid>
+        <StackPanel
+            Grid.Row="3"
             Background="White"
             Orientation="Horizontal">
-            <TextBlock
-                x:Name="TextBlock_TotalCost"
-                Margin="20,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Text="支出:"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="textBox_TotalCost"
-                Width="80"
-                Height="20"
-                VerticalAlignment="Center"
-                InputMethod.IsInputMethodEnabled="False"
-                Text="{Binding TotalExpenditure, StringFormat=c0}"
-                TextWrapping="Wrap" />
+
             <TextBlock
                 x:Name="TextBlock_TotalExpenditure"
                 Margin="20,0,0,0"
@@ -166,11 +174,26 @@
                 Text="{Binding TotalIncome, StringFormat=c0}"
                 TextWrapping="Wrap" />
             <TextBlock
-                x:Name="TextBlock_Business"
-                Margin="20,0,0,0"
+                x:Name="TextBlock_TotalCost"
+                Margin="10,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="營業收入:"
+                Text="-支出:"
+                TextWrapping="Wrap" />
+            <TextBox
+                x:Name="textBox_TotalCost"
+                Width="80"
+                Height="20"
+                VerticalAlignment="Center"
+                InputMethod.IsInputMethodEnabled="False"
+                Text="{Binding TotalExpenditure, StringFormat=c0}"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="TextBlock_Business"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Text="+營業收入:"
                 TextWrapping="Wrap" />
             <TextBox
                 x:Name="textBox_Business"
@@ -182,10 +205,10 @@
                 TextWrapping="Wrap" />
             <TextBlock
                 x:Name="TextBlock_Product"
-                Margin="20,0,0,0"
+                Margin="10,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="產品銷售:"
+                Text="+產品銷售:"
                 TextWrapping="Wrap" />
             <TextBox
                 x:Name="textBox_Product"
@@ -197,22 +220,23 @@
                 TextWrapping="Wrap" />
             <TextBlock
                 x:Name="TextBlock_Total"
-                Margin="20,0,0,0"
+                Margin="10,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Text="淨利:"
+                Text="=淨利:"
                 TextWrapping="Wrap" />
             <TextBox
                 x:Name="textBox_Total"
                 Width="80"
                 Height="20"
                 VerticalAlignment="Center"
+                FontWeight="Bold"
                 InputMethod.IsInputMethodEnabled="False"
                 Text="{Binding Total, StringFormat=c0}"
-                TextWrapping="Wrap" FontWeight="Bold" />
+                TextWrapping="Wrap" />
             <TextBlock
                 x:Name="TextBlock_Storge"
-                Margin="20,0,0,0"
+                Margin="40,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Text="儲值總額:"

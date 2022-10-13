@@ -2,7 +2,12 @@
 using AccountManager.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveCharts;
+using LiveCharts.Configurations;
+using LiveCharts.Helpers;
+using LiveCharts.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -55,6 +60,9 @@ namespace AccountManager.ViewModels
             }
         }
         private int _totalExpenditure;
+        /// <summary>
+        /// 支出
+        /// </summary>
         public int TotalExpenditure
         {
             get { return _totalExpenditure; }
@@ -68,6 +76,9 @@ namespace AccountManager.ViewModels
             }
         }
         private int _totalIncome;
+        /// <summary>
+        /// 收入
+        /// </summary>
         public int TotalIncome
         {
             get { return _totalIncome; }
@@ -81,6 +92,9 @@ namespace AccountManager.ViewModels
             }
         }
         private int _storge;
+        /// <summary>
+        /// 儲值金
+        /// </summary>
         public int Storge
         {
             get { return _storge; }
@@ -95,6 +109,9 @@ namespace AccountManager.ViewModels
 
         }
         private int _prodcut;
+        /// <summary>
+        /// 產品銷售
+        /// </summary>
         public int Product
         {
             get { return _prodcut; }
@@ -109,6 +126,9 @@ namespace AccountManager.ViewModels
 
         }
         private int _business;
+        /// <summary>
+        /// 營業收入
+        /// </summary>
         public int Business
         {
             get { return _business; }
@@ -123,6 +143,9 @@ namespace AccountManager.ViewModels
 
         }
         private int _total;
+        /// <summary>
+        /// 淨利
+        /// </summary>
         public int Total
         {
             get { return _total; }
@@ -142,6 +165,7 @@ namespace AccountManager.ViewModels
             _sqliteHelper = new SQLiteHelper();
             InitialDate = DateTime.Now.AddDays(-DateTime.Now.Day + 1);
             FinalDate = DateTime.Now.AddMonths(1).AddDays(-DateTime.Now.AddMonths(1).Day);
+            ChartInitialize();
         }
         public RelayCommand SearchCommand { get; }
 
@@ -188,6 +212,30 @@ namespace AccountManager.ViewModels
 
             UpdateValue();
         }
+        public void ChartInitialize()
+        {
+            List<DateValue> incomeChartValues = new List<DateValue>();
+
+            Mapper = Mappers.Xy<DateValue>().X(s=>s.Date.ToOADate()).Y(s => s.Value);
+            Formatter = value =>DateTime.FromOADate(value).ToString("yyyy/MM/dd");
+            incomeChartValues.Add(new DateValue {  Date = InitialDate, Value =109 });
+            incomeChartValues.Add(new DateValue { Date = FinalDate, Value = 30 });
+            IncomeChartValues = incomeChartValues.AsChartValues();
+            
+            List<DateValue> totalChartValues = new List<DateValue>();
+            totalChartValues.Add(new DateValue { Date = InitialDate, Value = 109 });
+            totalChartValues.Add(new DateValue { Date = FinalDate, Value = 30 });
+            TotalChartValues = totalChartValues.AsChartValues();
+
+        }
+        public object Mapper { get; set; }
+        public ChartValues<DateValue> IncomeChartValues { get; set; }
+        public ChartValues<DateValue> TotalChartValues { get; set; }
+        public ObservableCollection<string> Labels { get; set; } = new ObservableCollection<string>();
+        public Func<double, string> Formatter { set; get; }
+
+        public SeriesCollection SeriesCollection { set; get; }
+
         /// <summary>
         /// 刷新資料
         /// </summary>
@@ -197,5 +245,10 @@ namespace AccountManager.ViewModels
             TotalIncome = IncomeExpenditureList.Where(s => s.ItemType == IncomeExpenditure.Income).Select(s => s.Cost).Sum();
             Total = TotalIncome - TotalExpenditure + Business + Product;
         }
+    }
+    public class DateValue
+    {
+        public double Value { get; set; }
+        public DateTime Date { get; set; }
     }
 }
