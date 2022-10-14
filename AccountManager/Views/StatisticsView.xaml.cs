@@ -37,7 +37,54 @@ namespace AccountManager.Views
 
         private void button_Search_Click(object sender, RoutedEventArgs e)
         {
-           
+            ChartSeriesVisibilty();
+        }
+        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        {
+            ChartSeriesVisibilty();
+        }
+        /// <summary>
+        /// 數列顯示控制
+        /// </summary>
+        private void ChartSeriesVisibilty()
+        {
+            if (ColumnSeriesIncome != null)
+            {
+                if ((bool)checkBoxIncome.IsChecked)
+                    ColumnSeriesIncome.Visibility = Visibility.Visible;
+                else
+                    ColumnSeriesIncome.Visibility = Visibility.Hidden;
+            }
+
+            if (ColumnSeriesExpenditure != null)
+            {
+                if ((bool)checkBoxExpenditure.IsChecked)
+                    ColumnSeriesExpenditure.Visibility = Visibility.Visible;
+                else
+                    ColumnSeriesExpenditure.Visibility = Visibility.Hidden;
+            }
+
+            if (ColumnSeriesBusiness != null)
+            {
+                if ((bool)checkBoxBusiness.IsChecked)
+                    ColumnSeriesBusiness.Visibility = Visibility.Visible;
+                else
+                    ColumnSeriesBusiness.Visibility = Visibility.Hidden;
+            }
+            if (ColumnSeriesProduct != null)
+            {
+                if ((bool)checkBoxProduct.IsChecked)
+                    ColumnSeriesProduct.Visibility = Visibility.Visible;
+                else
+                    ColumnSeriesProduct.Visibility = Visibility.Hidden;
+            }
+            if (ColumnSeriesTotal != null)
+            {
+                if ((bool)checkBoxTotal.IsChecked)
+                    ColumnSeriesTotal.Visibility = Visibility.Visible;
+                else
+                    ColumnSeriesTotal.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

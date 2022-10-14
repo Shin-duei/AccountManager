@@ -10,7 +10,6 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
@@ -24,6 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
@@ -73,8 +73,9 @@
                 Height="30"
                 Margin="20,0,0,0"
                 VerticalAlignment="Center"
+                Click="button_Search_Click"
                 Command="{Binding SearchCommand}"
-                ToolTip="搜尋" Click="button_Search_Click">
+                ToolTip="搜尋">
                 <materialDesign:PackIcon
                     Width="21"
                     Height="12"
@@ -86,76 +87,178 @@
                 </materialDesign:PackIcon>
             </Button>
         </StackPanel>
-        <DataGrid
-            x:Name="dataGrid"
-            Grid.Row="1"
-            Padding="5,5,5,5"
-            AutoGenerateColumns="false"
-            Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
-            IsReadOnly="True"
-            ItemsSource="{Binding IncomeExpenditureList}"
-            ScrollViewer.CanContentScroll="True"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            SelectionUnit="FullRow">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ItemType}" Value="Expenditure">
-                            <Setter Property="Background" Value="PaleVioletRed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ItemType}" Value="Income">
-                            <Setter Property="Background" Value="Gold" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Date}"
-                    Header="日期" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Item}"
-                    Header="項目名稱" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding ItemType}"
-                    Header="收支類型" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Cost}"
-                    Header="金額" />
-                <DataGridTextColumn
-                    Width="Auto"
-                    Binding="{Binding Remark}"
-                    Header="備註" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <DataGrid
+                x:Name="dataGrid"
+                Padding="5,5,5,5"
+                AutoGenerateColumns="false"
+                Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                IsReadOnly="True"
+                ItemsSource="{Binding IncomeExpenditureList}"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                SelectionUnit="FullRow">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ItemType}" Value="Expenditure">
+                                <Setter Property="Background" Value="PaleVioletRed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ItemType}" Value="Income">
+                                <Setter Property="Background" Value="Gold" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Date}"
+                        Header="日期" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Item}"
+                        Header="項目名稱" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding ItemType}"
+                        Header="收支類型" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Cost}"
+                        Header="金額" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Remark}"
+                        Header="備註" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="Transparent"/>
+            <DataGrid
+                x:Name="dataGrid1"
+                Grid.Column="2"
+                Padding="5,5,5,5"
+                AutoGenerateColumns="false"
+                Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                IsReadOnly="True"
+                ItemsSource="{Binding BusinessProductList}"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                SelectionUnit="FullRow" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Date}"
+                        Header="日期" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Item}"
+                        Header="項目名稱" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Cost}"
+                        Header="金額" />
+                    <DataGridTextColumn
+                        Width="Auto"
+                        Binding="{Binding Remark}"
+                        Header="備註" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="Transparent"/>
         <Grid
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.ColumnSpan="2"
             Background="White">
-            <lvc:CartesianChart x:Name="chart" Margin="20" Zoom="Xy">
-                <lvc:CartesianChart.Series >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel
+            Grid.Row="0"
+            Background="White"
+            Orientation="Horizontal">
+                <CheckBox
+                x:Name="checkBoxIncome"
+                Margin="40,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Checked="CheckBoxChanged"
+                Content="收入"
+                IsChecked="True"
+                Unchecked="CheckBoxChanged" />
+                <CheckBox
+                x:Name="checkBoxExpenditure"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Checked="CheckBoxChanged"
+                Content="支出"
+                IsChecked="True"
+                Unchecked="CheckBoxChanged" />
+                <CheckBox
+                x:Name="checkBoxBusiness"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Checked="CheckBoxChanged"
+                Content="營業收入"
+                IsChecked="True"
+                Unchecked="CheckBoxChanged" />
+                <CheckBox
+                x:Name="checkBoxProduct"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Checked="CheckBoxChanged"
+                Content="產品銷售"
+                IsChecked="True"
+                Unchecked="CheckBoxChanged" />
+                <CheckBox
+                x:Name="checkBoxTotal"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Checked="CheckBoxChanged"
+                Content="淨利"
+                IsChecked="True"
+                Unchecked="CheckBoxChanged" />
+            </StackPanel>
+            <lvc:CartesianChart
+                x:Name="chart"
+                Grid.Row="1"
+                Margin="20"
+                Zoom="Xy">
+                <lvc:CartesianChart.Series>
                     <lvc:ColumnSeries
+                        x:Name="ColumnSeriesIncome"
                         Title="收入"
                         Configuration="{Binding Mapper}"
                         Values="{Binding IncomeChartValues}" />
                     <lvc:ColumnSeries
+                        x:Name="ColumnSeriesExpenditure"
                         Title="支出"
                         Configuration="{Binding Mapper}"
                         Values="{Binding ExpenditureChartValues}" />
                     <lvc:ColumnSeries
+                        x:Name="ColumnSeriesBusiness"
                         Title="營業收入"
                         Configuration="{Binding Mapper}"
                         Values="{Binding BusinessChartValues}" />
                     <lvc:ColumnSeries
+                        x:Name="ColumnSeriesProduct"
                         Title="產品銷售"
                         Configuration="{Binding Mapper}"
                         Values="{Binding ProductChartValues}" />
                     <lvc:ColumnSeries
+                        x:Name="ColumnSeriesTotal"
                         Title="淨利"
                         Configuration="{Binding Mapper}"
                         Values="{Binding TotalChartValues}" />
@@ -166,10 +269,9 @@
             </lvc:CartesianChart>
         </Grid>
         <StackPanel
-            Grid.Row="3"
+            Grid.Row="4"
             Background="White"
             Orientation="Horizontal">
-
             <TextBlock
                 x:Name="TextBlock_TotalExpenditure"
                 Margin="20,0,0,0"

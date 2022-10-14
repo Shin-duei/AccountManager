@@ -90,7 +90,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
     <Style BasedOn="{StaticResource MaterialDesignDarkCheckBox}" TargetType="{x:Type CheckBox}">
-        <Setter Property="FlowDirection" Value="RightToLeft" />
+        <Setter Property="FlowDirection" Value="LeftToRight" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />

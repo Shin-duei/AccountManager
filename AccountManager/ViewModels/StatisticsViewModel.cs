@@ -19,9 +19,14 @@ namespace AccountManager.ViewModels
     {
 
         /// <summary>
-        /// 顯示用列表
+        /// 收支顯示用列表
         /// </summary>
         public ObservableCollection<IncomeExpenditureModel> IncomeExpenditureList { set; get; } = new ObservableCollection<IncomeExpenditureModel>();
+
+        /// <summary>
+        /// 營業及產品顯示用列表
+        /// </summary>
+        public ObservableCollection<BusinessProductModel> BusinessProductList { set; get; } = new ObservableCollection<BusinessProductModel>();
 
         public SQLiteHelper _sqliteHelper;
 
@@ -176,13 +181,32 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteSearchCommand()
         {
-            IncomeExpenditureList.Clear();
+            
             var initialDate = InitialDate.ToString("yyyyMMdd");
             var finalDate = FinalDate.ToString("yyyyMMdd");
             var incomeExpenditureList = _sqliteHelper.Query<IncomeExpenditureModel>($"select * from IncomeExpenditure WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//收支
             var allStatement = _sqliteHelper.Query<EssentialModel>($"select * from BillDetails WHERE ConsumptionDate BETWEEN '{initialDate}' AND '{finalDate}'");//營業消費明細
             var allStorgeHistory = _sqliteHelper.Query<StorgeValueModel>($"select * from StorgeValue WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//儲值金
 
+            TotalDataCalculate(incomeExpenditureList, allStatement, allStorgeHistory);//計算總額
+            
+            IncomeExpenditureList.Clear();
+            if (incomeExpenditureList != null)//添加到收支列表
+                incomeExpenditureList.ForEach(s => IncomeExpenditureList.Add(s));
+            UpdateValue();//更新數據
+
+            BusinessProductCalculate(allStatement);//計算營業收入和產品銷售
+
+            ChartGetData(incomeExpenditureList, allStatement);//更新圖數據
+        }
+        /// <summary>
+        /// 統計各項總額
+        /// </summary>
+        /// <param name="incomeExpenditureList"></param>
+        /// <param name="allStatement"></param>
+        /// <param name="allStorgeHistory"></param>
+        private void TotalDataCalculate(List<IncomeExpenditureModel> incomeExpenditureList, List<EssentialModel> allStatement, List<StorgeValueModel> allStorgeHistory)
+        {
             int totalBusinessIncome = 0;
             int totalProductIncome = 0;
             int totalStorge = 0;
@@ -208,35 +232,59 @@ namespace AccountManager.ViewModels
                 });
             }
             Storge = totalStorge;
-            if (incomeExpenditureList != null)
-                incomeExpenditureList.ForEach(s => IncomeExpenditureList.Add(s));
-
-            UpdateValue();
-            ChartInitialize(incomeExpenditureList, allStatement);
         }
 
-        public void ChartInitialize(List<IncomeExpenditureModel> incomeExpenditureList, List<EssentialModel> allStatement)
+        private void BusinessProductCalculate(List<EssentialModel> allStatement)
         {
-            //Mapper = Mappers.Xy<DateValue>().X(s => s.Date.ToOADate()).Y(s => s.Value);
-            //Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
-            var incomeExpenditureGroupByDate = incomeExpenditureList.GroupBy(s => s.Date).ToList();
-            //List<DateValue> incomeChartValues = new List<DateValue>();
-            
+            var dayBills = allStatement.GroupBy(s => s.ConsumptionDate).ToList();
+            BusinessProductList.Clear();
+            foreach (var item in dayBills)
+            {
+                var day = DateTime.ParseExact(item.First().ConsumptionDate.ToString(), "yyyyMMdd", null);
+                var dayBusiness = item.Where(s => s.ConsumptionItem != "產品購買").Sum(s => s.TotalPrice);
+                var dayProduct = item.Where(s => s.ConsumptionItem == "產品購買").Sum(s => s.TotalPrice);
+
+                if (dayBusiness != 0)
+                    BusinessProductList.Add(new BusinessProductModel { Date = day.ToString("yyyyMMdd"), Item = "營業收入", Cost = dayBusiness });
+                if (dayProduct != 0)
+                    BusinessProductList.Add(new BusinessProductModel { Date = day.ToString("yyyyMMdd"), Item = "產品銷售", Cost = dayProduct });
+            }
+        }
+
+        private void ChartGetData(List<IncomeExpenditureModel> incomeExpenditureList, List<EssentialModel> allStatement)
+        {
             IncomeChartValues.Clear();
             ExpenditureChartValues.Clear();
             ProductChartValues.Clear();
             BusinessChartValues.Clear();
             TotalChartValues.Clear();
-            foreach (var item in incomeExpenditureGroupByDate)
+
+            var timeSpan = FinalDate - InitialDate;
+
+            for (int i = 0; i <= timeSpan.Days; i++)
             {
-                var totalExpenditureDay = item.ToList().Where(s => s.ItemType == IncomeExpenditure.Expenditure).Sum(s => s.Cost);
-                var totalIncomeDay = item.ToList().Where(s => s.ItemType == IncomeExpenditure.Income).Sum(s => s.Cost);
-                var date = DateTime.ParseExact(item.First().Date, "yyyyMMdd", null);
-                ExpenditureChartValues.Add(new DateValue { Date = date, Value = totalExpenditureDay });
-                IncomeChartValues.Add(new DateValue { Date = date, Value = totalExpenditureDay });
-                ProductChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
-                TotalChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
-                //BusinessChartValues.Add(new DateValue { Date = date, Value = totalIncomeDay });
+                DateTime day = InitialDate.AddDays(i);
+                var valueIncome = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Income)
+                    .Sum(s => s.Cost);
+                IncomeChartValues.Add(new DateValue { Date = day, Value = valueIncome });
+
+                var valueExpenditure = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Expenditure)
+                    .Sum(s => s.Cost);
+                ExpenditureChartValues.Add(new DateValue { Date = day, Value = valueExpenditure });
+
+                var valueBusiness = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem != "產品購買")
+                    .Sum(s => s.TotalPrice);
+                BusinessChartValues.Add(new DateValue { Date = day, Value = valueBusiness });
+
+                var valueProduct = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem == "產品購買")
+                    .Sum(s => s.TotalPrice);
+                ProductChartValues.Add(new DateValue { Date = day, Value = valueProduct });
+
+                TotalChartValues.Add(new DateValue { Date = day, Value = (valueIncome - valueExpenditure + valueBusiness + valueProduct) });
             }
         }
         public object Mapper { get; set; }
@@ -245,10 +293,7 @@ namespace AccountManager.ViewModels
         public ChartValues<DateValue> ProductChartValues { get; set; } = new ChartValues<DateValue>();
         public ChartValues<DateValue> BusinessChartValues { get; set; } = new ChartValues<DateValue>();
         public ChartValues<DateValue> TotalChartValues { get; set; } = new ChartValues<DateValue>();
-        public ObservableCollection<string> Labels { get; set; } = new ObservableCollection<string>();
         public Func<double, string> Formatter { set; get; }
-
-        public SeriesCollection SeriesCollection { set; get; }
 
         /// <summary>
         /// 刷新資料

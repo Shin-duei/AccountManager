@@ -23,7 +23,7 @@ namespace AccountManager.Models
         [AutoIncrement]
         public int PrimaryKey { set; get; }
         /// <summary>
-        /// 登入日期
+        /// 登錄日期
         /// </summary>
         public string Date{ set; get; }
         /// <summary>
