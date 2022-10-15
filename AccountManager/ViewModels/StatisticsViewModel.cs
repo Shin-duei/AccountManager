@@ -18,6 +18,23 @@ namespace AccountManager.ViewModels
     public class StatisticsViewModel : ObservableRecipient
     {
 
+        private List<DateValue> _incomeChartValuesDay = new List<DateValue>();
+        private List<DateValue> _expenditureChartValuesDay = new List<DateValue>();
+        private List<DateValue> _productChartValuesDay = new List<DateValue>();
+        private List<DateValue> _businessChartValuesDay = new List<DateValue>();
+        private List<DateValue> _totalChartValuesDay = new List<DateValue>();
+
+        private List<DateValue> _incomeChartValuesMonth = new List<DateValue>();
+        private List<DateValue> _expenditureChartValuesMonth = new List<DateValue>();
+        private List<DateValue> _productChartValuesMonth = new List<DateValue>();
+        private List<DateValue> _businessChartValuesMonth = new List<DateValue>();
+        private List<DateValue> _totalChartValuesMonth = new List<DateValue>();
+
+        private List<DateValue> _incomeChartValuesYear = new List<DateValue>();
+        private List<DateValue> _expenditureChartValuesYear = new List<DateValue>();
+        private List<DateValue> _productChartValuesYear = new List<DateValue>();
+        private List<DateValue> _businessChartValuesYear = new List<DateValue>();
+        private List<DateValue> _totalChartValuesYear = new List<DateValue>();
         /// <summary>
         /// 收支顯示用列表
         /// </summary>
@@ -162,11 +179,60 @@ namespace AccountManager.ViewModels
                     OnPropertyChanged(nameof(Total));
                 }
             }
+        }
 
+        public ChartValues<DateValue> IncomeChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> ExpenditureChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> ProductChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> BusinessChartValues { get; set; } = new ChartValues<DateValue>();
+        public ChartValues<DateValue> TotalChartValues { get; set; } = new ChartValues<DateValue>();
+
+        private Func<double, string> _formatter;
+        public Func<double, string> Formatter
+        {
+            get { return _formatter; }
+            set
+            {
+                if (_formatter != value)
+                {
+                    _formatter = value;
+                    OnPropertyChanged(nameof(Formatter));
+                }
+            }
+        }
+
+        private object _mapper;
+        public object Mapper
+        {
+            get { return _mapper; }
+            set
+            {
+                if (_mapper != value)
+                {
+                    _mapper = value;
+                    OnPropertyChanged(nameof(Mapper));
+                }
+            }
+        }
+        private double? _step;
+        public double? Step
+        {
+            get { return _step; }
+            set
+            {
+                if (_step != value)
+                {
+                    _step = value;
+                    OnPropertyChanged(nameof(Step));
+                }
+            }
         }
         public StatisticsViewModel()
         {
             SearchCommand = new RelayCommand(ExecuteSearchCommand);
+            DayViewCommand = new RelayCommand(ExecuteDayViewCommand);
+            MonthViewCommand = new RelayCommand(ExecuteMonthViewCommand);
+            YearViewCommand = new RelayCommand(ExecuteYearViewCommand);
             _sqliteHelper = new SQLiteHelper();
             InitialDate = DateTime.Now.AddDays(-DateTime.Now.Day + 1);
             FinalDate = DateTime.Now.AddMonths(1).AddDays(-DateTime.Now.AddMonths(1).Day);
@@ -174,14 +240,64 @@ namespace AccountManager.ViewModels
             Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
         }
         public RelayCommand SearchCommand { get; }
+        public RelayCommand DayViewCommand { get; }
 
+        public RelayCommand MonthViewCommand { get; }
 
+        public RelayCommand YearViewCommand { get; }
+        /// <summary>
+        /// 日檢視
+        /// </summary>
+        private void ExecuteDayViewCommand()
+        {
+            ChartSeriesClear();
+            Mapper = Mappers.Xy<DateValue>().X(s => s.Date.ToOADate()).Y(s => s.Value);
+            Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
+            Step = null;
+
+            IncomeChartValues.AddRange(_incomeChartValuesDay);
+            ExpenditureChartValues.AddRange(_expenditureChartValuesDay);
+            BusinessChartValues.AddRange(_businessChartValuesDay);
+            ProductChartValues.AddRange(_productChartValuesDay); 
+            TotalChartValues.AddRange(_totalChartValuesDay);
+        }
+        /// <summary>
+        /// 月檢視
+        /// </summary>
+        private void ExecuteMonthViewCommand()
+        {
+            ChartSeriesClear();
+            Step = 1;
+            Mapper = Mappers.Xy<DateValue>().X(s => Double.Parse(s.Date.ToString("yyyyMM"))).Y(s => s.Value);
+            Formatter = value => $"{((int)value / 100)}/{((int)value % 100)}";
+
+            IncomeChartValues.AddRange(_incomeChartValuesMonth);
+            ExpenditureChartValues.AddRange(_expenditureChartValuesMonth);
+            BusinessChartValues.AddRange(_businessChartValuesMonth);
+            ProductChartValues.AddRange(_productChartValuesMonth); 
+            TotalChartValues.AddRange(_totalChartValuesMonth);
+        }
+        /// <summary>
+        /// 年檢視
+        /// </summary>
+        private void ExecuteYearViewCommand()
+        {
+            ChartSeriesClear();
+            Step = 1;
+            Mapper = Mappers.Xy<DateValue>().X(s => Double.Parse(s.Date.ToString("yyyy"))).Y(s => s.Value);
+            Formatter = value => value.ToString();
+
+            IncomeChartValues.AddRange(_incomeChartValuesYear);
+            ExpenditureChartValues.AddRange(_expenditureChartValuesYear);
+            BusinessChartValues.AddRange(_businessChartValuesYear); 
+            ProductChartValues.AddRange(_productChartValuesYear);
+            TotalChartValues.AddRange(_totalChartValuesYear);
+        }
         /// <summary>
         /// 搜尋
         /// </summary>
         private void ExecuteSearchCommand()
         {
-            
             var initialDate = InitialDate.ToString("yyyyMMdd");
             var finalDate = FinalDate.ToString("yyyyMMdd");
             var incomeExpenditureList = _sqliteHelper.Query<IncomeExpenditureModel>($"select * from IncomeExpenditure WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//收支
@@ -189,7 +305,7 @@ namespace AccountManager.ViewModels
             var allStorgeHistory = _sqliteHelper.Query<StorgeValueModel>($"select * from StorgeValue WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//儲值金
 
             TotalDataCalculate(incomeExpenditureList, allStatement, allStorgeHistory);//計算總額
-            
+
             IncomeExpenditureList.Clear();
             if (incomeExpenditureList != null)//添加到收支列表
                 incomeExpenditureList.ForEach(s => IncomeExpenditureList.Add(s));
@@ -197,6 +313,9 @@ namespace AccountManager.ViewModels
 
             BusinessProductCalculate(allStatement);//計算營業收入和產品銷售
 
+            Mapper = Mappers.Xy<DateValue>().X(s => s.Date.ToOADate()).Y(s => s.Value);
+            Formatter = value => DateTime.FromOADate(value).ToString("yyyy/MM/dd");
+            Step = null;
             ChartGetData(incomeExpenditureList, allStatement);//更新圖數據
         }
         /// <summary>
@@ -233,7 +352,10 @@ namespace AccountManager.ViewModels
             }
             Storge = totalStorge;
         }
-
+        /// <summary>
+        /// 計算營業收入DataGrid
+        /// </summary>
+        /// <param name="allStatement"></param>
         private void BusinessProductCalculate(List<EssentialModel> allStatement)
         {
             var dayBills = allStatement.GroupBy(s => s.ConsumptionDate).ToList();
@@ -250,51 +372,127 @@ namespace AccountManager.ViewModels
                     BusinessProductList.Add(new BusinessProductModel { Date = day.ToString("yyyyMMdd"), Item = "產品銷售", Cost = dayProduct });
             }
         }
-
+        /// <summary>
+        /// 計算圖表需要的數據集合
+        /// </summary>
+        /// <param name="incomeExpenditureList"></param>
+        /// <param name="allStatement"></param>
         private void ChartGetData(List<IncomeExpenditureModel> incomeExpenditureList, List<EssentialModel> allStatement)
+        {
+            DataListClear();
+            ChartSeriesClear();
+
+            var timeSpanDay = FinalDate - InitialDate;
+
+            for (int i = 0; i <= timeSpanDay.Days; i++)
+            {
+                DateTime day = InitialDate.AddDays(i);
+                var valueIncome = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Income)
+                    .Sum(s => s.Cost);
+                _incomeChartValuesDay.Add(new DateValue { Date = day, Value = valueIncome });
+
+                var valueExpenditure = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Expenditure)
+                    .Sum(s => s.Cost);
+                _expenditureChartValuesDay.Add(new DateValue { Date = day, Value = valueExpenditure });
+
+                var valueBusiness = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem != "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _businessChartValuesDay.Add(new DateValue { Date = day, Value = valueBusiness });
+
+                var valueProduct = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem == "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _productChartValuesDay.Add(new DateValue { Date = day, Value = valueProduct });
+
+                _totalChartValuesDay.Add(new DateValue { Date = day, Value = (valueIncome - valueExpenditure + valueBusiness + valueProduct) });
+            }
+
+            var timeSpanMonth=((FinalDate.Year - InitialDate.Year) * 12) + FinalDate.Month - InitialDate.Month;
+            for (int i = 0; i <= timeSpanMonth; i++)
+            {
+                DateTime day = InitialDate.AddMonths(i);
+                var valueIncome = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString().Contains(day.ToString("yyyyMM")) && s.ItemType == IncomeExpenditure.Income)
+                    .Sum(s => s.Cost);
+                _incomeChartValuesMonth.Add(new DateValue { Date = day, Value = valueIncome });
+
+                var valueExpenditure = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString().Contains(day.ToString("yyyyMM")) && s.ItemType == IncomeExpenditure.Expenditure)
+                    .Sum(s => s.Cost);
+                _expenditureChartValuesMonth.Add(new DateValue { Date = day, Value = valueExpenditure });
+
+                var valueBusiness = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString().Contains(day.ToString("yyyyMM")) && s.ConsumptionItem != "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _businessChartValuesMonth.Add(new DateValue { Date = day, Value = valueBusiness });
+
+                var valueProduct = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString().Contains(day.ToString("yyyyMM")) && s.ConsumptionItem == "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _productChartValuesMonth.Add(new DateValue { Date = day, Value = valueProduct });
+
+                _totalChartValuesMonth.Add(new DateValue { Date = day, Value = (valueIncome - valueExpenditure + valueBusiness + valueProduct) });
+            }
+            var timeSpanYear = (FinalDate.Year - InitialDate.Year);
+            for (int i = 0; i <= timeSpanYear; i++)
+            {
+                DateTime day = InitialDate.AddYears(i);
+                var valueIncome = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString().Contains(day.ToString("yyyy")) && s.ItemType == IncomeExpenditure.Income)
+                    .Sum(s => s.Cost);
+                _incomeChartValuesYear.Add(new DateValue { Date = day, Value = valueIncome });
+
+                var valueExpenditure = incomeExpenditureList.ToList()
+                    .Where(s => s.Date.ToString().Contains(day.ToString("yyyy")) && s.ItemType == IncomeExpenditure.Expenditure)
+                    .Sum(s => s.Cost);
+                _expenditureChartValuesYear.Add(new DateValue { Date = day, Value = valueExpenditure });
+
+                var valueBusiness = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString().Contains(day.ToString("yyyy")) && s.ConsumptionItem != "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _businessChartValuesYear.Add(new DateValue { Date = day, Value = valueBusiness });
+
+                var valueProduct = allStatement.ToList()
+                    .Where(s => s.ConsumptionDate.ToString().Contains(day.ToString("yyyy")) && s.ConsumptionItem == "產品購買")
+                    .Sum(s => s.TotalPrice);
+                _productChartValuesYear.Add(new DateValue { Date = day, Value = valueProduct });
+
+                _totalChartValuesYear.Add(new DateValue { Date = day, Value = (valueIncome - valueExpenditure + valueBusiness + valueProduct) });
+            }
+
+            IncomeChartValues.AddRange(_incomeChartValuesDay);
+            ExpenditureChartValues.AddRange(_expenditureChartValuesDay);
+            BusinessChartValues.AddRange(_productChartValuesDay);
+            ProductChartValues.AddRange(_businessChartValuesDay);
+            TotalChartValues.AddRange(_totalChartValuesDay);
+        }
+
+        private void ChartSeriesClear()
         {
             IncomeChartValues.Clear();
             ExpenditureChartValues.Clear();
             ProductChartValues.Clear();
             BusinessChartValues.Clear();
             TotalChartValues.Clear();
-
-            var timeSpan = FinalDate - InitialDate;
-
-            for (int i = 0; i <= timeSpan.Days; i++)
-            {
-                DateTime day = InitialDate.AddDays(i);
-                var valueIncome = incomeExpenditureList.ToList()
-                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Income)
-                    .Sum(s => s.Cost);
-                IncomeChartValues.Add(new DateValue { Date = day, Value = valueIncome });
-
-                var valueExpenditure = incomeExpenditureList.ToList()
-                    .Where(s => s.Date.ToString() == day.ToString("yyyyMMdd") && s.ItemType == IncomeExpenditure.Expenditure)
-                    .Sum(s => s.Cost);
-                ExpenditureChartValues.Add(new DateValue { Date = day, Value = valueExpenditure });
-
-                var valueBusiness = allStatement.ToList()
-                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem != "產品購買")
-                    .Sum(s => s.TotalPrice);
-                BusinessChartValues.Add(new DateValue { Date = day, Value = valueBusiness });
-
-                var valueProduct = allStatement.ToList()
-                    .Where(s => s.ConsumptionDate.ToString() == day.ToString("yyyyMMdd") && s.ConsumptionItem == "產品購買")
-                    .Sum(s => s.TotalPrice);
-                ProductChartValues.Add(new DateValue { Date = day, Value = valueProduct });
-
-                TotalChartValues.Add(new DateValue { Date = day, Value = (valueIncome - valueExpenditure + valueBusiness + valueProduct) });
-            }
         }
-        public object Mapper { get; set; }
-        public ChartValues<DateValue> IncomeChartValues { get; set; } = new ChartValues<DateValue>();
-        public ChartValues<DateValue> ExpenditureChartValues { get; set; } = new ChartValues<DateValue>();
-        public ChartValues<DateValue> ProductChartValues { get; set; } = new ChartValues<DateValue>();
-        public ChartValues<DateValue> BusinessChartValues { get; set; } = new ChartValues<DateValue>();
-        public ChartValues<DateValue> TotalChartValues { get; set; } = new ChartValues<DateValue>();
-        public Func<double, string> Formatter { set; get; }
+        private void DataListClear()
+        {
+            _incomeChartValuesDay.Clear();
+            _expenditureChartValuesDay.Clear();
+            _productChartValuesDay.Clear();
+            _businessChartValuesDay.Clear();
+            _totalChartValuesDay.Clear();
 
+            _incomeChartValuesMonth.Clear();
+            _expenditureChartValuesMonth.Clear();
+            _productChartValuesMonth.Clear();
+            _businessChartValuesMonth.Clear();
+            _totalChartValuesMonth.Clear();
+
+        }
         /// <summary>
         /// 刷新資料
         /// </summary>
@@ -336,7 +534,5 @@ namespace AccountManager.ViewModels
             }
 
         }
-        //public double Value { get; set; }
-        //public DateTime Date { get; set; }
     }
 }

@@ -13,6 +13,9 @@
     d:DesignHeight="500"
     d:DesignWidth="900"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <local:NumberConverter x:Key="NumberConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -96,8 +99,10 @@
             <DataGrid
                 x:Name="dataGrid"
                 Padding="5,5,5,5"
+                AlternationCount="{Binding IncomeExpenditureList.Count}"
                 AutoGenerateColumns="false"
                 Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                EnableRowVirtualization="False"
                 IsReadOnly="True"
                 ItemsSource="{Binding IncomeExpenditureList}"
                 ScrollViewer.CanContentScroll="True"
@@ -117,6 +122,7 @@
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding AlternationIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource NumberConverter}}" Header="#" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Date}"
@@ -139,20 +145,27 @@
                         Header="備註" />
                 </DataGrid.Columns>
             </DataGrid>
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="Transparent"/>
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Stretch"
+                Background="Transparent" />
             <DataGrid
                 x:Name="dataGrid1"
                 Grid.Column="2"
                 Padding="5,5,5,5"
+                AlternationCount="{Binding BusinessProductList.Count}"
                 AutoGenerateColumns="false"
                 Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                EnableRowVirtualization="False"
                 IsReadOnly="True"
                 ItemsSource="{Binding BusinessProductList}"
                 ScrollViewer.CanContentScroll="True"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectionUnit="FullRow" >
+                SelectionUnit="FullRow">
                 <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding AlternationIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource NumberConverter}}" Header="#" />
                     <DataGridTextColumn
                         Width="Auto"
                         Binding="{Binding Date}"
@@ -172,7 +185,11 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="Transparent"/>
+        <GridSplitter
+            Grid.Row="2"
+            Height="5"
+            HorizontalAlignment="Stretch"
+            Background="Transparent" />
         <Grid
             Grid.Row="3"
             Grid.ColumnSpan="2"
@@ -181,60 +198,101 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <StackPanel
-            Grid.Row="0"
-            Background="White"
-            Orientation="Horizontal">
+                Grid.Column="0"
+                Background="White"
+                Orientation="Horizontal">
                 <CheckBox
-                x:Name="checkBoxIncome"
-                Margin="40,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Checked="CheckBoxChanged"
-                Content="收入"
-                IsChecked="True"
-                Unchecked="CheckBoxChanged" />
+                    x:Name="checkBoxIncome"
+                    Margin="40,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="CheckBoxChanged"
+                    Content="收入"
+                    IsChecked="True"
+                    Unchecked="CheckBoxChanged" />
                 <CheckBox
-                x:Name="checkBoxExpenditure"
-                Margin="10,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Checked="CheckBoxChanged"
-                Content="支出"
-                IsChecked="True"
-                Unchecked="CheckBoxChanged" />
+                    x:Name="checkBoxExpenditure"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="CheckBoxChanged"
+                    Content="支出"
+                    IsChecked="True"
+                    Unchecked="CheckBoxChanged" />
                 <CheckBox
-                x:Name="checkBoxBusiness"
-                Margin="10,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Checked="CheckBoxChanged"
-                Content="營業收入"
-                IsChecked="True"
-                Unchecked="CheckBoxChanged" />
+                    x:Name="checkBoxBusiness"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="CheckBoxChanged"
+                    Content="營業收入"
+                    IsChecked="True"
+                    Unchecked="CheckBoxChanged" />
                 <CheckBox
-                x:Name="checkBoxProduct"
-                Margin="10,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Checked="CheckBoxChanged"
-                Content="產品銷售"
-                IsChecked="True"
-                Unchecked="CheckBoxChanged" />
+                    x:Name="checkBoxProduct"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="CheckBoxChanged"
+                    Content="產品銷售"
+                    IsChecked="True"
+                    Unchecked="CheckBoxChanged" />
                 <CheckBox
-                x:Name="checkBoxTotal"
-                Margin="10,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Checked="CheckBoxChanged"
-                Content="淨利"
-                IsChecked="True"
-                Unchecked="CheckBoxChanged" />
+                    x:Name="checkBoxTotal"
+                    Margin="10,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="CheckBoxChanged"
+                    Content="淨利"
+                    IsChecked="True"
+                    Unchecked="CheckBoxChanged" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="buttonDay"
+                    Width="30"
+                    Height="25"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding DayViewCommand}"
+                    Content="日"
+                    FontSize="15"
+                    Visibility="Visible" />
+                <Button
+                    x:Name="buttonMonth"
+                    Width="30"
+                    Height="25"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding MonthViewCommand}"
+                    Content="月"
+                    FontSize="15"
+                    Visibility="Visible" />
+                <Button
+                    x:Name="buttonYear"
+                    Width="30"
+                    Height="25"
+                    Margin="0,0,50,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding YearViewCommand}"
+                    Content="年"
+                    FontSize="15"
+                    Visibility="Visible" />
             </StackPanel>
             <lvc:CartesianChart
-                x:Name="chart"
+                x:Name="chartDay"
                 Grid.Row="1"
+                Grid.ColumnSpan="2"
                 Margin="20"
+                Visibility="Visible"
                 Zoom="Xy">
                 <lvc:CartesianChart.Series>
                     <lvc:ColumnSeries
@@ -264,7 +322,12 @@
                         Values="{Binding TotalChartValues}" />
                 </lvc:CartesianChart.Series>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis LabelFormatter="{Binding Formatter}" />
+                    <lvc:Axis LabelFormatter="{Binding Formatter}">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator Step="{Binding Step}" />
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
         </Grid>

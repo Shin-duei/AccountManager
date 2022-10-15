@@ -1,6 +1,7 @@
 ﻿using AccountManager.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace AccountManager.Views
             InitializeComponent();
             var viewModel = new StatisticsViewModel();
             DataContext = viewModel;
+            
         }
 
         private void button_Search_Click(object sender, RoutedEventArgs e)
@@ -42,6 +44,10 @@ namespace AccountManager.Views
         private void CheckBoxChanged(object sender, RoutedEventArgs e)
         {
             ChartSeriesVisibilty();
+        }
+        void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
         /// <summary>
         /// 數列顯示控制
@@ -85,6 +91,22 @@ namespace AccountManager.Views
                 else
                     ColumnSeriesTotal.Visibility = Visibility.Hidden;
             }
+        }
+    }
+    /// <summary>
+    /// 轉換器 讓DataGrid 編號從1開始
+    /// </summary>
+    public class NumberConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,object parameter,CultureInfo cultureInfo)
+        {
+            if (value == null)
+                return 0;
+            return System.Convert.ToInt32(value) + 1;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo cultureInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }
