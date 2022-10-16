@@ -465,8 +465,8 @@ namespace AccountManager.ViewModels
 
             IncomeChartValues.AddRange(_incomeChartValuesDay);
             ExpenditureChartValues.AddRange(_expenditureChartValuesDay);
-            BusinessChartValues.AddRange(_productChartValuesDay);
-            ProductChartValues.AddRange(_businessChartValuesDay);
+            BusinessChartValues.AddRange(_businessChartValuesDay);
+            ProductChartValues.AddRange(_productChartValuesDay); 
             TotalChartValues.AddRange(_totalChartValuesDay);
         }
 
@@ -491,6 +491,12 @@ namespace AccountManager.ViewModels
             _productChartValuesMonth.Clear();
             _businessChartValuesMonth.Clear();
             _totalChartValuesMonth.Clear();
+
+            _incomeChartValuesYear.Clear();
+            _expenditureChartValuesYear.Clear();
+            _productChartValuesYear.Clear();
+            _businessChartValuesYear.Clear();
+            _totalChartValuesYear.Clear();
 
         }
         /// <summary>
