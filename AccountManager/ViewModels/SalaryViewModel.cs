@@ -131,22 +131,40 @@ namespace AccountManager.ViewModels
 
             var allBill = allStatement.GroupBy(s => s.ConsumptionNumber).ToList();//按照訂單編號分類
 
-            Dictionary<StaffModel, List<List<EssentialModel>>> everyStaffBill = new Dictionary<StaffModel, List<List<EssentialModel>>>();//每個員工的訂單
+            Dictionary<StaffModel, List<List<EssentialModel>>> everyDesignerBill = new Dictionary<StaffModel, List<List<EssentialModel>>>();//每個設計師員工的訂單
+            Dictionary<StaffModel, int> designerCoorporation = new Dictionary<StaffModel, int>();//每個設計師員工的互助業績
             foreach (var staff in staffList)
             {
                 var staffAllBill = new List<List<EssentialModel>>();
                 foreach (var oneBill in allBill)
                 {
-                    var staffOneBill = oneBill.ToList().Select(s => s).Where(s => s.Designer == staff.ID).ToList();
-
+                    var staffOneBill = oneBill.ToList().Select(s => s).Where(s => s.Designer == staff.ID).ToList();//指定設計師的所有訂單
                     if (staffOneBill != null && staffOneBill.Count != 0)
                         staffAllBill.Add(staffOneBill);
                 }
-                everyStaffBill.Add(staff, staffAllBill);
+                everyDesignerBill.Add(staff, staffAllBill);
+                
+                //設計師互助業績統計
+                var coorporationStatement = allStatement.Select(s =>s).Where(s=>s.Assistant1 == staff.ID || s.Assistant2 == staff.ID || s.Assistant3 == staff.ID);
+                int coorporationSale = 0;
+                foreach (var statement in coorporationStatement)
+                {
+                    int coorporationNumber = 0;
+                    if (!string.IsNullOrEmpty(statement.Assistant1))
+                        coorporationNumber++;
+                    if (!string.IsNullOrEmpty(statement.Assistant2))
+                        coorporationNumber++;
+                    if (!string.IsNullOrEmpty(statement.Assistant3))
+                        coorporationNumber++;
+
+                    if (coorporationNumber != 0)
+                        coorporationSale+=(int)(statement.TotalPrice * 0.1 / coorporationNumber);
+                }
+                designerCoorporation.Add(staff, coorporationSale);
             }
 
-            //訂單內容統計
-            foreach (var staff in everyStaffBill)
+            //訂單內容統計(設計師)
+            foreach (var staff in everyDesignerBill)
             {
                 SalaryDataGridViewModel dataGridRow = new SalaryDataGridViewModel();
                 int totalIncome = 0;
@@ -155,12 +173,13 @@ namespace AccountManager.ViewModels
                 int totalDye = 0;
                 int totalPerm = 0;
                 int totalProtect = 0;
-                int totalExtension = 0; 
+                int totalExtension = 0;
                 int totalSPA = 0;
                 int totalUnassign = 0;
                 int totalAssign = 0;
                 int totalProductIncome = 0;
                 int totalStorge = 0;
+                int totalAssistanceFee = 0;
 
                 if (allStorgeHistory != null && allStorgeHistory.Count > 0)//顯示經手的儲值金
                 {
@@ -200,7 +219,13 @@ namespace AccountManager.ViewModels
                             else if (statement.ConsumptionItem == "頭皮SPA")
                                 totalSPA++;
 
-                            totalIncome += statement.TotalPrice;
+                            if (string.IsNullOrEmpty(statement.Assistant1))//沒有助理
+                                totalIncome += statement.TotalPrice;
+                            else
+                            {//有助理
+                                totalIncome += (int)(statement.TotalPrice * 0.9);//扣一成助理費
+                                totalAssistanceFee += (int)(statement.TotalPrice * 0.1);
+                            }
                         }
                     }
                 }
@@ -209,7 +234,9 @@ namespace AccountManager.ViewModels
                 dataGridRow.Name = staff.Key.Name;
                 dataGridRow.Position = staff.Key.Position;
                 dataGridRow.TotalCustomer = staff.Value.Count;
-                dataGridRow.TotalSale = totalIncome;
+                dataGridRow.SettlementSale = totalIncome;
+                dataGridRow.AssistanceFee = totalAssistanceFee;
+                dataGridRow.Cooperation = designerCoorporation[staff.Key];
                 dataGridRow.Wash = totalWash;
                 dataGridRow.Cut = totalCut;
                 dataGridRow.Dye = totalDye;
@@ -227,7 +254,7 @@ namespace AccountManager.ViewModels
                 PerformanceList.Add(dataGridRow);
             }
 
-            TotalSale = PerformanceList.Sum(s => s.TotalSale);
+            TotalSale = PerformanceList.Sum(s => s.SettlementSale);
             TotalProduct = PerformanceList.Sum(s => s.Product);
             TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
         }
@@ -240,7 +267,7 @@ namespace AccountManager.ViewModels
             {
                 IncomeExpenditureModel item = new IncomeExpenditureModel()
                 {
-                    Item= $"{InitialDate.ToString("MM")}月薪資",
+                    Item = $"{InitialDate.ToString("MM")}月薪資",
                     Cost = TotalSalary,
                     Date = DateTime.Now.ToString("yyyyMMdd"),
                     ItemType = IncomeExpenditure.Expenditure,

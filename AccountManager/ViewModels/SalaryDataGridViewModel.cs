@@ -250,19 +250,51 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private int _totalSale;
+        private int _cooperation;
         /// <summary>
-        /// 總業績
+        /// 設計師互助業績
         /// </summary>
-        public int TotalSale
+        public int Cooperation
         {
-            get { return _totalSale; }
+            get { return _cooperation; }
             set
             {
-                if (_totalSale != value)
+                if (_cooperation != value)
                 {
-                    _totalSale = value;
-                    OnPropertyChanged(nameof(TotalSale));
+                    _cooperation = value;
+                    OnPropertyChanged(nameof(Cooperation));
+                }
+            }
+        }
+        private int _settlementSale;
+        /// <summary>
+        /// 結算業績(已扣除助理費)
+        /// </summary>
+        public int SettlementSale
+        {
+            get { return _settlementSale; }
+            set
+            {
+                if (_settlementSale != value)
+                {
+                    _settlementSale = value;
+                    OnPropertyChanged(nameof(SettlementSale));
+                }
+            }
+        }
+        private int _assistanceFee;
+        /// <summary>
+        /// 助理業績(一成)
+        /// </summary>
+        public int AssistanceFee
+        {
+            get { return _assistanceFee; }
+            set
+            {
+                if (_assistanceFee != value)
+                {
+                    _assistanceFee = value;
+                    OnPropertyChanged(nameof(AssistanceFee));
                 }
             }
         }
@@ -310,11 +342,13 @@ namespace AccountManager.ViewModels
         /// </summary>
         public double SaleProfit
         {
-            get {          
-                var  result=TotalSale* PercentCompleteSale*0.01;
+            get
+            {
+                var result = SettlementSale * PercentCompleteSale * 0.01;
                 if (result % 0.5 == 0)
                     result += 0.1;
-                return Math.Round(result); }
+                return Math.Round(result);
+            }
         }
         /// <summary>
         /// 產品分潤
@@ -330,11 +364,11 @@ namespace AccountManager.ViewModels
             }
         }
         /// <summary>
-        /// 薪資
+        /// 薪資=業績分潤+產品分潤+互助業績
         /// </summary>
         public double FinalSalary
         {
-            get { return SaleProfit + ProductProfit; }
+            get { return SaleProfit + ProductProfit + Cooperation; }
         }
     }
 }

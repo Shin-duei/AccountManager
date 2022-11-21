@@ -151,8 +151,16 @@
                     Header="頭皮SPA" />
                 <DataGridTextColumn
                     Width="Auto"
-                    Binding="{Binding TotalSale, StringFormat=c0}"
-                    Header="總業績" />
+                    Binding="{Binding Cooperation, StringFormat=c0}"
+                    Header="互助業績" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding AssistanceFee, StringFormat=c0}"
+                    Header="助理費" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding SettlementSale, StringFormat=c0}"
+                    Header="結算業績" />
                 <DataGridTemplateColumn Width="Auto" Header="業績分潤比例">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

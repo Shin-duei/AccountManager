@@ -28,7 +28,7 @@ namespace AccountManager.ViewModels
         /// </summary>
         private Tuple<string, List<EssentialModel>> _currentBillDisplay;
 
-        private int _todayBill = 1;//自動訂單流水號
+
 
         public Tuple<string, List<EssentialModel>> CurrentBillDisplay
         {
@@ -559,7 +559,8 @@ namespace AccountManager.ViewModels
         /// </summary>
         private void ExecuteAddNewBillCommand()
         {
-            IsBillExistedInDB(BillNumber);
+            if (!IsBillExistedInDB(BillNumber))//判斷訂單是否重複
+                return;
 
             if (string.IsNullOrWhiteSpace(BillNumber))//沒有訂單號
                 return;
@@ -936,7 +937,6 @@ namespace AccountManager.ViewModels
         {
             BillDisplay = new ObservableCollection<EssentialModel>();
             ConsumptionDate = DateTime.Now;
-            BillNumber = ConsumptionDate.ToString("yyyyMMdd") + string.Format("{0:000}", _todayBill);
             Count = 1;
             IsCashPay = true;
             AssistantList = new List<string>();
@@ -997,10 +997,10 @@ namespace AccountManager.ViewModels
             OnPropertyChanged(nameof(TotalCost));
         }
         /// <summary>
-        /// 判斷資料庫中訂單
+        /// 判斷資料庫中訂單(沒重複回傳true,)
         /// </summary>
         /// <param name="ConsumptionNumber"></param>
-        private void IsBillExistedInDB(string ConsumptionNumber)
+        private bool IsBillExistedInDB(string ConsumptionNumber)
         {
             var existedBills = _sqliteHelper.Query<EssentialModel>($"SELECT * FROM BillDetails WHERE ConsumptionNumber='{ConsumptionNumber}'");
 
@@ -1008,12 +1008,22 @@ namespace AccountManager.ViewModels
             {
                 var result = MessageBox.Show("訂單編號已存在，是否要從資料庫清除後重新提交訂單", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                if (result == MessageBoxResult.Yes)
+                if (result == MessageBoxResult.Yes)//清除該訂單
                 {
                     existedBills.ForEach(s => _sqliteHelper.Delete<EssentialModel>(s));
+                    return true;
                 }
+                else
+                    return false;
             }
+            else
+                return true;
         }
+        /// <summary>
+        /// 從DB中找出該日最大訂單號碼
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         private string SearchBillNumberInCurrentListAndDB(DateTime dateTime)
         {
             int consumptionDate = Int32.Parse(dateTime.ToString("yyyyMMdd"));
