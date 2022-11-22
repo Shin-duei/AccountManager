@@ -25,6 +25,22 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private string _alias;
+        /// <summary>
+        /// 別名
+        /// </summary>
+        public string Alias
+        {
+            get { return _alias; }
+            set
+            {
+                if (_alias != value)
+                {
+                    _alias = value;
+                    OnPropertyChanged(nameof(Alias));
+                }
+            }
+        }
         private string _id;
         /// <summary>
         /// 員工編號

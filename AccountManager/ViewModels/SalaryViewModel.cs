@@ -116,7 +116,9 @@ namespace AccountManager.ViewModels
         public RelayCommand SearchCommand { get; }
 
         public RelayCommand InsertToDBCommand { get; }
-
+        /// <summary>
+        /// 執行查詢功能
+        /// </summary>
         private void ExecuteSearchCommand()
         {
             PerformanceList.Clear();
@@ -129,12 +131,31 @@ namespace AccountManager.ViewModels
 
             var allStorgeHistory = _sqliteHelper.Query<StorgeValueModel>($"select * from StorgeValue WHERE Date BETWEEN '{initialDate}' AND '{finalDate}'");//儲值金
 
-            var allBill = allStatement.GroupBy(s => s.ConsumptionNumber).ToList();//按照訂單編號分類
-
+            DesignerSalary(staffList, allStatement, allStorgeHistory);
+            AssistantSalary(staffList, allStatement);
+            
+            TotalSale = PerformanceList.Sum(s => s.SettlementSale);
+            TotalProduct = PerformanceList.Sum(s => s.Product);
+            TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
+        }
+        /// <summary>
+        /// 設計師薪資統計
+        /// </summary>
+        /// <param name="staffs">員工總表</param>
+        /// <param name="statements">明細總表</param>
+        /// <param name="allStorgeHistory">儲值金總表</param>
+        private void DesignerSalary(List<StaffModel> staffs, List<EssentialModel> statements, List<StorgeValueModel> allStorgeHistory)
+        {
             Dictionary<StaffModel, List<List<EssentialModel>>> everyDesignerBill = new Dictionary<StaffModel, List<List<EssentialModel>>>();//每個設計師員工的訂單
             Dictionary<StaffModel, int> designerCoorporation = new Dictionary<StaffModel, int>();//每個設計師員工的互助業績
-            foreach (var staff in staffList)
+            var allBill = statements.GroupBy(s => s.ConsumptionNumber).ToList();//按照訂單編號分類
+
+            //設計師訂單統計
+            foreach (var staff in staffs)
             {
+                if (staff.Position != "設計師")
+                    continue;
+
                 var staffAllBill = new List<List<EssentialModel>>();
                 foreach (var oneBill in allBill)
                 {
@@ -143,9 +164,9 @@ namespace AccountManager.ViewModels
                         staffAllBill.Add(staffOneBill);
                 }
                 everyDesignerBill.Add(staff, staffAllBill);
-                
+
                 //設計師互助業績統計
-                var coorporationStatement = allStatement.Select(s =>s).Where(s=>s.Assistant1 == staff.ID || s.Assistant2 == staff.ID || s.Assistant3 == staff.ID);
+                var coorporationStatement = statements.Select(s => s).Where(s => s.Assistant1 == staff.ID || s.Assistant2 == staff.ID || s.Assistant3 == staff.ID);
                 int coorporationSale = 0;
                 foreach (var statement in coorporationStatement)
                 {
@@ -158,7 +179,7 @@ namespace AccountManager.ViewModels
                         coorporationNumber++;
 
                     if (coorporationNumber != 0)
-                        coorporationSale+=(int)(statement.TotalPrice * 0.1 / coorporationNumber);
+                        coorporationSale += (int)(statement.TotalPrice * 0.1 / coorporationNumber);
                 }
                 designerCoorporation.Add(staff, coorporationSale);
             }
@@ -232,6 +253,7 @@ namespace AccountManager.ViewModels
 
                 dataGridRow.ID = staff.Key.ID;
                 dataGridRow.Name = staff.Key.Name;
+                dataGridRow.Alias = staff.Key.Alias;
                 dataGridRow.Position = staff.Key.Position;
                 dataGridRow.TotalCustomer = staff.Value.Count;
                 dataGridRow.SettlementSale = totalIncome;
@@ -253,12 +275,90 @@ namespace AccountManager.ViewModels
                 dataGridRow.Storge = totalStorge;
                 PerformanceList.Add(dataGridRow);
             }
-
-            TotalSale = PerformanceList.Sum(s => s.SettlementSale);
-            TotalProduct = PerformanceList.Sum(s => s.Product);
-            TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
         }
+        /// <summary>
+        /// 助理薪資統計
+        /// </summary>
+        /// <param name="staffs">員工總表</param>
+        /// <param name="statements">明細總表</param>
+        private void AssistantSalary(List<StaffModel> staffs, List<EssentialModel> statements)
+        {
+            var assistants = staffs.Select(s => s).Where(s => s.Position == "助理");
 
+            if (assistants == null || assistants.Count() == 0)
+                return;
+
+
+            foreach (var assistant in assistants)
+            {
+                SalaryDataGridViewModel dataGridRow = new SalaryDataGridViewModel();
+                var assistantStatements = statements.Select(s => s).Where(s => s.Assistant1 == assistant.ID || s.Assistant2 == assistant.ID || s.Assistant3 == assistant.ID);
+                
+                int totalIncome = 0;
+                int totalWash = 0;
+                int totalCut = 0;
+                int totalDye = 0;
+                int totalPerm = 0;
+                int totalProtect = 0;
+                int totalExtension = 0;
+                int totalSPA = 0;
+
+                foreach (var assistantStatement in assistantStatements)
+                {
+                    int assistantNumber = 0;
+                    if (!string.IsNullOrEmpty(assistantStatement.Assistant1))
+                        assistantNumber++;
+                    if (!string.IsNullOrEmpty(assistantStatement.Assistant2))
+                        assistantNumber++;
+                    if (!string.IsNullOrEmpty(assistantStatement.Assistant3))
+                        assistantNumber++;
+
+                    totalIncome += (int) (assistantStatement.TotalPrice * 0.1 / assistantNumber);
+
+                    if (assistantStatement.ConsumptionItem == "洗髮")
+                        totalWash++;
+                    else if (assistantStatement.ConsumptionItem == "剪髮")
+                        totalCut++;
+                    else if (assistantStatement.ConsumptionItem == "染髮")
+                        totalDye++;
+                    else if (assistantStatement.ConsumptionItem == "燙髮")
+                        totalPerm++;
+                    else if (assistantStatement.ConsumptionItem == "護髮")
+                        totalProtect++;
+                    else if (assistantStatement.ConsumptionItem == "接髮")
+                        totalExtension++;
+                    else if (assistantStatement.ConsumptionItem == "頭皮SPA")
+                        totalSPA++;
+
+                }
+                dataGridRow.ID = assistant.ID;
+                dataGridRow.Name = assistant.Name;
+                dataGridRow.Alias = assistant.Alias;
+                dataGridRow.Position = assistant.Position;
+                dataGridRow.TotalCustomer = assistantStatements.Count();//助理客數用一個工作項來計算
+                dataGridRow.SettlementSale = totalIncome;
+                dataGridRow.AssistanceFee = 0;
+                dataGridRow.Cooperation = 0;
+                dataGridRow.Wash = totalWash;
+                dataGridRow.Cut = totalCut;
+                dataGridRow.Dye = totalDye;
+                dataGridRow.Perm = totalPerm;
+                dataGridRow.Protect = totalProtect;
+                dataGridRow.Extension = totalExtension;
+                dataGridRow.SPA = totalSPA;
+                dataGridRow.Product = 0;
+                dataGridRow.Storge = 0;
+                dataGridRow.Unassign = 0;
+                dataGridRow.Assign = 0;
+                dataGridRow.PercentCompleteSale = 100;
+                dataGridRow.PercentCompleteProduct = 0;
+                dataGridRow.Storge = 0;
+                PerformanceList.Add(dataGridRow);
+            }
+        }
+        /// <summary>
+        /// 入賬
+        /// </summary>
         private void ExecuteInsertToDBCommand()
         {
             var result = MessageBox.Show("是否將薪資支出登錄到收支列表?", "提示", MessageBoxButton.YesNo, MessageBoxImage.Question);

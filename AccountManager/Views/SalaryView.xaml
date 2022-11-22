@@ -13,7 +13,7 @@
     d:DesignHeight="600"
     d:DesignWidth="900"
     mc:Ignorable="d">
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.Background>
             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Offset="0.007" Color="#FFB0ABD1" />
@@ -88,7 +88,7 @@
             x:Name="dataGrid"
             Grid.Row="1"
             AutoGenerateColumns="false"
-            FrozenColumnCount="3"
+            FrozenColumnCount="4"
             IsReadOnly="True"
             ItemsSource="{Binding PerformanceList}"
             ScrollViewer.CanContentScroll="True"
@@ -101,6 +101,10 @@
                     Width="Auto"
                     Binding="{Binding Name}"
                     Header="姓名" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Alias}"
+                    Header="別名" />
                 <DataGridTextColumn
                     Width="Auto"
                     Binding="{Binding ID}"
@@ -283,6 +287,7 @@
                 Margin="0,0,10,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
+                Click="button1_Click"
                 Command="{Binding InsertToDBCommand}"
                 Content="&#xEC59;"
                 FontFamily="Segoe MDL2 Assets"
