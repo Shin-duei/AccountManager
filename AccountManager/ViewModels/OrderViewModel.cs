@@ -156,8 +156,8 @@ namespace AccountManager.ViewModels
         {
             get => (uint)BillListDictionary.Count;
         }
-        private List<string> _designerList;
-        public List<string> DesignerList
+        private List<ComboBoxItemTuple> _designerList;
+        public List<ComboBoxItemTuple> DesignerList
         {
             set
             {
@@ -166,8 +166,8 @@ namespace AccountManager.ViewModels
             }
             get { return _designerList; }
         }
-        private string _seletedDesigner;
-        public string SeletedDesigner
+        private ComboBoxItemTuple _seletedDesigner;
+        public ComboBoxItemTuple SeletedDesigner
         {
             get { return _seletedDesigner; }
             set
@@ -180,8 +180,8 @@ namespace AccountManager.ViewModels
                 }
             }
         }
-        private List<string> _assistantList;
-        public List<string> AssistantList
+        private List<ComboBoxItemTuple> _assistantList;
+        public List<ComboBoxItemTuple> AssistantList
         {
             get
             {
@@ -193,8 +193,8 @@ namespace AccountManager.ViewModels
                 OnPropertyChanged(nameof(AssistantList));
             }
         }
-        private List<string> _assistantList2;
-        public List<string> AssistantList2
+        private List<ComboBoxItemTuple> _assistantList2;
+        public List<ComboBoxItemTuple> AssistantList2
         {
             get
             {
@@ -206,8 +206,8 @@ namespace AccountManager.ViewModels
                 OnPropertyChanged(nameof(AssistantList2));
             }
         }
-        private List<string> _assistantList3;
-        public List<string> AssistantList3
+        private List<ComboBoxItemTuple> _assistantList3;
+        public List<ComboBoxItemTuple> AssistantList3
         {
             get
             {
@@ -219,8 +219,8 @@ namespace AccountManager.ViewModels
                 OnPropertyChanged(nameof(AssistantList3));
             }
         }
-        private string _seletedAssistant1;
-        public string SeletedAssistant1
+        private ComboBoxItemTuple _seletedAssistant1;
+        public ComboBoxItemTuple SeletedAssistant1
         {
             get { return _seletedAssistant1; }
             set
@@ -239,14 +239,17 @@ namespace AccountManager.ViewModels
         {
             get
             {
-                var status = !string.IsNullOrWhiteSpace(SeletedAssistant1);
+                if (SeletedAssistant1 == null)
+                    return false;
+
+                var status = !string.IsNullOrWhiteSpace(SeletedAssistant1.Value);
                 if (!status)
-                    SeletedAssistant2 = "";
+                    SeletedAssistant2.Value = "";
                 return status;
             }
         }
-        private string _seletedAssistant2;
-        public string SeletedAssistant2
+        private ComboBoxItemTuple _seletedAssistant2;
+        public ComboBoxItemTuple SeletedAssistant2
         {
             get { return _seletedAssistant2; }
             set
@@ -265,14 +268,17 @@ namespace AccountManager.ViewModels
         {
             get
             {
-                var status = !string.IsNullOrWhiteSpace(SeletedAssistant2);
+                if (SeletedAssistant2 == null)
+                    return false;
+
+                var status = !string.IsNullOrWhiteSpace(SeletedAssistant2.Value);
                 if (!status)
-                    SeletedAssistant3 = "";
+                    SeletedAssistant3.Value = "";
                 return status;
             }
         }
-        private string _seletedAssistant3;
-        public string SeletedAssistant3
+        private ComboBoxItemTuple _seletedAssistant3 = new ComboBoxItemTuple { DisplayName = "", Value = "" };
+        public ComboBoxItemTuple SeletedAssistant3
         {
             get { return _seletedAssistant3; }
             set
@@ -616,7 +622,7 @@ namespace AccountManager.ViewModels
             if (billBase == null)
                 return;
 
-            if (string.IsNullOrEmpty(SeletedDesigner))
+            if (SeletedDesigner == null || string.IsNullOrEmpty(SeletedDesigner.Value))
             {
                 MessageBox.Show("設計師欄位不能空白", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
@@ -636,13 +642,13 @@ namespace AccountManager.ViewModels
                 UnitPrice = UnitPrice,
                 Count = Count,
                 PaymentType = PaymentType,
-                Designer = SeletedDesigner,
-                Assistant1 = SeletedAssistant1,
-                Assistant2 = SeletedAssistant2,
-                Assistant3 = SeletedAssistant3,
+                Designer = SeletedDesigner.Value,
+                Assistant1 = SeletedAssistant1 == null ? "" : SeletedAssistant1.Value,
+                Assistant2 = SeletedAssistant2 == null ? "" : SeletedAssistant2.Value,
+                Assistant3 = SeletedAssistant3 == null ? "" : SeletedAssistant3.Value,
                 Remark = Remark
 
-            });
+            }); ;
             Remark = "";
             RefreshDataGrid(bill);
         }
@@ -719,12 +725,11 @@ namespace AccountManager.ViewModels
                     s.ConsumptionItem = SeletedOrderItem;
                     s.UnitPrice = UnitPrice;
                     s.Count = Count;
-                    s.Designer = SeletedDesigner;
+                    s.Designer = SeletedDesigner.Value;
                     s.PaymentType = PaymentType;
-                    s.Designer = SeletedDesigner;
-                    s.Assistant1 = SeletedAssistant1;
-                    s.Assistant2 = SeletedAssistant2;
-                    s.Assistant3 = SeletedAssistant3;
+                    s.Assistant1 = SeletedAssistant1 == null ? "" : SeletedAssistant1.Value;
+                    s.Assistant2 = SeletedAssistant2 == null ? "" : SeletedAssistant2.Value;
+                    s.Assistant3 = SeletedAssistant3 == null ? "" : SeletedAssistant3.Value;
                     s.Remark = Remark;
                 }
             });
@@ -939,7 +944,7 @@ namespace AccountManager.ViewModels
             ConsumptionDate = DateTime.Now;
             Count = 1;
             IsCashPay = true;
-            AssistantList = new List<string>();
+            AssistantList = new List<ComboBoxItemTuple>();
 
             var staffList = _sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");//在職員工
 
@@ -950,14 +955,14 @@ namespace AccountManager.ViewModels
                 var designer = staffGroup.FirstOrDefault(s => s.Key == "設計師");
                 if (designer != null)
                 {
-                    DesignerList = new List<string>();
-                    designer.ToList().ForEach(s => DesignerList.Add(s.ID));
+                    DesignerList = new List<ComboBoxItemTuple>();
+                    designer.ToList().ForEach(s => DesignerList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" }));
                 }
 
                 var assistant = staffGroup.FirstOrDefault(s => s.Key == "助理");
                 if (assistant != null)
                 {
-                    assistant.ToList().ForEach(s => AssistantList.Add(s.ID));
+                    assistant.ToList().ForEach(s => AssistantList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" }));
                 }
             }
 

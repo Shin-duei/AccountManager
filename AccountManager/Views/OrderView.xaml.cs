@@ -71,8 +71,8 @@ namespace AccountManager.Views
                 var designer = staffGroup.FirstOrDefault(s => s.Key == "設計師");
                 if (designer != null)
                 {
-                    ViewModel.DesignerList = new List<string>();
-                    designer.ToList().ForEach(s => ViewModel.DesignerList.Add(s.ID));
+                    ViewModel.DesignerList = new List<ComboBoxItemTuple>();
+                    designer.ToList().ForEach(s => ViewModel.DesignerList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" }));
                 }
 
                 ComboBoxDesigner.Items.Refresh();
@@ -87,11 +87,11 @@ namespace AccountManager.Views
         {
              var staffList = ViewModel._sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");//所有在職員工列表
 
-            ViewModel.AssistantList = new List<string>();
+            ViewModel.AssistantList = new List<ComboBoxItemTuple>();
             staffList.ToList().ForEach(s =>
             {
-                if (ViewModel.SeletedDesigner != s.ID)//設計師不能用自己當助理
-                    ViewModel.AssistantList.Add(s.ID);
+                if (ViewModel.SeletedDesigner.Value != s.ID)//設計師不能用自己當助理
+                    ViewModel.AssistantList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" });
             });
             ComboBoxAssistant1.Items.Refresh();
         }

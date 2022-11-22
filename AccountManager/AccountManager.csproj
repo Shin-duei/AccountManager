@@ -133,6 +133,7 @@
     <Compile Include="Enums\IncomeExpenditure.cs" />
     <Compile Include="Models\BillBaseModel.cs" />
     <Compile Include="Models\BusinessProductModel.cs" />
+    <Compile Include="Models\ComboBoxItemTuple.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\IncomeExpenditureModel.cs" />
     <Compile Include="Models\InternalSystemModel.cs" />

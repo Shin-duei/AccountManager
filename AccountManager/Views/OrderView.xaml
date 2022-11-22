@@ -269,10 +269,12 @@
                     Width="108"
                     Height="22"
                     VerticalAlignment="Center"
+                    DisplayMemberPath="DisplayName"
                     DropDownOpened="ComboBoxDesigner_DropDownOpened"
                     ItemsSource="{Binding DesignerList}"
                     SelectedIndex="0"
-                    SelectedItem="{Binding SeletedDesigner}" />
+                    SelectedItem="{Binding SeletedDesigner}"
+                    SelectedValuePath="Value" />
                 <TextBlock
                     x:Name="TextBlockAssistant1"
                     Margin="10,0,0,0"
@@ -285,10 +287,12 @@
                     Height="22"
                     Margin="0,6,0,7"
                     VerticalAlignment="Center"
+                    DisplayMemberPath="DisplayName"
                     DropDownOpened="ComboBoxAssistant1_DropDownOpened"
                     ItemsSource="{Binding AssistantList}"
                     SelectedIndex="0"
-                    SelectedItem="{Binding SeletedAssistant1}" />
+                    SelectedItem="{Binding SeletedAssistant1}"
+                    SelectedValuePath="Value" />
                 <TextBlock
                     x:Name="TextBlockAssistant2"
                     Margin="10,0,0,0"
@@ -300,9 +304,11 @@
                     Width="108"
                     Height="22"
                     VerticalAlignment="Center"
+                    DisplayMemberPath="DisplayName"
                     IsEnabled="{Binding CanSelectAssistant2}"
                     ItemsSource="{Binding AssistantList2}"
-                    SelectedItem="{Binding SeletedAssistant2}" />
+                    SelectedItem="{Binding SeletedAssistant2}"
+                    SelectedValuePath="Value" />
                 <TextBlock
                     x:Name="TextBlockAssistant3"
                     Margin="10,0,0,0"
@@ -314,9 +320,11 @@
                     Width="108"
                     Height="22"
                     VerticalAlignment="Center"
+                    DisplayMemberPath="DisplayName"
                     IsEnabled="{Binding CanSelectAssistant3}"
                     ItemsSource="{Binding AssistantList3}"
-                    SelectedItem="{Binding SeletedAssistant3}" />
+                    SelectedItem="{Binding SeletedAssistant3}"
+                    SelectedValuePath="Value" />
                 <TextBlock
                     x:Name="TextBlockRemark"
                     Margin="10,0,0,0"
