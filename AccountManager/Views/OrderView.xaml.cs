@@ -85,15 +85,19 @@ namespace AccountManager.Views
         /// <param name="e"></param>
         private void ComboBoxAssistant1_DropDownOpened(object sender, EventArgs e)
         {
-             var staffList = ViewModel._sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");//所有在職員工列表
+            var staffList = ViewModel._sqliteHelper.Query<StaffModel>("select * from Staff WHERE ResignationDate is NULL");//所有在職員工列表
 
             ViewModel.AssistantList = new List<ComboBoxItemTuple>();
-            staffList.ToList().ForEach(s =>
+
+            if (ViewModel.SeletedDesigner != null)
             {
-                if (ViewModel.SeletedDesigner.Value != s.ID)//設計師不能用自己當助理
-                    ViewModel.AssistantList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" });
-            });
-            ComboBoxAssistant1.Items.Refresh();
+                staffList.ToList().ForEach(s =>
+                {
+                    if (ViewModel.SeletedDesigner.Value != s.ID)//設計師不能用自己當助理
+                        ViewModel.AssistantList.Add(new ComboBoxItemTuple { Value = s.ID, DisplayName = $"{ s.Alias} [{s.ID}]" });
+                });
+                ComboBoxAssistant1.Items.Refresh();
+            }
         }
     }
 }

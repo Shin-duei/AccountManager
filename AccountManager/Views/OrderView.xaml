@@ -289,8 +289,8 @@
                     VerticalAlignment="Center"
                     DisplayMemberPath="DisplayName"
                     DropDownOpened="ComboBoxAssistant1_DropDownOpened"
+                    IsEnabled="{Binding CanSelectAssistant1}"
                     ItemsSource="{Binding AssistantList}"
-                    SelectedIndex="0"
                     SelectedItem="{Binding SeletedAssistant1}"
                     SelectedValuePath="Value" />
                 <TextBlock

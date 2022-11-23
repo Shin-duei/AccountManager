@@ -175,8 +175,9 @@ namespace AccountManager.ViewModels
                 if (_seletedDesigner != value)
                 {
                     _seletedDesigner = value;
-
                     OnPropertyChanged(nameof(SeletedDesigner));
+                    OnPropertyChanged(nameof(CanSelectAssistant1));
+                    AssistantList = DesignerList.Select(s => s).Where(s => s != SeletedDesigner).ToList();
                 }
             }
         }
@@ -217,6 +218,20 @@ namespace AccountManager.ViewModels
             {
                 _assistantList3 = value;
                 OnPropertyChanged(nameof(AssistantList3));
+            }
+        }
+        public bool CanSelectAssistant1
+        {
+            get
+            {
+                if (SeletedDesigner == null)
+                    return false;
+
+                var status = !string.IsNullOrWhiteSpace(SeletedDesigner.Value);
+                if (!status)
+                    SeletedAssistant1.Value = "";
+
+                return status;
             }
         }
         private ComboBoxItemTuple _seletedAssistant1;
@@ -621,6 +636,15 @@ namespace AccountManager.ViewModels
 
             if (billBase == null)
                 return;
+
+            if (bill.Count != 0)//暫時先用這樣防呆，之後最好將設計師的欄位拉高到訂單等級(BillBaseModel)-20221123
+            {
+                if(bill.First().Designer != SeletedDesigner.Value)
+                {
+                    MessageBox.Show("相同訂單不能更改設計師", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+            }//暫時先用這樣防呆，之後最好將設計師的欄位拉高到訂單等級(BillBaseModel)-20221123
 
             if (SeletedDesigner == null || string.IsNullOrEmpty(SeletedDesigner.Value))
             {

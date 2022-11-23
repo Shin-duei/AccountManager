@@ -134,7 +134,7 @@ namespace AccountManager.ViewModels
             DesignerSalary(staffList, allStatement, allStorgeHistory);
             AssistantSalary(staffList, allStatement);
             
-            TotalSale = PerformanceList.Sum(s => s.SettlementSale);
+            TotalSale = PerformanceList.Sum(s => s.SettlementSale)+ PerformanceList.Sum(s => s.Cooperation);
             TotalProduct = PerformanceList.Sum(s => s.Product);
             TotalSalary = (int)PerformanceList.Sum(s => s.FinalSalary);
         }
