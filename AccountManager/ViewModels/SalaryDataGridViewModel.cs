@@ -381,10 +381,18 @@ namespace AccountManager.ViewModels
         }
         /// <summary>
         /// 薪資=業績分潤+產品分潤+互助業績
+        /// 保底25000
         /// </summary>
         public double FinalSalary
         {
-            get { return SaleProfit + ProductProfit + Cooperation; }
+            get
+            {
+                double value = SaleProfit + ProductProfit + Cooperation;
+                if (value > 25000)
+                    return value;
+                else
+                    return 25000;
+            }
         }
     }
 }
