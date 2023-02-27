@@ -244,8 +244,13 @@ namespace AccountManager.ViewModels
                                 totalIncome += statement.TotalPrice;
                             else
                             {//有助理
-                                totalIncome += (int)(statement.TotalPrice * 0.9);//扣一成助理費
-                                totalAssistanceFee += (int)(statement.TotalPrice * 0.1);
+
+                                int assistanceFee = (int)(statement.TotalPrice * 0.1);
+                                totalAssistanceFee += assistanceFee;
+                                //totalAssistanceFee += (int)(statement.TotalPrice * 0.1);
+
+                               // int deductAssistanceFee = (int)(statement.TotalPrice * 0.9);//扣一成助理費
+                                totalIncome += statement.TotalPrice- assistanceFee;
                             }
                         }
                     }
