@@ -998,7 +998,7 @@ namespace AccountManager.ViewModels
                                         "護髮",
                                         "接髮",
                                         "頭皮SPA",
-                                        "產品購買"};
+                                        "產品購買","美甲","美睫","美容","霧眉","紋繡"};
         }
         /// <summary>
         /// 刷新顯示列表

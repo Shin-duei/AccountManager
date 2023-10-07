@@ -250,6 +250,86 @@ namespace AccountManager.ViewModels
                 }
             }
         }
+        private int _manicure;
+        /// <summary>
+        /// 美甲
+        /// </summary>
+        public int Manicure
+        {
+            get { return _manicure; }
+            set
+            {
+                if (_manicure != value)
+                {
+                    _manicure = value;
+                    OnPropertyChanged(nameof(Manicure));
+                }
+            }
+        }
+        private int _eyelashExtension;
+        /// <summary>
+        /// 美睫
+        /// </summary>
+        public int EyelashExtension
+        {
+            get { return _eyelashExtension; }
+            set
+            {
+                if (_eyelashExtension != value)
+                {
+                    _eyelashExtension = value;
+                    OnPropertyChanged(nameof(EyelashExtension));
+                }
+            }
+        }
+        private int _cosmetic;
+        /// <summary>
+        /// 美容
+        /// </summary>
+        public int Cosmetic
+        {
+            get { return _cosmetic; }
+            set
+            {
+                if (_cosmetic != value)
+                {
+                    _cosmetic = value;
+                    OnPropertyChanged(nameof(Cosmetic));
+                }
+            }
+        }
+        private int _eyebrows;
+        /// <summary>
+        /// 霧眉
+        /// </summary>
+        public int Eyebrows
+        {
+            get { return _eyebrows; }
+            set
+            {
+                if (_eyebrows != value)
+                {
+                    _eyebrows = value;
+                    OnPropertyChanged(nameof(Eyebrows));
+                }
+            }
+        }
+        private int _tattoo;
+        /// <summary>
+        /// 紋繡
+        /// </summary>
+        public int Tattoo
+        {
+            get { return _tattoo; }
+            set
+            {
+                if (_tattoo != value)
+                {
+                    _tattoo = value;
+                    OnPropertyChanged(nameof(Tattoo));
+                }
+            }
+        }
         private int _storge;
         /// <summary>
         /// 儲值

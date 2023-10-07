@@ -196,6 +196,11 @@ namespace AccountManager.ViewModels
                 int totalProtect = 0;
                 int totalExtension = 0;
                 int totalSPA = 0;
+                int totalManicure = 0;
+                int totalEyelashExtension = 0;
+                int totalCosmetic = 0;
+                int totalEyebrows = 0;
+                int totalTattoo = 0;
                 int totalUnassign = 0;
                 int totalAssign = 0;
                 int totalProductIncome = 0;
@@ -239,6 +244,16 @@ namespace AccountManager.ViewModels
                                 totalExtension++;
                             else if (statement.ConsumptionItem == "頭皮SPA")
                                 totalSPA++;
+                            else if (statement.ConsumptionItem == "美甲")
+                                totalManicure++;
+                            else if (statement.ConsumptionItem == "美睫")
+                                totalEyelashExtension++;
+                            else if (statement.ConsumptionItem == "美容")
+                                totalCosmetic++;
+                            else if (statement.ConsumptionItem == "霧眉")
+                                totalEyebrows++;
+                            else if (statement.ConsumptionItem == "紋繡")
+                                totalTattoo++;
 
                             if (string.IsNullOrEmpty(statement.Assistant1))//沒有助理
                                 totalIncome += statement.TotalPrice;
@@ -271,6 +286,11 @@ namespace AccountManager.ViewModels
                 dataGridRow.Protect = totalProtect;
                 dataGridRow.Extension = totalExtension;
                 dataGridRow.SPA = totalSPA;
+                dataGridRow.Manicure = totalManicure;
+                dataGridRow.EyelashExtension = totalEyelashExtension;
+                dataGridRow.Cosmetic = totalCosmetic;
+                dataGridRow.Eyebrows = totalEyebrows;
+                dataGridRow.Tattoo = totalTattoo;
                 dataGridRow.Product = totalProductIncome;
                 dataGridRow.Storge = 0;
                 dataGridRow.Unassign = totalUnassign;
@@ -307,6 +327,11 @@ namespace AccountManager.ViewModels
                 int totalProtect = 0;
                 int totalExtension = 0;
                 int totalSPA = 0;
+                int totalManicure = 0;
+                int totalEyelashExtension = 0;
+                int totalCosmetic = 0;
+                int totalEyebrows = 0;
+                int totalTattoo = 0;
 
                 foreach (var assistantStatement in assistantStatements)
                 {
@@ -334,7 +359,16 @@ namespace AccountManager.ViewModels
                         totalExtension++;
                     else if (assistantStatement.ConsumptionItem == "頭皮SPA")
                         totalSPA++;
-
+                    else if (assistantStatement.ConsumptionItem == "美甲")
+                        totalManicure++;
+                    else if (assistantStatement.ConsumptionItem == "美睫")
+                        totalEyelashExtension++;
+                    else if (assistantStatement.ConsumptionItem == "美容")
+                        totalCosmetic++;
+                    else if (assistantStatement.ConsumptionItem == "霧眉")
+                        totalEyebrows++;
+                    else if (assistantStatement.ConsumptionItem == "紋繡")
+                        totalTattoo++;
                 }
                 dataGridRow.ID = assistant.ID;
                 dataGridRow.Name = assistant.Name;
@@ -351,6 +385,11 @@ namespace AccountManager.ViewModels
                 dataGridRow.Protect = totalProtect;
                 dataGridRow.Extension = totalExtension;
                 dataGridRow.SPA = totalSPA;
+                dataGridRow.Manicure = totalManicure;
+                dataGridRow.EyelashExtension = totalEyelashExtension;
+                dataGridRow.Cosmetic = totalCosmetic;
+                dataGridRow.Eyebrows = totalEyebrows;
+                dataGridRow.Tattoo = totalTattoo;
                 dataGridRow.Product = 0;
                 dataGridRow.Storge = 0;
                 dataGridRow.Unassign = 0;

@@ -155,6 +155,26 @@
                     Header="頭皮SPA" />
                 <DataGridTextColumn
                     Width="Auto"
+                    Binding="{Binding Manicure}"
+                    Header="美甲" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding EyelashExtension}"
+                    Header="美睫" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Cosmetic}"
+                    Header="美容" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Eyebrows}"
+                    Header="霧眉" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    Binding="{Binding Tattoo}"
+                    Header="紋繡" />
+                <DataGridTextColumn
+                    Width="Auto"
                     Binding="{Binding Cooperation, StringFormat=c0}"
                     Header="互助業績" />
                 <DataGridTextColumn
